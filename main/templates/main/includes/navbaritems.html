@@ -3,19 +3,27 @@
         <div class="container" style="background-color:white; opacity: .8; padding: 25px; border-radius:15px; position: sticky;">
             {% if user.is_authenticated %}
             <a class="black-text material-icons">verified_user</a>
-            <a href="/account">Welcome {{user.username|title}}</a>
+            <a class="black-text" href="/account">Welcome {{user.username|title}}</a>
+            <br>
             <a class="black-text material-icons" href="/mycards">card_membership</a>
-            <a href="/logout">Logout</a>
+            <a class="black-text" href="/mycards">View saved cards</a>
+            <br>
+            <a class="black-text material-icons" href="/logout">eject</a>
+            <a class="black-text" href="/logout">Logout</a>
             {% else %}
             <a class="black-text material-icons" href="/login">person_outline</a>
+            <a class="black-text" href="/login">Members</a>
             {% endif %}
             <br>
             <a class="black-text material-icons" href="https://magic.wizards.com/en">high_quality</a>
+            <a class="black-text" href="https://magic.wizards.com/en">Magic The Gathering</a>
             <br>
         
         
         <!-- change to python loop to display all filter opts in database-->
             <a class="black-text material-icons large">filter_list</a>
+            <a class="black-text">Filters</a>
+
             <br><b>Year</b>
             <form action="#">
                 <label class="black-text" >

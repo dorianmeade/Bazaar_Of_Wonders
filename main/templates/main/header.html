@@ -11,7 +11,12 @@
 <body style="background-image: url('{% static 'main/images/bkgd.png' %}'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
     <!-- web app logo -->
     <div >
-        <img class="media responsive-img" src="{% static 'main/images/logo.png' %}" alt="My image">
+        <a href="/"><img class="media responsive-img" src="{% static 'main/images/logo.png' %}" alt="My image">
+        </a>
+    </div>
+    <!-- message handling -->
+    <div class="container">
+        {% include 'main/includes/messaging.html' %}
     </div>
     <!-- search bar -->
     <nav class="white z-depth-0" style="width: 60%;  transform: translate(25%,0); opacity: 0.9;">
@@ -34,11 +39,6 @@
             {% block content %}
             {% endblock %}
         </div>
-    </div>
-    
-    <!-- js message handling, reconsider -->
-    <div class="container">
-    {% include 'main/includes/messaging.html' %}
     </div>
     
 </body>
