@@ -117,6 +117,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+]
+
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
     'width': 1120,
