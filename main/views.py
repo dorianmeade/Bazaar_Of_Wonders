@@ -29,11 +29,11 @@ def register(request):
                 messages.error(request, f"{msg}: {form.error_messages[msg]}")
             
             return render(request = request,
-                  template_name = "main/register.html",
+                  template_name = "main/registration/register.html",
                   context={"form":form})
     form  = NewUserForm
     return render(request = request,
-                  template_name = "main/register.html",
+                  template_name = "main/registration/register.html",
                   context={"form":form})
 
 #login page/form
@@ -55,7 +55,7 @@ def login_request(request):
 
     form = AuthenticationForm()
     return render(request = request,
-                  template_name = "main/login.html",
+                  template_name = "main/registration/login.html",
                   context={"form":form})
 
 #function for filtering cards in the working

@@ -149,3 +149,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
     }
+
+# redirect after login
+LOGIN_REDIRECT_URL = '/'
