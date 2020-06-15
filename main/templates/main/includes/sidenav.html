@@ -1,0 +1,34 @@
+<!-- navigation -->
+<div class="col s3 center-align" style="background-color: white; opacity: .8; height:100%;">
+        <h5><b>Menu</b></h5>
+        <ul>
+            <li><a class="black-text" href="https://magic.wizards.com/en">Magic The Gathering</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="https://magic.wizards.com/en">high_quality</a></li><br>
+            {% if user.is_authenticated %}
+            <li><a class="black-text" href="/account">Welcome {{user.username|title}}</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;">verified_user</a></li>
+            <li><a class="black-text" href="/logout">Logout</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="/logout">logout</a></li><br>
+            <li><a class="black-text" href="/mycards">View saved cards</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="/mycards">card_membership</a></li><br>
+            {% else %}
+            <li><a class="black-text" href="/login">My Account</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="/login">person_outline</a></li><br>
+            {% endif %}
+            <form method='GET'>
+                    <button type='submit'> Filter me</button>
+            </form>
+            <li><a class="black-text">Filters</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;">filter_list</a></li><br>
+            <b>Year</b>
+            <form action="#">
+                <label class="black-text" >
+                    <input type="checkbox" />
+                    <span>2020</span>
+                </label>
+            </form>
+            <b>Set</b>
+            <form action="#">
+                <label class="black-text" >
+                    <input type="checkbox" />
+                    <span>Beta (Limited Edition) </span>
+                </label>
+            </form>
+            <li><a class="black-text" href="/contact">Contact</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="/contact">code</a></li><br>
+        </ul>
+
+</div>
