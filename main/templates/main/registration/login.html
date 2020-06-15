@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <div class="container" style="padding-top: 10px;">
+        <form class="white black-text" style="opacity:.8; padding: 10px; border-radius: 15px;" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <a class="btn btn-outline-info" style="background-color: black; color:white" href="/">Cancel</a>
+            <button style="background-color: black; color:white" class="btn btn-outline-info" type="submit">Login</button>
+        </form>
+        <p class="white-text"> Don't have an account? <a href="/register" target="_self"><strong>register here</strong></a>!</p>
+    </div>
+{% endblock %}

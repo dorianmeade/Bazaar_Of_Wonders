@@ -1,19 +1,24 @@
-{% extends 'main/header.html' %}
+{% extends 'main/base.html' %}
+
 {% block content %}
 
     <!-- will be a loop through card database -->
-
     <div class="row">
-        <div class="col s12 m6">
-            <div class="card hoverable">
-                <div class="card-content">
-                <span class="card-title">Card Name</span>
-                <p>image</p>
-                </div>
-                <div class="card sticky-action">
-                    <div class="card-action">
-                        <a href="#">Vendor</a>
-                        <a href="#">Price</a>
+        <div class="col">
+            <div class="container">
+                <div class="card hoverable" style="margin:auto; display: block;">
+                {% load static %}
+                    <div class = "card-image">
+                        <img class="media responsive-img" src="{% static 'main/images/cards/faerieseer.png' %}" alt="My image" style="width:250px; height:auto;">             
+                    </div>
+                    <div class="card-content">
+                    <span class="card-title">Card Name</span>
+                    </div>
+                    <div class="card sticky-action">
+                        <div class="card-action">
+                            <a href="#">Vendor</a>
+                            <a href="#">Price</a>
+                        </div>
                     </div>
                 </div>
             </div>

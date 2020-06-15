@@ -1,14 +1,16 @@
 <!--change or delete bc no scripts -->
 {% if messages %}
+    <ul class="messages">
         {% for message in messages %}
             {% if message.tags == 'success'%}
-                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength:2000});</script>
+                <li class="green rounded" style="opacity: .8">{{ message | title}}</li>
             {% elif message.tags == 'info'%}
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
-            {% elif message.tags == 'warning'%}
-                <script>M.toast({html: "{{message}}", classes: 'orange rounded', displayLength:10000});</script>
+                <li class="white-text blue rounded" style="opacity: .8; padding:2px; display:inline-block;  margin: auto;">{{ message | title}}</li>
+            {% elif message.tags  == 'warning'%}
+            <li class="orange rounded">{{ message }}</li>
             {% elif message.tags == 'error'%}
-                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:10000});</script>
+            <li class="red rounded">{{ message }}</li>
             {% endif %}
-    {% endfor %}
+        {% endfor %}
+    </ul>
 {% endif %}
