@@ -1,6 +1,6 @@
 <!-- navigation -->
 <div class="col s3 center-align" style="background-color: white; opacity: .8; height:100%;">
-        <h5><b>Menu</b></h5>
+        <h5 style="background-color: gray; padding:5px;"><b>Menu</b></h5>
         <ul>
             <li><a class="black-text" href="https://magic.wizards.com/en">Magic The Gathering</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="https://magic.wizards.com/en">high_quality</a></li><br>
             {% if user.is_authenticated %}
@@ -10,10 +10,13 @@
             {% else %}
             <li><a class="black-text" href="/login">My Account</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;" href="/login">person_outline</a></li><br>
             {% endif %}
-            <form method='GET'>
-                    <button type='submit'> Filter me</button>
-            </form>
-            <li><a class="black-text">Filters</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;">filter_list</a></li><br>
+
+            <!-- card display ordering options-->
+            <li><a class="black-text">Sort by</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;">sort</a></li>
+            <p>ascending $, descending $, popular, most relevant</p>
+            
+            <!-- card filter options-->
+            <li><a class="black-text">Filter by</a><a class="black-text material-icons" style="vertical-align: bottom; font-size: 18px;">filter_list</a></li><br>
             <b>Year</b>
             <form action="#">
                 <label class="black-text" >
