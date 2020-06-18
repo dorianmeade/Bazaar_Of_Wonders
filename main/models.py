@@ -69,3 +69,12 @@ class Notification(models.Model):
     seller_key = models.ForeignKey('Seller',on_delete=models.CASCADE)
     selling_auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
     models.ForeignKey('Card_Rarity',on_delete=models.CASCADE)
+
+class Collection(models.Model):
+    owning_auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user) 
+    collection_name = models.CharField(max_length=200)
+
+class Collection_Content(models.Model):
+    collection_id = card_id = models.ForeignKey('Collection',on_delete=models.CASCADE) 
+    card_id = models.ForeignKey('Card',on_delete=models.CASCADE) 
+    obtained = models.BooleanField()

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Card_Rarity,Card_Type,Card_Color,Card,Location,Seller,Bazaar_User,Listing,Notification
+from .models import Card_Rarity,Card_Type,Card_Color,Card,Location,Seller,Bazaar_User,Listing,Notification,Collection,Collection_Content
 
 # Register your models here.
 admin.site.register(Card_Rarity)
@@ -11,3 +11,5 @@ admin.site.register(Seller)
 admin.site.register(Bazaar_User)
 admin.site.register(Listing)
 admin.site.register(Notification)
+admin.site.register(Collection)
+admin.site.register(Collection_Content)
