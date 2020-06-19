@@ -10,17 +10,14 @@ class Card_Type(models.Model):
     def __str__(self):
         return self.card_type
 
-class Card_Color(models.Model):
-    card_color = models.CharField(max_length=200, unique=True) 
-    def __str__(self):
-        return self.card_color
+
 
 class Card(models.Model):
     #Primary Key
     product_id = models.AutoField(primary_key=True) #Auto incrementing (default)
     name = models.CharField(max_length=200) 
     type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
-    color_id = models.ManyToManyField('Card_Color')
+    card_color = models.CharField(max_length=200,default='N/A')
     mana_cost = models.CharField(max_length=200)
     card_image_loc = models.CharField(max_length=800)
     power = models.IntegerField() 
