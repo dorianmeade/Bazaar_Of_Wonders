@@ -2,20 +2,25 @@ from django.db import models
 
 class Card_Rarity(models.Model):
     card_rarity = models.CharField(max_length=200, unique=True) 
+    def __str__(self):
+        return self.card_rarity
 
 class Card_Type(models.Model):
-    card_type = models.CharField(max_length=200, unique=True) 
+    card_type = models.CharField(max_length=200, unique=True)
+    def __str__(self):
+        return self.card_type
 
 class Card_Color(models.Model):
     card_color = models.CharField(max_length=200, unique=True) 
-
+    def __str__(self):
+        return self.card_color
 
 class Card(models.Model):
     #Primary Key
     product_id = models.AutoField(primary_key=True) #Auto incrementing (default)
     name = models.CharField(max_length=200) 
     type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
-    color_id = models.ForeignKey('Card_Color',on_delete=models.CASCADE)
+    color_id = models.ManyToManyField('Card_Color')
     mana_cost = models.CharField(max_length=200)
     card_image_loc = models.CharField(max_length=800)
     power = models.IntegerField() 
@@ -26,7 +31,8 @@ class Card(models.Model):
     set_name = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
     collection_number = models.IntegerField()
-
+    def __str__(self):
+        return self.name
 
 class Location(models.Model):
     location = models.CharField(max_length=200) 
@@ -56,8 +62,6 @@ class Listing(models.Model):
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
     selling_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
-
-
 
 class Notification(models.Model):
     auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)

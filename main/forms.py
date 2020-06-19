@@ -2,9 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-class FilterForm(forms.Form):
-    filter_year = forms.BooleanField()
-
 #new user registration form
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)

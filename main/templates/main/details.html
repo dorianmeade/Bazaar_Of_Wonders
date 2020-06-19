@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <div class="container white-text">           
+            <h4>Name: {{c.name}} </h4>
+            <img src="{{ c.card_image_loc }}">
+            <p>Types: {{ c.type_id }}</p>
+            <p>Colors: {{ c.color_id }}</p>
+            <p>Mana Cost/Total: {{ c.mana_cost }}</p>
+            <p>Rarity: {{ c.mana_cost }}</p>            
+            <p>Power: {{ c.power }}</p>
+            <p>Card text: {{ c.card_text }}</p>
+            <p>Flavor text: {{ c.flavor_text }}</p>
+
+            <p>Set: {{ c.mana_cost }}</p>
+            <p>Artist: {{ c.mana_cost }}</p>
+            <p>Year: {{ c.mana_cost }}</p>            
+    </div>
+{% endblock %}

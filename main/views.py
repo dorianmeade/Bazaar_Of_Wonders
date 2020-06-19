@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import FilterForm, NewUserForm
+from .forms import NewUserForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
+from .models import Card, Listing
 
 #homepage view
 def home(request):
     return render(request = request,
                   template_name='main/home.html',
+                  context={"cards":Card.objects.all, "listings":Listing.objects.all}
                   )
 
 #registration page
@@ -38,11 +40,14 @@ def register(request):
 
 #login page/form
 def login_request(request):
+    #upon form submit
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
+        #validate user input
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+            #authenticate user in db
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -58,17 +63,25 @@ def login_request(request):
                   template_name = "main/registration/login.html",
                   context={"form":form})
 
-#function for filtering cards in the working
-def filter_request(request):
-    context = {}
-    context['form'] = FilterForm()
-    return render( request, "navbaritems.html", context) 
-
-#function to log user out of system
+#log user out of system
 def logout_request(request):
     logout(request)
     messages.info(request, "Logged out succesfully!")
     return redirect("main:home")
+
+#user account portal
+def member_view(request):
+    return render(request = request,
+                  template_name = "main/members.html",
+                  )
+
+#card details page
+def card_view(request):
+    return render(request = request,
+                  template_name = "main/details.html",
+                  context={"cards":Card.objects.all}
+                  )
+
 
 
 

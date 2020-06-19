@@ -1,26 +1,27 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-
     <!-- will be a loop through card database -->
     <div class="row">
-        <div class="col">
+        <div class="col s12">
             <div class="container">
-                <div class="card hoverable" style="margin:auto; display: block;">
+                {% for l in listings %}
+                <div class="card hoverable" style="margin:auto; display: inline-block;">
                 {% load static %}
-                    <div class = "card-image">
-                        <img class="media responsive-img" src="{% static 'main/images/cards/faerieseer.png' %}" alt="My image" style="width:250px; height:auto;">             
+                    <div class="card-image">
+                        <img class="media responsive-img" src="{{l.product_id.card_image_loc}}" alt="{{l.product_name}}" style="width:250px; height:auto;" \>
                     </div>
                     <div class="card-content">
-                    <span class="card-title">Card Name</span>
+                        <span class="card-title" style="white-space: nowrap; text-align: center;">{{l.product_name|title}}</span>
+                        <p>price</p> 
                     </div>
-                    <div class="card sticky-action">
-                        <div class="card-action">
+                        <div class="card-action" style="white-space: nowrap;">
                             <a href="#">Vendor</a>
-                            <a href="#">Price</a>
+                            <a href="#">Details</a>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>
