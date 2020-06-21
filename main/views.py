@@ -87,14 +87,6 @@ def logout_request(request):
     messages.info(request, "Logged out succesfully!")
     return redirect("main:home")
 
-
-# user account portal
-def member_view(request):
-    return render(request=request,
-                  template_name="main/members.html",
-                  )
-
-
 # card details page
 def card_view(request, product_id):
     try:

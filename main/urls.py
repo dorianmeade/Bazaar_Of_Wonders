@@ -11,6 +11,5 @@ urlpatterns = [
     path("logout", views.logout_request, name="logout"),
     path("collection", views.collection_and_notification_portal, name="collection"),
     path("notifications", views.notifications, name="notifications"),
-    path("members", views.member_view, name="member_view"),
     path("card-details/<int:product_id>", views.card_view, name="card_view"),
 ]
