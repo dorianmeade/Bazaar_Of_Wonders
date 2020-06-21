@@ -11,7 +11,7 @@
                     <!-- loop through listings in database -->
                     {% for l in listings %}
                         <!-- cards = link to details page -->
-                        <a class="btn-link" href="{% url 'main:details' %}?selected={{l.product_id.product_id}} ">                 
+                        <a title="card-testing" class="btn-link" href="{% url 'main:details' %}?selected={{l.product_id.product_id}} ">                 
                             <div class="card black hoverable" style="display: inline-block; width: 225px; height: auto;">
                                 {% load static %}
                                 <div class="card-image">
