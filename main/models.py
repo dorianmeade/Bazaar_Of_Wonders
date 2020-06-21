@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Card_Rarity(models.Model):
     card_rarity = models.CharField(max_length=200, unique=True) 
@@ -31,6 +32,10 @@ class Card(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        """Returns the url to access a particular author instance."""
+        return reverse('main:card_view', args=[str(self.product_id)])
+
 class Location(models.Model):
     location = models.CharField(max_length=200) 
 
@@ -59,6 +64,7 @@ class Listing(models.Model):
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
     selling_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
+
 
 class Notification(models.Model):
     auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
