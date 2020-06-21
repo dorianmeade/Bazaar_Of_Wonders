@@ -14,5 +14,7 @@ urlpatterns = [
     path("details", views.card_view, name="details"),
     path("details/<slug:selected>", views.card_view, name="thiscard"),
     path("accounts/", include('django.contrib.auth.urls')),
-
+    path("collection", views.collection, name="collection"),
+    path("notifications", views.notifications, name="notifications"),
+    path("card-details/<int:product_id>", views.card_view, name="card_view"),
 ]

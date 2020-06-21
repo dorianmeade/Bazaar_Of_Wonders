@@ -8,7 +8,9 @@
         {% for c in cards %}
             {% ifequal c.name|stringformat:"s" currCard|fix_url %} 
                 <!-- display all known card information -->     
-
+                {% if user.is_authenticated %}
+                    <a href="{% url 'main:collection' %}" style="color:white">Add card to your collection</a>
+                {% endif %}
                 <h4>Name: {{c.name|title}} </h4>
                 <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
                 <p>Types: {{ c.type_id|title }}</p>

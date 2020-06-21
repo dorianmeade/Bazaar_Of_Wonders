@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Card_Rarity(models.Model):
     card_rarity = models.CharField(max_length=200, unique=True) 
@@ -28,6 +29,10 @@ class Card(models.Model):
     collection_number = models.IntegerField()
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        """Returns the url to access a particular author instance."""
+        return reverse('main:card_view', args=[str(self.product_id)])
 
 class Location(models.Model):
     location = models.CharField(max_length=200) 
