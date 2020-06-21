@@ -6,15 +6,17 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from .models import Card, Listing, Bazaar_User
 
+
 # homepage view
 def home(request):
     return render(request=request,
                   template_name='main/home.html',
-                  #load necessary schemas 
+                  # load necessary schemas
                   context={"cards": Card.objects.all, "listings": Listing.objects.all}
                   )
 
-#registration page form
+
+# registration page form
 def register(request):
     # upon submit
     if request.method == "POST":
@@ -72,11 +74,13 @@ def collection(request):
                   template_name='main/collection_and_notification_portal.html',
                   context={})
 
+
 # user collection and notification management
 def notifications(request):
     return render(request=request,
                   template_name='main/notifications.html',
                   context={})
+
 
 # log user out of system
 def logout_request(request):
@@ -84,29 +88,24 @@ def logout_request(request):
     messages.info(request, "Logged out succesfully!")
     return redirect("main:home")
 
-#user account portal view
-def member_view(request):
-    return render(request = request,
-                  template_name = "main/members.html",
-                  )
  
-#card details page
+# card details page
 def card_view(request, selected=None):
-    #get primary key from url
-    cardID = request.GET.get('selected', '')
+    # get primary key from url
+    card_id = request.GET.get('selected', '')
     try: 
-        #get card object from pk
-        card = Card.objects.get(product_id=cardID)
+        # get card object from pk
+        card = Card.objects.get(product_id=card_id)
         return render(request=request,
-                  template_name="main/details.html",
-                  context={"c": card}
-                )
+                      template_name="main/details.html",
+                      context={"c": card}
+                      )
     except Card.DoesNotExist:
         return render(request=request,
                       template_name="main/details.html",
-                    )
+                      )
     except ValueError:
         return render(request=request,
                       template_name="main/details.html",
-                    )
+                      )
 
