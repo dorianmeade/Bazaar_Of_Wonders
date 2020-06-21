@@ -1,7 +1,8 @@
 <!-- navigation -->
-<div class="col s3 center-align" style="background-color: white; opacity: .8; height:100%; padding-bottom: 20px;">
+<div class="col s3 center-align" style="background-color: white; opacity: .8; height:100%; padding-bottom: 20px; overflow: auto;">
     <h5 style="background-color: gray; padding:5px;"><b>Menu</b></h5>
         <ul>
+            <li><a class="black-text collapsible-header" href="/" style="white-space: nowrap;">Home<i class="black-text material-icons" >home</i></a></li><br>
             <!-- menu options based on user auth -->
             {% if user.is_authenticated %}
             <li><a class="black-text collapsible-header" href="/members" style="white-space: nowrap;">Welcome {{user.username|title}}<i class="black-text material-icons" >verified_user</i></a></li><br>
@@ -51,6 +52,6 @@
             
             <!-- reference / contact info -->
             <li><a class="black-text collapsible-header" href="https://magic.wizards.com/en" style="white-space: nowrap;">Magic The Gathering <i class="black-text material-icons" >high_quality</i></a></li><br>
-            <li><a class="black-text collapsible-header" href="/contact" style="white-space: nowrap;">Contact <i class="black-text material-icons" >code</i></a></li><br>
+            <li><a class="black-text collapsible-header" href="mailto:ahillebrand@ufl.edu" style="white-space: nowrap;">Contact <i class="black-text material-icons" >code</i></a></li><br>
         </ul>
 </div>

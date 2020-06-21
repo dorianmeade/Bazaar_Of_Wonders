@@ -14,17 +14,14 @@ Web app to showcase the lowest price magic the gathering card the internet can f
 
 ### Clone
 ```shell
-$ git clone git@github.com:Bazaar-Trader/Bazaar_Of_Wonders.git 
+$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git
 ```
-(password protected SSH key)
-  
  ### Create virtual environment
 ```shell
 $ virtualenv env --no-site-packages
 $ source env/bin/activate
 ```
 ### Install dependencies
-
 ```shell
 $ pip3 install -r requirements.txt
 $ python3 -m pip install django-tinymce4-lite
@@ -38,14 +35,14 @@ $ python3 manage.py runserver
 view on browser http://localhost:8000 
  
  ## Features
- 
- -Search/ browsing
- -Notification system (email and web push)
- -Admin portal
- -User login/ registration
- -Social integration -> auction portal -> live chat
- -Reporting and analytics?
- -Security
+
+ - Search/ browsing
+ - Notification system (email and web push)
+ - Admin portal
+ - User login/ registration
+ - Social integration -> auction portal -> live chat
+ - Reporting and analytics?
+ - Security
  
  ## Documentation
  

@@ -1,20 +1,32 @@
 {% extends 'main/base.html' %}
-
+<!-- access custom templatetag -->
+{% load fix_url %}
 {% block content %}
+    {% if currCard %}
+        <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
+        <!-- looks for selected card in deck by name (change to product id?) -->     
+        {% for c in cards %}
+            {% ifequal c.name|stringformat:"s" currCard|fix_url %} 
+                <!-- display all known card information -->     
 
-    <div class="container white-text">           
-            <h4>Name: {{c.name}} </h4>
-            <img src="{{ c.card_image_loc }}">
-            <p>Types: {{ c.type_id }}</p>
-            <p>Colors: {{ c.card_color }}</p>
-            <p>Mana Cost/Total: {{ c.mana_cost }}</p>
-            <p>Rarity: {{ c.mana_cost }}</p>            
-            <p>Power: {{ c.power }}</p>
-            <p>Card text: {{ c.card_text }}</p>
-            <p>Flavor text: {{ c.flavor_text }}</p>
-
-            <p>Set: {{ c.mana_cost }}</p>
-            <p>Artist: {{ c.mana_cost }}</p>
-            <p>Year: {{ c.mana_cost }}</p>            
+                <h4>Name: {{c.name|title}} </h4>
+                <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
+                <p>Types: {{ c.type_id|title }}</p>
+                <p>Colors: {{ c.card_color }}</p>
+                <p>Mana Cost/Total: {{ c.mana_cost }}</p>
+                <p>Rarity: {{ c.mana_cost }}</p>            
+                <p>Power: {{ c.power }}</p>
+                <p>Card text: {{ c.card_text }}</p>
+                <p>Flavor text: {{ c.flavor_text }}</p>
+                <p>Set: {{ c.mana_cost }}</p>
+                <p>Artist: {{ c.mana_cost }}</p>
+                <p>Year: {{ c.mana_cost }}</p> 
+            {% endifequal %}
+        {% endfor %}   
+    {% else %}
+    <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
+        <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><strong>home</strong></a> </p>
+    </div>    
+    {% endif %}
     </div>
 {% endblock %}

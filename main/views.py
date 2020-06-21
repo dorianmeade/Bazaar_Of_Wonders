@@ -13,7 +13,7 @@ def home(request):
                   context={"cards":Card.objects.all, "listings":Listing.objects.all}
                   )
 
-#registration page
+#registration page form
 def register(request):
     #upon submit
     if request.method == "POST":
@@ -38,7 +38,7 @@ def register(request):
                   template_name = "main/registration/register.html",
                   context={"form":form})
 
-#login page/form
+#login page form
 def login_request(request):
     #upon form submit
     if request.method == 'POST':
@@ -69,18 +69,36 @@ def logout_request(request):
     messages.info(request, "Logged out succesfully!")
     return redirect("main:home")
 
-#user account portal
+#user account portal view
 def member_view(request):
     return render(request = request,
                   template_name = "main/members.html",
                   )
 
-#card details page
-def card_view(request):
-    return render(request = request,
+#display card details upon selection view
+def card_view(request, selected=None):
+    # selected by button form 
+    if request.method == 'POST':
+        thisCard = request.POST.get('currCard')
+        return render(request = request,
                   template_name = "main/details.html",
-                  context={"cards":Card.objects.all}
+                  context={"cards":Card.objects.all,"currCard":thisCard}
                   )
+    # selected by link with url pattern
+    #backwards logic?
+    elif selected is None:
+        thisCard2 = request.GET.get('selected', '')
+        return render(request = request,
+                    template_name = "main/details.html",
+                    context={"cards":Card.objects.all, "currCard": thisCard2 }
+                    )
+
+    else:
+        return render(request = request,
+                    template_name = "main/details.html"
+                    )
+
+    
 
 
 

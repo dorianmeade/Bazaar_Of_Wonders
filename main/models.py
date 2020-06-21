@@ -10,8 +10,6 @@ class Card_Type(models.Model):
     def __str__(self):
         return self.card_type
 
-
-
 class Card(models.Model):
     #Primary Key
     product_id = models.AutoField(primary_key=True) #Auto incrementing (default)
@@ -59,7 +57,9 @@ class Listing(models.Model):
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
     selling_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
-
+    def __str__(self):
+        return self.product_name
+    
 class Notification(models.Model):
     auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
     card_id = models.ForeignKey('Card',on_delete=models.CASCADE)

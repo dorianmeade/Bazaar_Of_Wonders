@@ -1,25 +1,27 @@
 {% extends 'main/base.html' %}
-
 {% block content %}
-    <!-- will be a loop through card database -->
+    <!-- loop through listing database to display cards -->
     <div class="row">
         <div class="col s12">
             <div class="container">
                 {% for l in listings %}
-                <div class="card hoverable" style="margin:auto; display: inline-block;">
-                {% load static %}
-                    <div class="card-image">
-                        <img class="media responsive-img" src="{{l.product_id.card_image_loc}}" alt="{{l.product_name}}" style="width:250px; height:auto;" \>
-                    </div>
-                    <div class="card-content">
-                        <span class="card-title" style="white-space: nowrap; text-align: center;">{{l.product_name|title}}</span>
-                        <p>price</p> 
-                    </div>
-                        <div class="card-action" style="white-space: nowrap;">
-                            <a href="#">Vendor</a>
-                            <a href="#">Details</a>
+                <!-- card itself is a link to card details -->
+                <a class="btn-link" href="{% url 'main:details' %}?selected={{l.product_id.name}} ">                 
+                    <div class="card hoverable" style="margin:auto; display: inline-block; width: 225px; height: auto;">
+                        {% load static %}
+                        <div class="card-image">
+                            <img class="media responsive-img" src="{{l.product_id.card_image_loc}}" alt="{{l.product_name}}" style="width:250px; height:auto;" \>
+                        </div>
+                        <div class="card-action" style="text-align: center; display: flex; align-items: center;">
+                            <a class="" href="#">{{l.price}} {{l.seller_key.seller_name}}</a>
+                            <form action="details" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="currCard" value="{{l.product_id.name}}"/>
+                                <input class="details" type="submit" value="Card Details">
+                            </form>
                         </div>
                     </div>
+                </a>
                 </div>
                 {% endfor %}
             </div>
