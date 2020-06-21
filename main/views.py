@@ -10,6 +10,7 @@ from .models import Card, Listing, Bazaar_User
 def home(request):
     return render(request=request,
                   template_name='main/home.html',
+                  #load necessary schemas 
                   context={"cards": Card.objects.all, "listings": Listing.objects.all}
                   )
 
@@ -66,18 +67,16 @@ def login_request(request):
 
 
 # user collection and notification management
-def collection_and_notification_portal(request):
+def collection(request):
     return render(request=request,
                   template_name='main/collection_and_notification_portal.html',
                   context={})
-
 
 # user collection and notification management
 def notifications(request):
     return render(request=request,
                   template_name='main/notifications.html',
                   context={})
-
 
 # log user out of system
 def logout_request(request):
@@ -90,49 +89,24 @@ def member_view(request):
     return render(request = request,
                   template_name = "main/members.html",
                   )
-''' 
-#alternate function using product_id instead of name
-# card details page
-def card_view(request, product_id):
-    try:
-        card = Card.objects.get(product_id=product_id)
-    except Card.DoesNotExist:
-        raise Http404('Card does not exist')
-
-    return render(request=request,
+ 
+#card details page
+def card_view(request, selected=None):
+    #get primary key from url
+    cardID = request.GET.get('selected', '')
+    try: 
+        #get card object from pk
+        card = Card.objects.get(product_id=cardID)
+        return render(request=request,
                   template_name="main/details.html",
                   context={"c": card}
-                  )
-'''
-#display card details upon selection view
-def card_view(request, selected=None):
-    # selected by button form 
-    if request.method == 'POST':
-        thisCard = request.POST.get('currCard')
-        return render(request = request,
-                      template_name = "main/details.html",
-                      context={"cards":Card.objects.all,"currCard":thisCard }
-                    )
-
-    #selected by link with url pattern,, backwards logic?
-    elif selected is None:
-        thisCard2 = request.GET.get('selected', '')
-        return render(request = request,
-                      template_name = "main/details.html",
-                      context={"cards":Card.objects.all, "currCard": thisCard2 }
-                    )
-    else:
-        return render(request = request,
-                      template_name = "main/details.html"
-                    )
-
-def collection(request):
-    return render(request=request,
-                  template_name='main/collection_and_notification_portal.html',
                 )
-
-def notifications(request):
-    return render(request=request,
-                  template_name='main/notifications.html',
-                )
+    except Card.DoesNotExist:
+        return render(request=request,
+                      template_name="main/details.html",
+                    )
+    except ValueError:
+        return render(request=request,
+                      template_name="main/details.html",
+                    )
 

@@ -8,21 +8,6 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
 
-    <style>
-        .details {
-            color: #ffab40; 
-            text-transform: uppercase; 
-            z-index: 0; 
-            border: 0px; 
-            background-color:transparent; 
-            cursor: pointer;
-            outline:0;
-        }
-        .details:hover {
-            color: #ffd8a6;
-            outline:0;
-        }
-        </style>
 </head>
 
 <body style="background-image: url('{% static 'main/images/bkgd.png' %}'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
@@ -35,28 +20,12 @@
         <!-- left panel/ side navigation  -->
         {% include 'main/includes/sidenav.html' %}
 
-        <!-- right pangel/ main screen-->
+        <!-- right pangel/ main screen : default to home.html-->
         <div class="col s8 container">
-            <!-- search bar -->
-            <div class="row" style="display: block">
-                <div class="nav-wrapper" style="width:60%; opacity: 0.8; padding: 2px; background-color:white; margin: auto;">
-                    <form>
-                        <div class="input-field">
-                            <input id="search" type="search" required>
-                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                            <i class="material-icons">close</i>
-                        </div>
-                    </form>
-                </div> 
-            </div>
-            <div class="row container">
-            <!-- card deck -->
-            {% block content %}
-            {% endblock %}
-            </div>
+        {% block content %}
+        {% endblock %}
         </div>
     </div>
-    
 </body>
 
 <!-- Prism JS -->

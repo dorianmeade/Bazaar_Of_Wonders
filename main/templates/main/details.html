@@ -2,32 +2,30 @@
 <!-- access custom templatetag -->
 {% load fix_url %}
 {% block content %}
-    {% if currCard %}
+    <!-- checks for card instance -->      
+    {% if c %}
         <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
-        <!-- looks for selected card in deck by name (change to product id?) -->     
-        {% for c in cards %}
-            {% ifequal c.name|stringformat:"s" currCard|fix_url %} 
-                <!-- display all known card information -->     
-                {% if user.is_authenticated %}
-                    <a href="{% url 'main:collection' %}" style="color:white">Add card to your collection</a>
-                {% endif %}
-                <h4>Name: {{c.name|title}} </h4>
-                <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
-                <p>Types: {{ c.type_id|title }}</p>
-                <p>Colors: {{ c.card_color }}</p>
-                <p>Mana Cost/Total: {{ c.mana_cost }}</p>
-                <p>Rarity: {{ c.mana_cost }}</p>            
-                <p>Power: {{ c.power }}</p>
-                <p>Card text: {{ c.card_text }}</p>
-                <p>Flavor text: {{ c.flavor_text }}</p>
-                <p>Set: {{ c.mana_cost }}</p>
-                <p>Artist: {{ c.mana_cost }}</p>
-                <p>Year: {{ c.mana_cost }}</p> 
-            {% endifequal %}
-        {% endfor %}   
+            <!-- display all known card information -->      
+            <h4> {{c.name|title}} </h4>
+            {% if user.is_authenticated %}
+            <p><a href="{% url 'main:collection' %}" style="color:white">Add card to your collection</a></p>
+            {% endif %}
+            <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
+            <p>Types: {{ c.type_id|title }}</p>
+            <p>Colors: {{ c.card_color }}</p>
+            <p>Mana Cost/Total: {{ c.mana_cost }}</p>
+            <p>Rarity: {{ c.mana_cost }}</p>            
+            <p>Power: {{ c.power }}</p>
+            <p>Card text: {{ c.card_text }}</p>
+            <p>Flavor text: {{ c.flavor_text }}</p>
+            <p>Set: {{ c.mana_cost }}</p>
+            <p>Artist: {{ c.mana_cost }}</p>
+            <p>Year: {{ c.mana_cost }}</p> 
+
+    <!-- card not in database - error msg -->      
     {% else %}
     <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
-        <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><strong>home</strong></a> </p>
+        <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><b style="color: black;">home</b></a> </p>
     </div>    
     {% endif %}
     </div>

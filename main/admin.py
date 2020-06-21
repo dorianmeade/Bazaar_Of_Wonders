@@ -4,7 +4,7 @@ from .models import Card_Rarity,Card_Type,Card,Location,Seller,Bazaar_User,Listi
 class CardAdmin(admin.ModelAdmin):
      fieldsets = (
         (None, {
-            'fields': ('name', 'type_id', 'card_color', 'mana_cost')
+            'fields': ('product_id', 'name', 'type_id', 'card_color', 'mana_cost')
         }),
         ('Details', {
             'classes': ('collapse',),

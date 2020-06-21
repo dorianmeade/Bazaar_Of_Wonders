@@ -2,8 +2,8 @@
 <div class="col s3 center-align" style="background-color: white; opacity: .8; height:100%; padding-bottom: 20px; overflow: auto;">
     <h5 style="background-color: gray; padding:5px;"><b>Menu</b></h5>
         <ul>
-            <li><a class="black-text collapsible-header" href="{% url 'main:home' %}" style="white-space: nowrap;">Home<i class="black-text material-icons" >home</i></a></li><br>
             <!-- menu options based on user auth -->
+            <li><a class="black-text collapsible-header" href="{% url 'main:home' %}" style="white-space: nowrap;">Home<i class="black-text material-icons" >home</i></a></li><br>
             {% if user.is_authenticated %}
             <li><a class="black-text collapsible-header" href="{% url 'main:notifications' %}"  style="white-space: nowrap;">Welcome {{user.username|title}}<i class="black-text material-icons" >verified_user</i></a></li><br>
             <li><a class="black-text collapsible-header" href="{% url 'main:logout' %}"  style="white-space: nowrap;">Logout<i class="black-text material-icons">logout</i></a></li><br>
