@@ -13,7 +13,7 @@ class Card_Type(models.Model):
 
 class Card(models.Model):
     #Primary Key
-    product_id = models.AutoField(primary_key=True) #Auto incrementing (default)
+    product_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200) 
     type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
     card_color = models.CharField(max_length=200,default='N/A')
