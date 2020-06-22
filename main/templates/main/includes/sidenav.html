@@ -9,7 +9,7 @@
             <!-- menu options based on user auth -->
             <li><a class="black-text collapsible-header" href="{% url 'main:home' %}" style="white-space: nowrap;">Home<i class="black-text material-icons" >home</i></a></li><br>
             {% if user.is_authenticated %}
-            <li><a class="black-text collapsible-header" href="{% url 'main:collection' %}"  style="white-space: nowrap;">Your Collection and Notifications<i class="black-text material-icons" >verified_user</i></a></li><br>
+            <li><a class="black-text collapsible-header" href="{% url 'main:collection' %}"  style="white-space: nowrap;">Your Collection and Notifications</a></li><br>
             <li><a class="black-text collapsible-header" href="{% url 'main:logout_req' %}"  style="white-space: nowrap;">Logout<i class="black-text material-icons">logout</i></a></li><br>
             {% else %}
             <li><a class="black-text collapsible-header" href="{% url 'main:login_req' %}"  style="white-space: nowrap;">Login<i class="black-text material-icons">person_outline</i></a></li><br>
