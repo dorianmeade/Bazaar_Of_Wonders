@@ -148,7 +148,7 @@ def card_view(request, selected=None):
                       )
 
 
-def save_item_view(request, selected=None):
+def add_to_collection_view(request, selected=None):
     try:
         # get card object from pk
         card = Card.objects.get(product_id=request.GET.get('selected', ''))
@@ -160,11 +160,13 @@ def save_item_view(request, selected=None):
                 users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
             except Collection.DoesNotExist:
                 pass
-            # if the user has a collection, and it isn't already in their collection, add this card to it
+            # if the user has a collection, and it isn't already in their collection (should never happen, but jic)
+            # add this card to it
             if users_collection:
                 card_there_already = None
                 try:
-                    card_there_already = Collection_Content.objects.get(card_id=card.product_id)
+                    card_there_already = Collection_Content.objects.get(card_id=card.product_id,
+                                                                        collection_id=users_collection)
                 except Collection_Content.DoesNotExist:
                     pass
                 if not card_there_already:
@@ -175,6 +177,35 @@ def save_item_view(request, selected=None):
                            collection_name="{0}'s Collection".format(request.user.username)).save()
                 users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
                 Collection_Content(collection_id=users_collection, card_id=card, obtained=False).save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Card.DoesNotExist:
+        return redirect(to=card_view(request, selected=selected))
+    except ValueError:
+        return redirect(to=card_view(request, selected=selected))
+
+
+def remove_from_collection_view(request, selected=None):
+    try:
+        # get card object from pk
+        card = Card.objects.get(product_id=request.GET.get('selected', ''))
+
+        # if a user is logged in see if they have a collection
+        if request.user.is_authenticated:
+            users_collection = None
+            try:
+                users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
+            except Collection.DoesNotExist:
+                pass
+            # if the user has a collection, the card is in their collection, done
+            if users_collection:
+                card_in_collection = None
+                try:
+                    card_in_collection = Collection_Content.objects.get(card_id=card.product_id,
+                                                                        collection_id=users_collection)
+                except Collection_Content.DoesNotExist:
+                    pass
+                if card_in_collection:
+                    card_in_collection.delete()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     except Card.DoesNotExist:
         return redirect(to=card_view(request, selected=selected))

@@ -14,5 +14,6 @@ urlpatterns = [
     path("details/<int:pk>", views.card_view, name="detailsID"),
     path("collection", views.collection, name="collection"),
     path("notifications", views.notifications, name="notifications"),
-    path("add_to_collection", views.save_item_view, name="add_to_collection")
+    path("add_to_collection", views.add_to_collection_view, name="add_to_collection"),
+    path("remove_from_collection", views.remove_from_collection_view, name="remove_from_collection")
 ]

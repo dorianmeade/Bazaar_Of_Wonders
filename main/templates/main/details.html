@@ -8,7 +8,9 @@
             <!-- display all known card information -->      
             <h4> {{c.name|title}} </h4>
             {% if user.is_authenticated and card_saved %}
-                <p><a style="color:white">This card is in your collection.</a></p>
+                <p><a style="color:white" href="{% url 'main:collection' %}">This card is in your collection.</a></p>
+                <p><a style="color:white" href={% url 'main:remove_from_collection' %}?selected={{c.product_id}}>
+                    Remove From Collection<i class="black-text material-icons" >delete</i></a></p><br>
             {% elif user.is_authenticated and not card_saved %}
                 <p><a href={% url 'main:add_to_collection' %}?selected={{c.product_id}} style="color:white">Add to your collection.</a></p>
             {% else %}
