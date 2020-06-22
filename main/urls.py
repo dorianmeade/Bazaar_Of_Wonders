@@ -12,7 +12,7 @@ urlpatterns = [
     path("logout", views.logout_request, name="logout_req"),
     path("details", views.card_view, name="details"),
     path("details/<int:pk>", views.card_view, name="detailsID"),
-    path("accounts/", include('django.contrib.auth.urls')),
     path("collection", views.collection, name="collection"),
     path("notifications", views.notifications, name="notifications"),
+    path("add_to_collection", views.save_item_view, name="add_to_collection")
 ]
