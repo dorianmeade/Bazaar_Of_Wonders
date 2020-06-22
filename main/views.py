@@ -4,7 +4,7 @@ from .forms import NewUserForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Bazaar_User
+from .models import Card, Listing, Bazaar_User, Collection, Collection_Content
 
 
 # homepage view
@@ -70,9 +70,25 @@ def login_request(request):
 
 # user collection and notification management
 def collection(request):
+    # if a user is logged in see if they have a collection
+    if request.user.is_authenticated:
+        users_collection = None
+        try:
+            users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
+        except Collection.DoesNotExist:
+            pass
+        # if the user has a collection, get it
+        if users_collection:
+            try:
+                collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
+            except Collection_Content.DoesNotExist:
+                pass
+            cards_in_collection = []
+            for item in collection_content:
+                cards_in_collection.append(Card.objects.get(product_id=item.card_id_id))
     return render(request=request,
                   template_name='main/collection_and_notification_portal.html',
-                  context={})
+                  context={'users_collection': cards_in_collection})
 
 
 # user collection and notification management
@@ -93,12 +109,32 @@ def logout_request(request):
 def card_view(request, selected=None):
     # get primary key from url
     card_id = request.GET.get('selected', '')
+
     try: 
         # get card object from pk
         card = Card.objects.get(product_id=card_id)
+        card_saved = False
+        # if a user is logged in see if they have a collection
+        if request.user.is_authenticated:
+            users_collection = None
+            try:
+                users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
+            except Collection.DoesNotExist:
+                pass
+            # if the user has a collection, get it
+            if users_collection:
+                try:
+                    collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
+                except Collection_Content.DoesNotExist:
+                    pass
+                # check to see if selected card is in collection
+                for collected_card in collection_content:
+                    if collected_card.card_id_id == card.product_id:
+                        card_saved = True  # found card
+                        break
         return render(request=request,
                       template_name="main/details.html",
-                      context={"c": card}
+                      context={"c": card, 'card_saved': card_saved}
                       )
     except Card.DoesNotExist:
         return render(request=request,

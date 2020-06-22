@@ -81,6 +81,6 @@ class Collection(models.Model):
     collection_name = models.CharField(max_length=200)
 
 class Collection_Content(models.Model):
-    collection_id = card_id = models.ForeignKey('Collection',on_delete=models.CASCADE) 
+    collection_id = models.ForeignKey('Collection',on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card',on_delete=models.CASCADE) 
     obtained = models.BooleanField()
