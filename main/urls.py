@@ -15,5 +15,6 @@ urlpatterns = [
     path("collection", views.collection, name="collection"),
     path("notifications", views.notifications, name="notifications"),
     path("add_to_collection", views.add_to_collection_view, name="add_to_collection"),
-    path("remove_from_collection", views.remove_from_collection_view, name="remove_from_collection")
+    path("remove_from_collection", views.remove_from_collection_view, name="remove_from_collection"),
+    path("toggle_ownership", views.toggle_ownership_view, name="toggle_ownership"),
 ]

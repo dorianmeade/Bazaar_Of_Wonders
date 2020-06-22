@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.urls import reverse
-
+from django.http import HttpResponseRedirect
 from .forms import NewUserForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Bazaar_User, Collection, Collection_Content
+from .models import Card, Listing, Collection, Collection_Content
 
 
 # homepage view
@@ -82,12 +80,15 @@ def collection(request):
             pass
         # if the user has a collection, get it
         if users_collection:
+            collection_content, cards_in_collection = [], []
             try:
                 collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
             except Collection_Content.DoesNotExist:
                 pass
             for item in collection_content:
-                cards_in_collection.append(Card.objects.get(product_id=item.card_id_id))
+                card = Card.objects.get(product_id=item.card_id_id)
+                own = item.obtained
+                cards_in_collection.append({'card': card, 'own': own})
     return render(request=request,
                   template_name='main/collection_and_notification_portal.html',
                   context={'users_collection': cards_in_collection})
@@ -119,6 +120,7 @@ def card_view(request, selected=None):
         # if a user is logged in see if they have a collection
         if request.user.is_authenticated:
             users_collection = None
+            collection_content = []
             try:
                 users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
             except Collection.DoesNotExist:
@@ -206,6 +208,37 @@ def remove_from_collection_view(request, selected=None):
                     pass
                 if card_in_collection:
                     card_in_collection.delete()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Card.DoesNotExist:
+        return redirect(to=card_view(request, selected=selected))
+    except ValueError:
+        return redirect(to=card_view(request, selected=selected))
+
+
+def toggle_ownership_view(request, selected=None):
+    try:
+        # get card object from pk
+        card = Card.objects.get(product_id=request.GET.get('selected', ''))
+
+        # if a user is logged in see if they have a collection
+        if request.user.is_authenticated:
+            users_collection = None
+            try:
+                users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
+            except Collection.DoesNotExist:
+                pass
+            # find the card in the collection and change the value
+            if users_collection:
+                card_of_interest = None
+                try:
+                    card_of_interest = Collection_Content.objects.get(card_id=card.product_id,
+                                                                      collection_id=users_collection)
+                except Collection_Content.DoesNotExist:
+                    pass
+                if card_of_interest:
+                    desired_value = not card_of_interest.obtained
+                    Collection_Content.objects.filter(card_id=card.product_id, collection_id=users_collection).\
+                        update(obtained=desired_value)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     except Card.DoesNotExist:
         return redirect(to=card_view(request, selected=selected))

@@ -9,26 +9,30 @@
         {% else %}
             <!-- loop through cards in user's collection -->
             {% for c in users_collection %}
-                <a title="card-testing" class="btn-link" href="{% url 'main:details' %}?selected={{c.product_id}} ">
+                <a title="card-testing" class="btn-link" href="{% url 'main:details' %}?selected={{c.card.product_id}} ">
                     <div class="card black hoverable" style="display: inline-block; width: 225px; height: auto;">
                         <!-- display all known card information -->
-                        <h4> {{c.name|title}} </h4>
-                        <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
-                        <p>Types: {{ c.type_id|title }}</p>
-                        <p>Colors: {{ c.card_color }}</p>
-                        <p>Mana Cost/Total: {{ c.mana_cost }}</p>
-                        <p>Rarity: {{ c.mana_cost }}</p>
-                        <p>Power: {{ c.power }}</p>
-                        <p>Card text: {{ c.card_text }}</p>
-                        <p>Flavor text: {{ c.flavor_text }}</p>
-                        <p>Set: {{ c.mana_cost }}</p>
-                        <p>Artist: {{ c.mana_cost }}</p>
-                        <p>Year: {{ c.mana_cost }}</p>
+                        <h4> {{c.card.name|title}} </h4>
+                        <img src="{{ c.card.card_image_loc }}" style="width: 225px; height: auto; ">
+                        <p>Types: {{ c.card.type_id|title }}</p>
+                        <p>Colors: {{ c.card.card_color }}</p>
+                        <p>Mana Cost/Total: {{ c.card.mana_cost }}</p>
+                        <p>Rarity: {{ c.card.mana_cost }}</p>
+                        <p>Power: {{ c.card.power }}</p>
+                        <p>Card text: {{ c.card.card_text }}</p>
+                        <p>Flavor text: {{ c.card.flavor_text }}</p>
+                        <p>Set: {{ c.card.mana_cost }}</p>
+                        <p>Artist: {{ c.card.mana_cost }}</p>
+                        <p>Year: {{ c.card.mana_cost }}</p>
                     </div>
                 </a>
                 <li><a class="black-text collapsible-header"
-                       href={% url 'main:remove_from_collection' %}?selected={{c.product_id}}>
+                       href={% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}>
                     Remove From Collection<i class="black-text material-icons" >delete</i></a></li><br>
+                <li><a class="black-text collapsible-header"
+                       href={% url 'main:toggle_ownership' %}?selected={{c.card.product_id}}>
+                    <input type="checkbox" {% if c.own %} checked {% endif %}><span>Own it?</span></a></li><br>
+
             {% endfor %}
         {% endif %}
     </div>
