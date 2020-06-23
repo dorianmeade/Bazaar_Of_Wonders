@@ -1,20 +1,7 @@
  <!-- card ordering options-->
- <p>Sort<i class="material-icons">sort</i><p>
- <form action="#" style="text-align: center;">
-     <label class="black-text"> 
-         <input type="checkbox" /> 
-         <span>Collector's Number</span>
-     </label>
-     <label class="black-text"> 
-         <input type="checkbox" /> 
-         <span>Alphabetical Name</span>
-     </label>
-     <label class="black-text"> 
-         <input type="checkbox" /> 
-         <span>Price Ascending</span>
-     </label>
-     <label class="black-text"> 
-         <input type="checkbox" /> 
-         <span>Price Descending</span>
-     </label>
+ <p>Sort<i class="material-icons">sort</i></p>
+ 
+ <form action="#">
+    {% csrf_token %}
+    {{form}}
  </form>

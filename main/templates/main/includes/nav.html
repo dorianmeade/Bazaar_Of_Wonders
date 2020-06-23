@@ -6,7 +6,7 @@
                 <ul>
                     <li><a href="{% url 'main:home' %}">Home</a></li>
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'main:collection' %}">Saved Cards</a></li>
+                    <li><a href="{% url 'main:collection' %}">My Collection</a></li>
                     <!-- <li><a href="{% url 'main:notifications' %}">Account Preferences</a></li> -->
                     {% endif %}
                     <li><a href="https://magic.wizards.com/en">MTG Community</a></li>

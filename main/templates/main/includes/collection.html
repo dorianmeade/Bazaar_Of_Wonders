@@ -1,6 +1,8 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+
+    <a class="black-text collapsible-header" href="{% url 'main:notifications' %}"  style="white-space: nowrap;">Manage Your Notifications</a>
     <div class="white-text">
         <h4> Your Collection</h4>
         {% if not users_collection %}

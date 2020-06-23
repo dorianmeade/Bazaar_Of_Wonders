@@ -8,17 +8,10 @@ from .models import Card, Listing, Collection, Collection_Content
 
 # homepage view
 def home(request):
-    if request.method =="POST":
-        return render(request=request,
+    return render(request=request,
                 template_name='main/home.html',
                 # load necessary schemas
-                context={"data": Card.objects.get(product_id=1)})
-
-    else:
-        return render(request=request,
-                    template_name='main/home.html',
-                    # load necessary schemas
-                    context={"data": Card.objects.all})
+                context={"data": Card.objects.all})
 
 # registration page form
 def register(request):
