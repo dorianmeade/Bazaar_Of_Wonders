@@ -6,15 +6,13 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from .models import Card, Listing, Collection, Collection_Content
 
-
 # homepage view
 def home(request):
     return render(request=request,
-                  template_name='main/home.html',
+                  template_name='main/cards.html',
                   # load necessary schemas
-                  context={"cards": Card.objects.all, "listings": Listing.objects.all}
+                  context={"data": Card.objects.all}
                   )
-
 
 # registration page form
 def register(request):
