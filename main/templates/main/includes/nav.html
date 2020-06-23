@@ -5,24 +5,25 @@
             <li><a href="#"><i class="material-icons right">menu</i></a>
                 <ul>
                     <li><a href="{% url 'main:home' %}">Home</a></li>
+                    {% if user.is_authenticated %}
                     <li><a href="{% url 'main:collection' %}">Saved Cards</a></li>
-                    <li><a href="{% url 'main:notifications' %}">Account Preferences</a></li>
+                    <!-- <li><a href="{% url 'main:notifications' %}">Account Preferences</a></li> -->
+                    {% endif %}
+                    <li><a href="https://magic.wizards.com/en">MTG Community</a></li>
+                    <li><a href="mailto:ahillebrand@ufl.edu">Contact Us</a></li>
                 </ul>
             </li>      
         </ul>
-        <ul class="right hide-on-med-and-down">
+        <ul class="right">
             <!-- Account info -->
             {% if user.is_authenticated %}
-                <li><a href="">Welcome {{user.username|title}}</a></li>
-                <li><a  href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
-
+                <li><a style="pointer-events:none; cursor: default;" href="">Welcome {{user.username|title}}</a></li>
+                <li><a href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
             {% else %}
-                <li><a href="{% url 'main:login_req' %}" data-target="dropdown1">Login<i class="material-icons right">person</i></a></li>   
-                <li><a href="{% url 'main:register' %}" data-target="dropdown1">Register<i class="material-icons right">person_add</i></a></li>    
-
-
+                <li><a style="{% if request.path == '/login' %} color: orange; {% endif %}" href="{% url 'main:login_req' %}" data-target="dropdown1">Login<i class="material-icons right">person</i></a></li>   
+                <li><a style="{% if request.path == '/register' %} color: orange; {% endif %}" href="{% url 'main:register' %}" data-target="dropdown1">Register<i class="material-icons right">person_add</i></a></li>    
             {% endif %}
-        </ul>
+            </ul>
     </div>
 </nav>   
 

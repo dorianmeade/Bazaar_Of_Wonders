@@ -3,7 +3,7 @@
     <!-- Prism CSS -->
     <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
     <!-- Compiled and minified Materialize CSS -->
-    <link rel="stylesheet" href="{% static 'main/css/materialize.css' %}">
+    <link href="{% static 'main/css/materialize.css' %}" rel="stylesheet" >
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
@@ -18,11 +18,11 @@
         }
         #menuBtn li
         {
+            z-index: 100;
             float: left;
             position: relative;
             background-color: black;
-            font: white;
-            white-space: nowrap;    
+            white-space: nowrap;  
         }
         #menuBtn ul        
         {
@@ -34,30 +34,37 @@
         #menuBtn ul li
         {
             float: none;
-            margin-top: 55px;
-            padding: 0;
+            padding-top: 20px;
+            padding-bottom: 20px;  
+            top: 60px;
             line-height: 30px;
         }
         #menuBtn a:link, #menuBtn a:visited
         {
             font-size: 20px;
             display: block;
+            color: white;
+            border: 1px, white;
         }
-        #menuBtn li:hover        
+        #menuBtn li:hover
+        {
+            color: white;
+            display: blo;
+        }
+        #menuBtn li:hover,  #menuBtn a:hover   
         {
             color: orange;
-            border: 1px solid #000;
         }
         #menuBtn li:hover ul       
         {
-            color: orange;
             display: block;
         }
     </style>
 </head>
 
+<!-- site background image -->
 <body style="background-image: url('{% static 'main/images/bkgd.png' %}'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
-    
+   
     <!-- top navbar -->
     {% include 'main/includes/nav.html' %}
    
@@ -66,10 +73,8 @@
         <a href="/"><img class="media responsive-img" style="width: 90%; height: auto;" src="{% static 'main/images/logo.png' %}" alt="Bazaar of Wonders"></a>
     </div>
    
+    <!-- main screen content : default to home.html-->
     <div class="row">
-        <!-- left panel/ side navigation  -->
-
-        <!-- right pangel/ main screen : default to home.html-->
         <div class="col s12 container">
         {% block content %}
         {% endblock %}
