@@ -47,7 +47,19 @@ view on browser http://localhost:8000
  ## Documentation
  
  ## Tests
- 
+ ### Steps to implement custom unit testing...
+
+1. Locate correct testing file 
+```shell
+ directory: bazaar_of_wonders/main/tests/test_*.py
+```
+where '*' is models, views, or templates
+
+2. Run test command
+```shell
+ python3 mangage.py test
+```
+can specify test file by concatenating file name
  ## Team
  
 | <a href="http://github.com/ahillebra" target="_blank">**Project Manager**</a> | <a href="http://github.com/kdewey13" target="_blank">**SCRUM Master**</a> | <a href="http://github.com/dorianmeade" target="_blank">**Dev Team**</a> | <a href="http://github.com/dorianmeade" target="_blank">**Dev Team**</a> | <a href="http://github.com/dorianmeade" target="_blank">**Dev Team**</a> |

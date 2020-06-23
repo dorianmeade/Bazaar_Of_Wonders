@@ -7,21 +7,70 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
-
+    
+    <!-- nav dropdown styling  -->
+    <style>
+        #menuBtn, #menuBtn ul
+        {
+            list-style: none;
+            margin: 0;
+            padding: 0;           
+        }
+        #menuBtn li
+        {
+            float: left;
+            position: relative;
+            background-color: black;
+            font: white;
+            white-space: nowrap;    
+        }
+        #menuBtn ul        
+        {
+            display: none;
+            position: absolute;
+            padding-bottom: 15px;
+            background: black;
+        }
+        #menuBtn ul li
+        {
+            float: none;
+            margin-top: 55px;
+            padding: 0;
+            line-height: 30px;
+        }
+        #menuBtn a:link, #menuBtn a:visited
+        {
+            font-size: 20px;
+            display: block;
+        }
+        #menuBtn li:hover        
+        {
+            color: orange;
+            border: 1px solid #000;
+        }
+        #menuBtn li:hover ul       
+        {
+            color: orange;
+            display: block;
+        }
+    </style>
 </head>
 
 <body style="background-image: url('{% static 'main/images/bkgd.png' %}'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
+    
+    <!-- top navbar -->
+    {% include 'main/includes/nav.html' %}
+   
     <!-- web app logo -->
-    <div class="row">
-        <a href="/"><img class="media responsive-img" src="{% static 'main/images/logo.png' %}" alt="Bazaar of Wonders"></a>
+    <div class="row" style="text-align: center;">
+        <a href="/"><img class="media responsive-img" style="width: 90%; height: auto;" src="{% static 'main/images/logo.png' %}" alt="Bazaar of Wonders"></a>
     </div>
    
     <div class="row">
         <!-- left panel/ side navigation  -->
-        {% include 'main/includes/sidenav.html' %}
 
         <!-- right pangel/ main screen : default to home.html-->
-        <div class="col s8 container">
+        <div class="col s12 container">
         {% block content %}
         {% endblock %}
         </div>

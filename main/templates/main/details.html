@@ -4,15 +4,14 @@
 {% block content %}
     <!-- checks for card instance -->      
     {% if c %}
-        <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
+        <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; font-size: 18px;">
             <!-- display all known card information -->      
             <h4> {{c.name|title}} </h4>
             {% if user.is_authenticated and card_saved %}
                 <p><a style="color:white" href="{% url 'main:collection' %}">This card is in your collection.</a></p>
-                <p><a style="color:white" href={% url 'main:remove_from_collection' %}?selected={{c.product_id}}>
-                    Remove From Collection<i class="black-text material-icons" >delete</i></a></p><br>
+                <p><a style="color:white" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}>"> Remove From Collection<i class="white-text material-icons" >delete</i></a></p><br>
             {% elif user.is_authenticated and not card_saved %}
-                <p><a href={% url 'main:add_to_collection' %}?selected={{c.product_id}} style="color:white">Add to your collection.</a></p>
+                <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:white">Add to your collection.</a></p>
             {% else %}
                 <p><a style="color:white">Login or create an account to manage your collection.</a></p>
             {% endif %}
