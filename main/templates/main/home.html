@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div style="text-align: center;"> 
+    <!-- search bar -->
+    {% include 'main/includes/searchbar.html' %}
+
+    <!-- sort options -->
+    {% include 'main/includes/sort.html' %}
+
+    <!-- filter options -->
+    {% include 'main/includes/filter.html' %}
+    
+    <!-- card listings -->
+    {% include 'main/includes/cards.html' %}
+</div>
+{% endblock %}
