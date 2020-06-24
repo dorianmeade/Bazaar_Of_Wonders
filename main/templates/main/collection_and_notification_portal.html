@@ -32,7 +32,7 @@
                             <p>Year: {{ c.card.mana_cost }}</p>
                         </div>    
                         <div class="card-action " style=" text-align: center; display: flex; align-items: center; justify-content: center; ">
-                            <a class="orange-text" href="{% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}">Remove From Collection<i class="black-text material-icons" >delete</i></a>
+                            <a class="orange-text" href="{% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}">Remove From Collection<i class="orange-text material-icons" >delete</i></a>
                             <a class="orange-text" href="{% url 'main:toggle_ownership' %}?selected={{c.card.product_id}}"><input type="checkbox" {% if c.own %} checked {% endif %}><span>Own it?</span></a>
                         </div>  
                     </div>
