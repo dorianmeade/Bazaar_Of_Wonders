@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm
+from .forms import NewUserForm,searchForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content
+from .models import Card, Listing, Collection, Collection_Content,Card_Type,Card_Rarity
 
 # homepage view
 def home(request):
@@ -255,3 +255,51 @@ def toggle_ownership_view(request, selected=None):
         return redirect(to=card_view(request, selected=selected))
     except ValueError:
         return redirect(to=card_view(request, selected=selected))
+
+def search(request):
+    # upon submit
+    if request.method == "POST":
+        form = searchForm(request.POST)
+        # validate user input, create new user account, login user
+        if form.is_valid():
+            CardManager = Card.objects
+            #Filtering by name (if name not specified, this will return all cards)
+            cards = CardManager.filter(name__icontains = form.cleaned_data['card_name'])
+
+            #Filter by Card Type 
+            if form.cleaned_data['card_type'] != 'NO_VALUE':
+                cards = cards.filter(type_id__card_type__iexact = form.cleaned_data['card_type'])
+
+            #Filter by Card Rarity  
+            if form.cleaned_data['card_rarity'] != 'NO_VALUE':
+                cards = cards.filter(rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
+
+            #Implement sorts 
+            if form.cleaned_data['sort_by_choice'] == 'card_name':
+                sort_param = "name"
+            elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
+                sort_param = "rarity_id__card_rarity"
+            elif form.cleaned_data['sort_by_choice'] == 'card_type':
+                sort_param = "type_id__card_type"
+
+            if form.cleaned_data['sorting_order'] == "descending":
+                sort_param = "-" + sort_param
+
+            #Sort the QuerySet per thje parameter
+            cards = cards.order_by(sort_param)
+
+            return render(request=request,
+                        template_name='main/home.html',
+                        context={"data": cards})
+        else:
+            #Restart the form submission process with bound data from previous request 
+            form = searchForm(request.POST)            
+            return render(request = request,
+                          template_name = "main/search/search.html",
+                          context={"form":form})
+
+    elif request.method == "GET":
+            form = searchForm
+            return render(request = request,
+                          template_name = "main/search/search.html",
+                          context={"form":form})                    
