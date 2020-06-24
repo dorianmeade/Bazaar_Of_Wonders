@@ -3,9 +3,7 @@
     <!-- Prism CSS -->
     <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
     <!-- Compiled and minified Materialize CSS -->
-    <!-- Commented out because it creates issues with dropdown forms
     <link href="{% static 'main/css/materialize.css' %}" rel="stylesheet" >
-    -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
@@ -67,20 +65,12 @@
 <!-- site background image -->
 <body style="background-image: url('{% static 'main/images/bkgd.png' %}'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover;">
    
-    <!-- top navbar -->
-    {% include 'main/includes/nav.html' %}
-   
-    <!-- web app logo -->
-    <div class="row" style="text-align: center;">
-        <a href="/"><img class="media responsive-img" style="width: 90%; height: auto;" src="{% static 'main/images/logo.png' %}" alt="Bazaar of Wonders"></a>
-    </div>
 
     <!-- html message system -->
     {% include 'main/includes/messaging.html' %}
 
    
     <!-- main screen content : default to home.html-->
-
         {% block content %}
         {% endblock %}
 

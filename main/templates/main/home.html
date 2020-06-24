@@ -1,20 +1,20 @@
 {% extends 'main/base.html' %}
+{% load materializecss %}
 
 {% block content %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | materializecss }}
+        <input type="submit" value="Submit">
+    </form>
+
 <div style="text-align: center;"> 
-    <!-- search bar -->
-    {% include 'main/includes/searchbar.html' %}
 
-    <!-- sort options -->
-    {% include 'main/includes/sort.html' %}
-
-    <!-- filter options -->
-    {% include 'main/includes/filter.html' %}
-    
-    <!-- card listings -->
     {% include 'main/includes/cards.html' %}
 </div>
 
+ 
 
  <!-- limit 25 cards per page -->
 <footer class="page footer">

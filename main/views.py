@@ -9,23 +9,70 @@ from .models import Card, Listing, Collection, Collection_Content,Card_Type,Card
 
 # homepage view
 def home(request):
-    cards = Card.objects.all()
-    #display only 25 cards per page
-    paginator = Paginator(cards, 25)
-    page = request.GET.get('page')
-    try:
-        page_obj = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page_obj = paginator.page(paginator.num_pages)
+#    cards = Card.objects.all()
+#    #display only 25 cards per page
+#    paginator = Paginator(cards, 25)
+#    page = request.GET.get('page')
+#    try:
+#        page_obj = paginator.page(page)
+#    except PageNotAnInteger:
+#        # If page is not an integer, deliver first page.
+#        page_obj = paginator.page(1)
+#    except EmptyPage:
+#        # If page is out of range (e.g. 9999), deliver last page of results.
+#        page_obj = paginator.page(paginator.num_pages)
+#
+#    form = searchForm
+#    return render(request=request,
+#                template_name='main/home.html',
+#                # load necessary schemas
+#                context={'data': page_obj,'form': form})
+    # upon submit
+    if request.method == "POST":
+        form = searchForm(request.POST)
+        # validate user input, create new user account, login user
+        if form.is_valid():
+            CardManager = Card.objects
+            #Filtering by name (if name not specified, this will return all cards)
+            cards = CardManager.filter(name__icontains = form.cleaned_data['card_name'])
 
-    return render(request=request,
-                template_name='main/home.html',
-                # load necessary schemas
-                context={'data': page_obj})
+            #Filter by Card Type 
+            if form.cleaned_data['card_type'] != 'NO_VALUE':
+                cards = cards.filter(type_id__card_type__iexact = form.cleaned_data['card_type'])
+
+            #Filter by Card Rarity  
+            if form.cleaned_data['card_rarity'] != 'NO_VALUE':
+                cards = cards.filter(rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
+
+            #Implement sorts 
+            if form.cleaned_data['sort_by_choice'] == 'card_name':
+                sort_param = "name"
+            elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
+                sort_param = "rarity_id__card_rarity"
+            elif form.cleaned_data['sort_by_choice'] == 'card_type':
+                sort_param = "type_id__card_type"
+
+            if form.cleaned_data['sorting_order'] == "descending":
+                sort_param = "-" + sort_param
+
+            #Sort the QuerySet per thje parameter
+            cards = cards.order_by(sort_param)
+
+            return render(request=request,
+                        template_name='main/home.html',
+                        context={"data": cards, "form": form})
+        else:
+            #Restart the form submission process with bound data from previous request 
+            form = searchForm(request.POST)            
+            return render(request = request,
+                          template_name = "main/home.html",
+                          context={"data": cards, "form": form})
+
+    elif request.method == "GET":
+            form = searchForm
+            return render(request = request,
+                          template_name = "main/home.html",
+                          context={"data": Card.objects.all(),"form":form})  
 
 # registration page form
 def register(request):
@@ -290,16 +337,16 @@ def search(request):
 
             return render(request=request,
                         template_name='main/home.html',
-                        context={"data": cards})
+                        context={"data": cards, "form": form})
         else:
             #Restart the form submission process with bound data from previous request 
             form = searchForm(request.POST)            
             return render(request = request,
-                          template_name = "main/search/search.html",
-                          context={"form":form})
+                          template_name = "main/home.html",
+                          context={"data": Card.objects.all(), "form": form})
 
     elif request.method == "GET":
             form = searchForm
             return render(request = request,
-                          template_name = "main/search/search.html",
-                          context={"form":form})                    
+                          template_name = "main/home.html",
+                          context={"data": Card.objects.all(),"form":form})                    

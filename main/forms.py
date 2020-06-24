@@ -52,10 +52,10 @@ class searchForm(forms.Form):
     }
 
     card_name = forms.CharField(max_length=200, required=False)
-    card_type = forms.CharField(label='Card Type:', widget=forms.Select(choices=CARD_TYPES))
-    card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES),initial='NO_VALUE')
-    sorting_order = forms.CharField(label='Sort Ordering:', widget=forms.Select(choices=SORT_ORDERS),initial='ascending')
-    sort_by_choice = forms.CharField(label='Sort by:', widget=forms.Select(choices=SORT_BY),initial='card_name')
+    card_type = forms.CharField(label='Card Type:', widget=forms.Select(choices=CARD_TYPES,attrs={'class': 'dropdown-trigger btn'}))
+    card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES,attrs={'class': 'dropdown-trigger btn'}),initial='NO_VALUE')
+    sorting_order = forms.CharField(label='Sort Ordering:', widget=forms.Select(choices=SORT_ORDERS,attrs={'class': 'dropdown-trigger btn'}),initial='ascending')
+    sort_by_choice = forms.CharField(label='Sort by:', widget=forms.Select(choices=SORT_BY,attrs={'class': 'dropdown-trigger btn'}),initial='card_name')
 
 
 
