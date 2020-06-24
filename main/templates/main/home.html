@@ -14,4 +14,26 @@
     <!-- card listings -->
     {% include 'main/includes/cards.html' %}
 </div>
+
+<nav>
+    <ul class="pagination">
+        {% if data.has_previous %}
+        <li>
+        <a href="?page={{data.previous_page_number}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+        {% endif %}
+        {% for c in data.paginator.page_range %}
+        <li class="{% if data.number == p %}active{% endif %}"><a href="?page={{p}}">{{p}}</a></li>
+        {% endfor %}
+        {% if data.has_next %}
+        <li>
+        <a href="?page={{data.next_page_number}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
 {% endblock %}

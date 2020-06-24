@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from .forms import NewUserForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -8,10 +9,23 @@ from .models import Card, Listing, Collection, Collection_Content
 
 # homepage view
 def home(request):
+    cards = Card.objects.all()
+    #display only 25 cards per page
+    paginator = Paginator(cards, 25)
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages)
+
     return render(request=request,
                 template_name='main/home.html',
                 # load necessary schemas
-                context={"data": Card.objects.all})
+                context={'data': page_obj})
 
 # registration page form
 def register(request):
