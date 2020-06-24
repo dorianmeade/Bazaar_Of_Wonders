@@ -1,38 +1,51 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <div class="white-text">
-        <h4> Your Collection</h4>
-        {% if not users_collection %}
-            <h4> No cards in your collection </h4>
-        {% else %}
+    <div class="white-text" style="text-align: center;">
+        <h2>My Collection</h2>
             <!-- loop through cards in user's collection -->
             {% for c in users_collection %}
-                <a title="card-testing" class="btn-link" href="{% url 'main:details' %}?selected={{c.card.product_id}} ">
+                <!-- handle 3 cards per row --> 
+                {% if forloop.counter0|divisibleby:'3' %}
+                <div div class="row container" style="display: flex;" >
+                <div class="col container s12 m6" style="display: flex; margin-left: 5%; margin-right: 5%; scroll-margin: 0;">
+                {% else %}
+                    <div class="col container s12 m6" style="display: flex; margin-left: 5%; margin-right: 5%; scroll-margin: 0;">
+                {% endif %}
+                <a class="btn-link" href="{% url 'main:details' %}?selected={{c.card.product_id}}">
                     <div class="card black hoverable" style="display: inline-block; width: 225px; height: auto;">
                         <!-- display all known card information -->
-                        <h4> {{c.card.name|title}} </h4>
-                        <img src="{{ c.card.card_image_loc }}" style="width: 225px; height: auto; ">
-                        <p>Types: {{ c.card.type_id|title }}</p>
-                        <p>Colors: {{ c.card.card_color }}</p>
-                        <p>Mana Cost/Total: {{ c.card.mana_cost }}</p>
-                        <p>Rarity: {{ c.card.mana_cost }}</p>
-                        <p>Power: {{ c.card.power }}</p>
-                        <p>Card text: {{ c.card.card_text }}</p>
-                        <p>Flavor text: {{ c.card.flavor_text }}</p>
-                        <p>Set: {{ c.card.mana_cost }}</p>
-                        <p>Artist: {{ c.card.mana_cost }}</p>
-                        <p>Year: {{ c.card.mana_cost }}</p>
+                        <div class="card-image">
+                            <img src="{{ c.card.card_image_loc }}" style="width: 225px; height: auto; ">
+                        </div>
+                        <div class="card-content" style="color: orange;">
+                            <h4> {{c.card.name|title}} </h4>
+                            <p>Types: {{ c.card.type_id|title }}</p>
+                            <p>Colors: {{ c.card.card_color }}</p>
+                            <p>Mana Cost/Total: {{ c.card.mana_cost }}</p>
+                            <p>Rarity: {{ c.card.mana_cost }}</p>
+                            <p>Power: {{ c.card.power }}</p>
+                            <p>Card text: {{ c.card.card_text }}</p>
+                            <p>Flavor text: {{ c.card.flavor_text }}</p>
+                            <p>Set: {{ c.card.mana_cost }}</p>
+                            <p>Artist: {{ c.card.mana_cost }}</p>
+                            <p>Year: {{ c.card.mana_cost }}</p>
+                        </div>    
+                        <div class="card-action " style=" text-align: center; display: flex; align-items: center; justify-content: center; ">
+                            <a class="orange-text" href="{% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}">Remove From Collection<i class="orange-text material-icons" >delete</i></a>
+                            <a class="orange-text" href="{% url 'main:toggle_ownership' %}?selected={{c.card.product_id}}"><input type="checkbox" {% if c.own %} checked {% endif %}><span>Own it?</span></a>
+                        </div>  
                     </div>
+                    
                 </a>
-                <li><a class="black-text collapsible-header"
-                       href={% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}>
-                    Remove From Collection<i class="black-text material-icons" >delete</i></a></li><br>
-                <li><a class="black-text collapsible-header"
-                       href={% url 'main:toggle_ownership' %}?selected={{c.card.product_id}}>
-                    <input type="checkbox" {% if c.own %} checked {% endif %}><span>Own it?</span></a></li><br>
-
+                {% if forloop.counter|divisibleby:'3' %}
+                    </div>
+                    </div>
+                {% else %}
+                    </div>
+                {% endif %}
+            {% empty %}
+                <h4> No cards in your collection </h4>
             {% endfor %}
-        {% endif %}
     </div>
 {% endblock %}
