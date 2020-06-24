@@ -15,7 +15,9 @@
     {% include 'main/includes/cards.html' %}
 </div>
 
-<nav>
+
+ <!-- limit 25 cards per page -->
+<footer class="page footer">
     <ul class="pagination">
         {% if data.has_previous %}
         <li>
@@ -24,8 +26,8 @@
         </a>
         </li>
         {% endif %}
-        {% for c in data.paginator.page_range %}
-        <li class="{% if data.number == p %}active{% endif %}"><a href="?page={{p}}">{{p}}</a></li>
+        {% for p in data.paginator.page_range %}
+        <li class="{% if data.number == p %}active{% endif %}"><a style="background:black;" href="?page={{p}}">{{p}}</a></li>
         {% endfor %}
         {% if data.has_next %}
         <li>
@@ -35,5 +37,5 @@
         </li>
         {% endif %}
     </ul>
-</nav>
+<footer class="page footer">
 {% endblock %}
