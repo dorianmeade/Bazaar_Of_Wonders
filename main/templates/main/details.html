@@ -10,9 +10,9 @@
             {% if user.is_authenticated and card_saved %}
             <!--p><a style="color:white" href="{% url 'main:notifications' %}">Notify me when the card price drops.</a></p-->
             <p><a style="color:white" href="{% url 'main:collection' %}">Click to view in my collection.</a></p>
-            <p><a style="color:white" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}>">Click to remove from my collection.<i class="white-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p><br>
+            <p><a style="color:white" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}">Click to remove from my collection.<i class="white-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p><br>
             {% elif user.is_authenticated and not card_saved %}
-                <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:white">Click to add card t collection.</a></p>
+                <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:white">Click to add card to your collection.</a></p>
             {% else %}
                 <p style="color:white;"><a href="/login" target="_self" style="color:black">Login</a> or <a href="/register" target="_self" style="color:black;">create an account</a> to save this card to your collection.</a></p>
             {% endif %}
