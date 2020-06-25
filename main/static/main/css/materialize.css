@@ -5991,7 +5991,7 @@ textarea.materialize-textarea + label:after {
   top: 0.5rem;
 }
 .input-field .prefix.active {
-  color: #0e4f83;
+  color: #ffffff;
 }
 .input-field .prefix ~ input,
 .input-field .prefix ~ textarea,
@@ -6036,10 +6036,10 @@ textarea.materialize-textarea + label:after {
   background-color: #fff;
   border: 0;
   box-shadow: none;
-  color: #444;
+  color: #ffffff;
 }
 .input-field input[type=search]:focus:not(.browser-default) + label i, .input-field input[type=search]:focus:not(.browser-default) ~ .mdi-navigation-close, .input-field input[type=search]:focus:not(.browser-default) ~ .material-icons {
-  color: #444;
+  color: #ffffff;
 }
 .input-field input[type=search] + .label-icon {
   transform: none;
