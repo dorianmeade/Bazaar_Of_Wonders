@@ -114,6 +114,10 @@ def card_view(request, selected=None):
         # get card object from pk
         card = Card.objects.get(product_id=card_id)
         card_saved = False
+
+        # get listing objects for this card
+        listings = Listing.objects.filter(product_id=card_id)
+
         # if a user is logged in see if they have a collection
         if request.user.is_authenticated:
             users_collection = None
@@ -135,7 +139,7 @@ def card_view(request, selected=None):
                         break
         return render(request=request,
                       template_name="main/details.html",
-                      context={"c": card, 'card_saved': card_saved}
+                      context={"c": card, 'card_saved': card_saved, "l": listings}
                       )
     except Card.DoesNotExist:
         return render(request=request,

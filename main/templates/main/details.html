@@ -26,7 +26,46 @@
             <p>Flavor text: {{ c.flavor_text }}</p>
             <p>Set: {{ c.mana_cost }}</p>
             <p>Artist: {{ c.mana_cost }}</p>
-            <p>Year: {{ c.mana_cost }}</p> 
+            <p>Year: {{ c.mana_cost }}</p>
+        </div>
+        <br>
+        <br>
+        <br>
+
+        <!-- checks for listings -->
+        {% if l %}
+            <div class="container black-text" style="background-color: peru; opacity: .95; text-align: center; border-style:dashed; border-color: white; border-width: thick; padding: 15px; font-size: 18px;">
+                <table>
+                    <tbody>
+                        {% for item in l %}
+                            <tr>
+                                <td><img src="{{ c.card_image_loc }}" style="width: 112px; height: auto; "></td>
+                                <td>
+                                    <b>{{ item.product_name }}</b>
+                                    <p>{{ item.product_line }}</p>
+                                    <p>{{ item.set_name }}</p>
+                                </td>
+                                <td>
+                                    <b>${{ item.price }}</b>
+                                    <p>USD</p>
+                                </td>
+                                <td>
+                                    <button onclick="window.open('http://tcgplayer.com','_blank')">
+                                        Buy Now
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <br>
+            <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
+                <p>Sorry, there are no listings for this card at this time.</p>
+            </div>
+            <br>
+        {% endif %}
 
     <!-- card not in database - error msg -->      
     {% else %}
@@ -34,5 +73,4 @@
         <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><b style="color: black;">home</b></a> </p>
     </div>    
     {% endif %}
-    </div>
 {% endblock %}
