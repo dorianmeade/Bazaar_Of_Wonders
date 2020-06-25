@@ -1,10 +1,13 @@
-{% extends 'main/searchbase.html' %}
-{% load materializecss %}
+{% extends 'main/base.html' %}
 
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
+<!-- display search/sort form -->
+<div class="col s3" style="text-align: center;"> 
+{% include 'main/includes/search.html' %}
+</div>
+
+<div class="col s9" style="text-align: center;"> 
+<!-- display search result cards-->
+{% include 'main/includes/cards.html' %}
+</div>
 {% endblock %}

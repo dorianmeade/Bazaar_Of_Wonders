@@ -9,24 +9,6 @@ from .models import Card, Listing, Collection, Collection_Content,Card_Type,Card
 
 # homepage view
 def home(request):
-#    cards = Card.objects.all()
-#    #display only 25 cards per page
-#    paginator = Paginator(cards, 25)
-#    page = request.GET.get('page')
-#    try:
-#        page_obj = paginator.page(page)
-#    except PageNotAnInteger:
-#        # If page is not an integer, deliver first page.
-#        page_obj = paginator.page(1)
-#    except EmptyPage:
-#        # If page is out of range (e.g. 9999), deliver last page of results.
-#        page_obj = paginator.page(paginator.num_pages)
-#
-#    form = searchForm
-#    return render(request=request,
-#                template_name='main/home.html',
-#                # load necessary schemas
-#                context={'data': page_obj,'form': form})
     # upon submit
     if request.method == "POST":
         form = searchForm(request.POST)
@@ -59,13 +41,13 @@ def home(request):
             cards = cards.order_by(sort_param)
 
             return render(request=request,
-                        template_name='main/home.html',
+                        template_name='main/search/search.html',
                         context={"data": cards, "form": form})
         else:
             #Restart the form submission process with bound data from previous request 
             form = searchForm(request.POST)            
             return render(request = request,
-                          template_name = "main/home.html",
+                          template_name = "main/search/search.html",
                           context={"data": cards, "form": form})
 
     elif request.method == "GET":
@@ -73,6 +55,25 @@ def home(request):
             return render(request = request,
                           template_name = "main/home.html",
                           context={"data": Card.objects.all(),"form":form})  
+    else:
+        cards = Card.objects.all()
+        #display only 25 cards per page
+        paginator = Paginator(cards, 25)
+        page = request.GET.get('page')
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page_obj = paginator.page(paginator.num_pages)
+
+        form = searchForm
+        return render(request=request,
+                    template_name='main/home.html',
+                    # load necessary schemas
+                    context={'data': page_obj,'form': form})
 
 # registration page form
 def register(request):

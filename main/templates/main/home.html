@@ -3,18 +3,16 @@
 
 {% block content %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form | materializecss }}
-        <input type="submit" value="Submit">
-    </form>
+<!-- display search/sort form -->
+<div class="col s3" style="text-align: center;"> 
+    {% include 'main/includes/search.html' %}
+</div>
 
-<div style="text-align: center;"> 
-
+ <!-- display cards -->
+ <div class="col s9" style="text-align: center;"> 
     {% include 'main/includes/cards.html' %}
 </div>
 
- 
 
  <!-- limit 25 cards per page -->
 <footer class="page footer">
