@@ -7,5 +7,11 @@
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\nonco.000\Documents\University of Florida\Computer Science\Summer 2020\CIS4930 Performant Python\Bazaar_Of_Wonders\db.sqlite3</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="db [2]" uuid="e160355a-9f70-48c3-a420-41b20c661790">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Megan\Bazaar_Of_Wonders\db.sqlite3</jdbc-url>
+    </data-source>
   </component>
 </project>
