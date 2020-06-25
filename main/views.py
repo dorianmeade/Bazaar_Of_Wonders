@@ -354,4 +354,4 @@ def search(request):
             form = searchForm
             return render(request = request,
                           template_name = "main/home.html",
-                          context={"data": Card.objects.all(),"form":form})                    
+                          context={"data": Card.objects.all(),"form":form})

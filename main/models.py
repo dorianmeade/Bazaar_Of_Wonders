@@ -13,20 +13,25 @@ class Card_Type(models.Model):
 
 class Card(models.Model):
     #Primary Key
-    product_id = models.IntegerField(primary_key=True)
+    product_id = models.CharField(max_length = 200, primary_key=True)
+    tcg_id = models.IntegerField()
     name = models.CharField(max_length=200) 
-    type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
-    card_color = models.CharField(max_length=200,default='N/A')
+    card_image_loc = models.ImageField(upload_to='')
     mana_cost = models.CharField(max_length=200)
-    card_image_loc = models.CharField(max_length=800)
+    cmc = models.IntegerField()
+    type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
+    card_text = models.CharField(max_length=4000)
+    card_color = models.CharField(max_length=200,default='N/A')
+    card_keywords = models.CharField(max_length=200)
+    set_name = models.CharField(max_length=200)
     power = models.IntegerField() 
     toughness = models.IntegerField()
-    card_text = models.CharField(max_length=4000)
-    flavor_text = models.CharField(max_length=4000)
-    rarity_id = models.ForeignKey('Card_Rarity',on_delete=models.CASCADE)
-    set_name = models.CharField(max_length=200)
-    artist = models.CharField(max_length=200)
     collection_number = models.IntegerField()
+    rarity_id = models.ForeignKey('Card_Rarity',on_delete=models.CASCADE)
+    flavor_text = models.CharField(max_length=4000)
+    artist = models.CharField(max_length=200)
+    prices = models.FloatField()
+    
     def __str__(self):
         return self.name
 
