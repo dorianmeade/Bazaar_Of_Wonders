@@ -56,10 +56,9 @@ with open('scryfall_data.json', 'r') as json_file:
 # close scryfall data
 json_file.close()
 
-
 # open MTGJSON data and load
 f = open('mtg_json_cards_data', 'r')
-data = json.load(f)   # this is a dict of the following format:  key='card name', value={<dictionary of card info>}
+data = json.load(f)  # this is a dict of the following format:  key='card name', value={<dictionary of card info>}
 for key, card in zip(data.keys(), data.values()):
     if card['scryfallOracleId']:
         # if we have a match in the scryfall data
@@ -104,32 +103,33 @@ for key, card in zip(data.keys(), data.values()):
             id = card['scryfallOracleId']
             transfer_to_db[id] = {}  # initialize empty dictionary to store this cards data
             if 'convertedManaCost' in card.keys():
-                dict_entry['converted_mana_cost'] = card['convertedManaCost']
+                transfer_to_db[id]['converted_mana_cost'] = card['convertedManaCost']
             if 'text' in card.keys():
-                dict_entry['text'] = card['text']
+                transfer_to_db[id]['text'] = card['text']
             if 'purchaseUrls' in card.keys():
                 if 'cardmarket' in card['purchaseUrls'].keys():
-                    dict_entry['purchase_urls']['card_market'] = card['purchaseUrls']['cardmarket']
+                    transfer_to_db[id]['purchase_urls']['card_market'] = card['purchaseUrls']['cardmarket']
                 if 'tcgplayer' in card['purchaseUrls'].keys():
-                    dict_entry['purchase_urls']['tcg_player'] = card['purchaseUrls']['tcgplayer']
+                    transfer_to_db[id]['purchase_urls']['tcg_player'] = card['purchaseUrls']['tcgplayer']
                 if 'mtgstocks' in card['purchaseUrls'].keys():
-                    dict_entry['purchase_urls']['mtg_stocks'] = card['purchaseUrls']['mtgstocks']
+                    transfer_to_db[id]['purchase_urls']['mtg_stocks'] = card['purchaseUrls']['mtgstocks']
             # save MTG JSON uuid in case we want to use that to join with more data later
             if 'uuid' in card.keys():
-                dict_entry['uuid'] = card['uuid']
+                transfer_to_db[id]['uuid'] = card['uuid']
             if 'name' in card.keys():
-                dict_entry['name'] = card['name']
+                transfer_to_db[id]['name'] = card['name']
             if 'mana_cost' in card.keys():
-                dict_entry['mana_cost'] = card['mana_cost']
+                transfer_to_db[id]['mana_cost'] = card['mana_cost']
             if 'type' in card.keys():
-                dict_entry['type'] = card['type']
+                transfer_to_db[id]['type'] = card['type']
             if 'colors' in card.keys():
-                dict_entry['colors'] = card['colors']
+                transfer_to_db[id]['colors'] = card['colors']
             if 'power' in card.keys():
-                dict_entry['power'] = card['power']
+                transfer_to_db[id]['power'] = card['power']
             if 'toughness' in card.keys():
-                dict_entry['toughness'] = card['toughness']
+                transfer_to_db[id]['toughness'] = card['toughness']
     # if there is no scryfall id we can't match it to the other data, so skip
     else:
         continue
 f.close()
+wait = 3
