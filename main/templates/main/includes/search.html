@@ -1,6 +1,6 @@
 <div class="row" style="background-color: rgba(250, 250, 250, .8); padding: 10px; border-radius: 15px; text-align: center;">
+    <h6 style="font:inherit; font-size: 20px;"><b>Search</b></h6>
     <form class="col" method="POST" style="text-align: center; display: inline-block;">
-        <h6>Search Query</h6>
         {% csrf_token %}
         <table>
         {{ form.as_table }}

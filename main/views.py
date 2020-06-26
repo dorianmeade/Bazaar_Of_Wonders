@@ -49,16 +49,10 @@ def home(request):
             return render(request = request,
                           template_name = "main/search/search.html",
                           context={"data": cards, "form": form})
-
-    elif request.method == "GET":
-            form = searchForm
-            return render(request = request,
-                          template_name = "main/home.html",
-                          context={"data": Card.objects.all(),"form":form})  
     else:
-        cards = Card.objects.all()
+        listings = Listing.objects.all()
         #display only 25 cards per page
-        paginator = Paginator(cards, 25)
+        paginator = Paginator(listings, 24)
         page = request.GET.get('page')
         try:
             page_obj = paginator.page(page)
@@ -73,7 +67,7 @@ def home(request):
         return render(request=request,
                     template_name='main/home.html',
                     # load necessary schemas
-                    context={'data': page_obj,'form': form})
+                    context={'data': page_obj,'form': form })
 
 # registration page form
 def register(request):
@@ -349,9 +343,22 @@ def search(request):
             return render(request = request,
                           template_name = "main/home.html",
                           context={"data": Card.objects.all(), "form": form})
+    else:
+        cards = Card.objects.all()
+        #display only 25 cards per page
+        paginator = Paginator(cards, 24)
+        page = request.GET.get('page')
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            page_obj = paginator.page(paginator.num_pages)
 
-    elif request.method == "GET":
-            form = searchForm
-            return render(request = request,
-                          template_name = "main/home.html",
-                          context={"data": Card.objects.all(),"form":form})
+        form = searchForm
+        return render(request=request,
+                    template_name='main/home.html',
+                    # load necessary schemas
+                    context={'data': page_obj,'form': form})
