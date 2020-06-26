@@ -1,0 +1,12 @@
+[
+    {
+        "model": "main.Seller",
+        "pk": "Seeding Seller",
+        "fields": {
+          "seller_name": "Seeding Seller",
+          "seller_type": "Online",
+          "location_id": 1,
+          "completed_sales": 0
+        }
+    }
+]

@@ -1,3 +1,4 @@
+"""
 import sqlite3
 import json
 import yaml
@@ -75,8 +76,7 @@ def data_to_dict():
     # close scryfall data
     json_file.close()
     return transfer_to_db
-
-    """
+    """"""
     For reference from above with Scryfall
     --------------------------------------
     ROOT_FILE = settings.STATIC_ROOT + '\main\card_data\scryfall_data.json'

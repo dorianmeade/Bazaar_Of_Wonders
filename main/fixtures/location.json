@@ -1,0 +1,9 @@
+[
+    {
+        "model": "main.Location",
+        "pk": 1,
+        "fields": {
+          "location": "Online"
+        }
+    }
+]
