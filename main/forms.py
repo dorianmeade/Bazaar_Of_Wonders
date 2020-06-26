@@ -20,7 +20,7 @@ class NewUserForm(UserCreationForm):
 
 class searchForm(forms.Form):
     CARD_TYPES= [
-    ('NO_VALUE','Pick a Card Type'),
+    ('NO_VALUE','Any Card Type'),
     ('artifact', 'Artifact'),
     ('creature', 'Creature'),
     ('enchantment', 'Enchantment'),
@@ -32,9 +32,11 @@ class searchForm(forms.Form):
     ]
 
     CARD_RARITIES= [
-    ('NO_VALUE','Pick a Card Rarity'),
+    ('NO_VALUE','Any Card Rarity'),
     ('rare', 'Rare'),
-    ('common', 'Common')
+    ('common', 'Common'),
+    ('uncommon', 'Uncommon'),
+    ('mythic', 'Mythic'),
     ]
 
     SORT_ORDERS = {
