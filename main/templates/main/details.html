@@ -12,22 +12,24 @@
             <tbody>
                 {% for item in l %}
                     <tr>
-                    <td><img src="{{ c.card_image_loc }}" style="width: 112px; height: auto; "></td>
-                    <td>
-                        <b>{{ itemg.product_name }}</b>
-                        <p>{{ item.product_line }}</p>
-                        <p>{{ item.set_name }}</p>
-                    </td>
-                    <td>
-                        <b>${{ item.price }}</b>
-                        <p>USD</p>
-                    </td>
-                    <td>
-                        <button onclick="window.open('http://tcgplayer.com','_blank')">
-                            Buy Now
-                        </button>
-                    </td>
-                </tr>
+                        <td><img src="{{ c.card_image_loc }}" style="width: 112px; height: auto; "></td>
+                        <td>
+                            <b>{{ item.product_name }}</b>
+                            <p>{{ item.product_line }}</p>
+                            <p>{{ item.set_name }}</p>
+                        </td>
+                        <td>
+                            {% if item.price != -1 %}
+                                <b>${{ item.price }}</b>
+                                <p>USD</p>
+                            {% else %}
+                                <p>No pricing information available.</p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ item.tcg_player_purchase_url }}" target="_blank"><button>Buy Now</button></a>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -69,9 +71,8 @@
             <p>Power: {{ c.power }}</p>
             <p>Card text: {{ c.card_text }}</p>
             <p>Flavor text: {{ c.flavor_text }}</p>
-            <p>Set: {{ c.mana_cost }}</p>
-            <p>Artist: {{ c.mana_cost }}</p>
-            <p>Year: {{ c.mana_cost }}</p>
+            <p>Set: {{ c.set_name }}</p>
+            <p>Artist: {{ c.artist }}</p>
         </div>
         
 
