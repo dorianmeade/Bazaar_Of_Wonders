@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm, SearchForm
+from .forms import NewUserForm, SearchForm, CollectionSearchForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content,Card_Type,Card_Rarity
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity
 
 
 # homepage view
@@ -149,19 +149,104 @@ def collection(request):
             pass
         # if the user has a collection, get it
         if users_collection:
-            collection_content, cards_in_collection = [], []
+            collection_content, product_ids, return_dicts = [], [], []
             try:
                 collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
+                if request.method == "POST":
+                    form = CollectionSearchForm(request.POST)
+                    if form.is_valid():
+                        # Filter by Ownership
+                        if form.cleaned_data['own'] == 'yes' and form.cleaned_data['dont_own'] == 'yes':
+                            pass
+                        elif form.cleaned_data['own'] == 'no' and form.cleaned_data['dont_own'] == 'yes':
+                            collection_content = collection_content.filter(obtained=False)
+                        elif form.cleaned_data['own'] == 'yes' and form.cleaned_data['dont_own'] == 'no':
+                            collection_content = collection_content.filter(obtained=True)
+                        else:
+                            collection_content = None
+
+                        # now filter on Card attributes
+                        if collection_content is not None:
+                            for item in collection_content:
+                                product_ids.append(item.card_id_id)
+                            cards_in_collection = Card.objects.filter(product_id__in=product_ids)
+
+                            # Filtering by name (if name not specified, this will return all cards)
+                            cards_in_collection = cards_in_collection.filter(name__contains=form.cleaned_data['card_name'])
+                            # Filter by Card Type
+                            if form.cleaned_data['card_type'] != 'NO_VALUE':
+                                cards_in_collection = cards_in_collection.filter(
+                                    type_id__card_type__iexact=form.cleaned_data['card_type'])
+
+                            # Filter by Card Rarity
+                            if form.cleaned_data['card_rarity'] != 'NO_VALUE':
+                                cards_in_collection = cards_in_collection.filter(
+                                    rarity_id__card_rarity__iexact=form.cleaned_data['card_rarity'])
+
+                            # Implement sorts
+                            if form.cleaned_data['sort_by_choice'] == 'card_name':
+                                sort_param = "name"
+                            elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
+                                sort_param = "card_rarity"
+                            elif form.cleaned_data['sort_by_choice'] == 'card_type':
+                                sort_param = "type_id__card_type"
+                            if form.cleaned_data['sorting_order'] == "descending":
+                                sort_param = "-" + sort_param
+
+                            # Sort the QuerySet per the parameter
+                            cards_in_collection = cards_in_collection.order_by(sort_param)
+                            for card in cards_in_collection:
+                                own = collection_content.get(card_id_id=card.product_id).obtained
+                                return_dicts.append({'card': card, 'own': own})
+                        # display only 25 cards per page
+                        paginator = Paginator(return_dicts, 24)
+                        page = request.GET.get('page')
+                        try:
+                            page_obj = paginator.page(page)
+                        except PageNotAnInteger:
+                            # If page is not an integer, deliver first page.
+                            page_obj = paginator.page(1)
+                        except EmptyPage:
+                            # If page is out of range (e.g. 9999), deliver last page of results.
+                            page_obj = paginator.page(paginator.num_pages)
+                        return render(request=request,
+                                      template_name='main/collection_and_notification_portal.html',
+                                      context={'data': page_obj, 'form': form})  # load necessary schemas
+                    else:
+                        for item in collection_content:
+                            card = Card.objects.get(product_id=item.card_id_id)
+                            own = item.obtained
+                            cards_in_collection.append({'card': card, 'own': own})
+                        # display only 25 cards per page
+                        paginator = Paginator(cards_in_collection, 24)
+                        page = request.GET.get('page')
+                        return render(request=request,
+                                      template_name='main/collection_and_notification_portal.html',
+                                      context={'data': page_obj, 'form': form})  # load necessary schemas
+                else:
+                    for item in collection_content:
+                        card = Card.objects.get(product_id=item.card_id_id)
+                        own = item.obtained
+                        cards_in_collection.append({'card': card, 'own': own})
+                    # display only 25 cards per page
+                    paginator = Paginator(cards_in_collection, 24)
+                    page = request.GET.get('page')
+                    try:
+                        page_obj = paginator.page(page)
+                    except PageNotAnInteger:
+                        # If page is not an integer, deliver first page.
+                        page_obj = paginator.page(1)
+                    except EmptyPage:
+                        # If page is out of range (e.g. 9999), deliver last page of results.
+                        page_obj = paginator.page(paginator.num_pages)
+
+                    form = CollectionSearchForm
+                    return render(request=request,
+                                  template_name='main/collection_and_notification_portal.html',
+                                  context={'data': page_obj, 'form': form})  # load necessary schemas
+
             except Collection_Content.DoesNotExist:
                 pass
-            for item in collection_content:
-                card = Card.objects.get(product_id=item.card_id_id)
-                own = item.obtained
-                cards_in_collection.append({'card': card, 'own': own})
-    return render(request=request,
-                  template_name='main/collection_and_notification_portal.html',
-                  context={'users_collection': cards_in_collection})
-
 
 # user collection and notification management
 def notifications(request):

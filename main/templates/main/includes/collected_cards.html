@@ -1,0 +1,32 @@
+<!-- loop through cards in database -->
+<div style="display: flex; flex-direction: row;">
+    <div style="flex-wrap: wrap; display: flex; margin-right: 20px; margin-left: 10px; justify-content: space-evenly ">
+    {% for c in data %}
+        <div class="col-md-3" style="width: min-content; margin: 20px;">
+        <!-- cards = link to details page -->
+            <div class="card black" style="border-radius: 25px; width: min-content;">
+                <a title="card-testing" class="btn-link" style="width:min-content" href="{% url 'main:details' %}?selected={{c.card.product_id}} ">
+                    {% load static %}
+                    <div class="card-image">
+                        <img class="media responsive-img" src="{{c.card.card_image_loc}}" alt="{{c.card.name}}" style="min-width:15vw; min-height:20vw;" \>
+                    </div>
+                    <!-- price + link to vendor REFERENCE LISTING DB-->
+                    <div class="card-action " style=" text-align: center; display: flex; align-items: center; justify-content: center; ">
+                        <a class="orange-text" href="{% url 'main:remove_from_collection' %}?selected={{c.card.product_id}}">Remove From Collection<i class="orange-text material-icons" >delete</i></a>
+                        <a class="orange-text" style="" href="{% url 'main:toggle_ownership' %}?selected={{c.card.product_id}}"><input type="checkbox" {% if c.own %} checked {% endif %}><span>Own it?</span></a>
+                    </div>
+                </a>
+            </div>
+        </div>
+    <!-- no matching cards -->
+    {% empty %}
+        <div style="display: flex; justify-content: center">
+            <div style="width: 325px; background-color: #ffab40; justify-content: space-evenly; width: 65vw; margin-top: 50px; ">
+                <div class="card-content" style="text-align: center; font-size: 30px; font-weight: bolder; justify-content: space-evenly">
+                    <span class="card-title">No cards to show</span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>

@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'main'  # here for namespacing of urls.
 
-#map url path to function in views.py
+# map url path to function in views.py
 urlpatterns = [
     path("", views.home, name="home"),
     path("register", views.register, name="register"),
