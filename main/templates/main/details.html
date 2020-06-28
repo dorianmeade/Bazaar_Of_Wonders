@@ -2,12 +2,156 @@
 <!-- access custom templatetag -->
 {% load fix_url %}
 {% block content %}
+    <div style="background-color: peru; opacity: .8; text-align: center; margin-left: 35px; margin-right: 20px;">
+        <div class="row" style="display: flex">
+            <!-- checks for card instance -->
+            {% if c %}
+                <div class="column1" style="float: left; min-width: min-content; text-align: center; margin-left: 15px ">
+                    <!-- display all known card information -->
+                    <img src="{{ c.card_image_loc }}" style="width: 145px; height: auto; margin-top: 20px; ">
+                    {% if user.is_authenticated and card_saved %}
+                    <!--p><a style="color:white" href="{% url 'main:notifications' %}">Notify me when the card price drops.</a></p-->
+                    <p><a style="color:black" href="{% url 'main:collection' %}"><b>View in Collection</b></a></p>
+                    <p><a style="color:black" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}"><b>Remove from Collection</b></b><i class="black-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p><br>
+                    {% elif user.is_authenticated and not card_saved %}
+                        <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:black"><b>Add card to your collection</b></b>.</a></p>
+                    {% else %}
+                        <p style="color:white;"><a href="/login" target="_self" style="color:black">Login</a> or <a href="/register" target="_self" style="color:black;">create an account</a> to save this card to your collection.</a></p>
+                    {% endif %}
+                </div>
+                <div class="column2" style="float: left; margin-left: 50px">
+                    <h5 style="margin-top: 10px; margin-bottom: 5px; text-align: left;"><b>{{ c.name }} Details</b></h5>
+                    <div class="row" style="display: flex">
+                        <div class="column" style="float: left; text-align: left; margin-right: 8px; margin-left: 8px;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <p><b>Types:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.type_id|title }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Colors:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.card_color }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Mana Cost/Total:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.mana_cost }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Converted Mana Cost:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.converted_mana_cost }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Colors:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.card_color }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="column" style="float: left; text-align: left; margin-right: 8px; margin-left: 8px;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <p><b>Rarity:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.rarity_id|title }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Power:</b></p>
+                                    </td>
+                                    <td>
+                                        {% if c.power != -1 %}
+                                            <p>{{ c.power }}</p>
+                                        {% else %}
+                                            <p>No power information available</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Toughness:</b></p>
+                                    </td>
+                                    <td>
+                                        {% if c.toughness != -1 %}
+                                            <p>{{ c.toughness }}</p>
+                                        {% else %}
+                                            <p>No toughness information available</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Set Name:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.set_name }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Artist:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.artist }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="column" style="float: left; text-align: left; margin-right: 8px; margin-left: 8px; max-width: 25%">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <p><b>Card Text:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.card_text }}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p><b>Flavor Text:</b></p>
+                                    </td>
+                                    <td>
+                                        <p>{{ c.flavor_text }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <!-- card not in database - error msg -->
+        {% else %}
+        <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
+            <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><b style="color: black;">home</b></a> </p>
+        </div>
+        {% endif %}
+    </div>
 <!-- checks for listings -->
     {% if l %}
-    <div class="container white-text" style="text-align: center;">
-        <h3>Available Listings</h3>
-    </div>  
-    <div class="container black-text" style="background-color: peru; opacity: .95; text-align: center; border-style:dashed; border-color: white; border-width: thick; padding: 15px; font-size: 18px;">               
+    <div class="container black-text" style="background-color: peru; opacity: .8; text-align: center; padding: 15px; font-size: 18px;">
+        <h4 style="margin-top: 10px; margin-bottom: 5px; text-align: center;"><b>Available Listings</b></h4>
         <table>
             <tbody>
                 {% for item in l %}
@@ -20,14 +164,23 @@
                         </td>
                         <td>
                             {% if item.price != -1 %}
-                                <b>${{ item.price }}</b>
-                                <p>USD</p>
+                                <p>Estimated Market Price:</p>
+                                <p style="text-align: center"><b>${{ item.price }}</b></p>
+                                <p style="text-align: center">USD</p>
                             {% else %}
                                 <p>No pricing information available.</p>
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ item.tcg_player_purchase_url }}" target="_blank"><button>Buy Now</button></a>
+                            {% if item.tcg_player_purchase_url != "" %}
+                                <p><a href="{{ item.tcg_player_purchase_url }}" target="_blank"><button>Buy Now at TCG Player</button></a></p>
+                            {% endif %}
+                            {% if item.card_market_purchase_url != "" %}
+                                <p><a href="{{ item.card_market_purchase_url }}" target="_blank"><button>Buy Now at Card Market</button></a></p>
+                            {% endif %}
+                            {% if item.mtg_stocks_purchase_url != "" %}
+                                <p><a href="{{ item.mtg_stocks_purchase_url }}" target="_blank"><button>Buy Now at MTG Stocks</button></a></p>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -44,42 +197,5 @@
             <p>Sorry, there are no listings for this card at this time.</p>
         </div>
         <br>
-    {% endif %}
-
-    <!-- checks for card instance -->      
-    {% if c %}
-        <div class="container white-text" style="text-align: center;">
-            <h3>Card Detail</h3>
-        </div> 
-        <div class="container black-text" style="background-color: peru; opacity: .95; text-align: center; border-style:dashed; border-color: white; border-width: thick; padding: 15px; font-size: 18px;">
-            <!-- display all known card information -->      
-            <h4> <b>{{c.name|title}}</b></h4>
-            {% if user.is_authenticated and card_saved %}
-            <!--p><a style="color:white" href="{% url 'main:notifications' %}">Notify me when the card price drops.</a></p-->
-            <p><a style="color:white" href="{% url 'main:collection' %}">Click to view in my collection.</a></p>
-            <p><a style="color:white" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}">Click to remove from my collection.<i class="white-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p><br>
-            {% elif user.is_authenticated and not card_saved %}
-                <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:white">Click to add card to your collection.</a></p>
-            {% else %}
-                <p style="color:white;"><a href="/login" target="_self" style="color:black">Login</a> or <a href="/register" target="_self" style="color:black;">create an account</a> to save this card to your collection.</a></p>
-            {% endif %}
-            <img src="{{ c.card_image_loc }}" style="width: 225px; height: auto; ">
-            <p>Types: {{ c.type_id|title }}</p>
-            <p>Colors: {{ c.card_color }}</p>
-            <p>Mana Cost/Total: {{ c.mana_cost }}</p>
-            <p>Rarity: {{ c.rarity_id|title }}</p>            
-            <p>Power: {{ c.power }}</p>
-            <p>Card text: {{ c.card_text }}</p>
-            <p>Flavor text: {{ c.flavor_text }}</p>
-            <p>Set: {{ c.set_name }}</p>
-            <p>Artist: {{ c.artist }}</p>
-        </div>
-        
-
-    <!-- card not in database - error msg -->      
-    {% else %}
-    <div class="container black-text" style="background-color: peru; text-align: center; border-style: groove; border-width: thick; padding: 15px; top: 50%; margin-right: 0; font-size: 18px;">
-        <p>Sorry, the card information was not found in our master deck. Return <a href="/" target="_self"><b style="color: black;">home</b></a> </p>
-    </div>    
     {% endif %}
 {% endblock %}

@@ -21,7 +21,7 @@ def home(request):
 
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
-                listings = listings.filter(product_id__type_id__card_type__iexact = form.cleaned_data['card_type'])
+                listings = listings.filter(product_id__type_id__card_type__contains = form.cleaned_data['card_type'])
 
             # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
@@ -176,7 +176,7 @@ def collection(request):
                             # Filter by Card Type
                             if form.cleaned_data['card_type'] != 'NO_VALUE':
                                 cards_in_collection = cards_in_collection.filter(
-                                    type_id__card_type__iexact=form.cleaned_data['card_type'])
+                                    type_id__card_type__contains=form.cleaned_data['card_type'])
 
                             # Filter by Card Rarity
                             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
@@ -247,6 +247,7 @@ def collection(request):
 
             except Collection_Content.DoesNotExist:
                 pass
+
 
 # user collection and notification management
 def notifications(request):
@@ -416,11 +417,11 @@ def search(request):
 
             # filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
-                cards = cards.filter(type_id__card_type__iexact = form.cleaned_data['card_type'])
+                cards = cards.filter(type_id__card_type__contains=form.cleaned_data['card_type'])
 
             # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
-                cards = cards.filter(rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
+                cards = cards.filter(rarity_id__card_rarity__iexact=form.cleaned_data['card_rarity'])
 
             # Implement sorts
             if form.cleaned_data['sort_by_choice'] == 'card_name':
