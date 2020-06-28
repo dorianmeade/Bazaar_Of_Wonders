@@ -1,32 +1,33 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm,searchForm
+from .forms import NewUserForm, SearchForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from .models import Card, Listing, Collection, Collection_Content,Card_Type,Card_Rarity
 
+
 # homepage view
 def home(request):
     # upon submit
     if request.method == "POST":
-        form = searchForm(request.POST)
+        form = SearchForm(request.POST)
         # validate user input, create new user account, login user
         if form.is_valid():
-            ListingManager = Listing.objects
-            #Filtering by name (if name not specified, this will return all cards)
-            listings = ListingManager.filter(product_id__name__icontains = form.cleaned_data['card_name'])
+            listing_manager = Listing.objects
+            # Filtering by name (if name not specified, this will return all cards)
+            listings = listing_manager.filter(product_id__name__icontains = form.cleaned_data['card_name'])
 
-            #Filter by Card Type 
+            # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
                 listings = listings.filter(product_id__type_id__card_type__iexact = form.cleaned_data['card_type'])
 
-            #Filter by Card Rarity  
+            # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
                 listings = listings.filter(product_id__rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
 
-            #Implement sorts 
+            # Implement sorts
             if form.cleaned_data['sort_by_choice'] == 'card_name':
                 sort_param = "product_id__name"
             elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
@@ -37,9 +38,9 @@ def home(request):
             if form.cleaned_data['sorting_order'] == "descending":
                 sort_param = "-" + sort_param
 
-            #Sort the QuerySet per the parameter
+            # Sort the QuerySet per the parameter
             listings = listings.order_by(sort_param)
-            #display only 25 cards per page
+            # display only 25 cards per page
             paginator = Paginator(listings, 24)
             page = request.GET.get('page')
             try:
@@ -52,23 +53,21 @@ def home(request):
                 page_obj = paginator.page(paginator.num_pages)    
 
             return render(request=request,
-                        template_name='main/home.html',
-                        # load necessary schemas
-                        context={'data': page_obj,'form': form })
+                          template_name='main/home.html',
+                          context={'data': page_obj, 'form': form})  # load necessary schemas
         else:
 
             listings = Listing.objects.all()
-            #display only 25 cards per page
+            # display only 25 cards per page
             paginator = Paginator(listings, 24)
             page = request.GET.get('page')
 
             return render(request=request,
-                        template_name='main/home.html',
-                        # load necessary schemas
-                        context={'data': page_obj,'form': form })
+                          template_name='main/home.html',
+                          context={'data': page_obj, 'form': form})  # load necessary schemas
     else:
         listings = Listing.objects.all()
-        #display only 25 cards per page
+        # display only 25 cards per page
         paginator = Paginator(listings, 24)
         page = request.GET.get('page')
         try:
@@ -80,11 +79,11 @@ def home(request):
             # If page is out of range (e.g. 9999), deliver last page of results.
             page_obj = paginator.page(paginator.num_pages)
 
-        form = searchForm
+        form = SearchForm
         return render(request=request,
-                    template_name='main/home.html',
-                    # load necessary schemas
-                    context={'data': page_obj,'form': form })
+                      template_name='main/home.html',
+                      context={'data': page_obj, 'form': form})  # load necessary schemas
+
 
 # registration page form
 def register(request):
@@ -319,25 +318,26 @@ def toggle_ownership_view(request, selected=None):
     except ValueError:
         return redirect(to=card_view(request, selected=selected))
 
+
 def search(request):
     # upon submit
     if request.method == "POST":
-        form = searchForm(request.POST)
+        form = SearchForm(request.POST)
         # validate user input, create new user account, login user
         if form.is_valid():
-            CardManager = Card.objects
-            #Filtering by name (if name not specified, this will return all cards)
-            cards = CardManager.filter(name__icontains = form.cleaned_data['card_name'])
+            card_manager = Card.objects
+            # Filtering by name (if name not specified, this will return all cards)
+            cards = card_manager.filter(name__icontains = form.cleaned_data['card_name'])
 
-            #Filter by Card Type 
+            # filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
                 cards = cards.filter(type_id__card_type__iexact = form.cleaned_data['card_type'])
 
-            #Filter by Card Rarity  
+            # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
                 cards = cards.filter(rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
 
-            #Implement sorts 
+            # Implement sorts
             if form.cleaned_data['sort_by_choice'] == 'card_name':
                 sort_param = "name"
             elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
@@ -348,21 +348,21 @@ def search(request):
             if form.cleaned_data['sorting_order'] == "descending":
                 sort_param = "-" + sort_param
 
-            #Sort the QuerySet per thje parameter
+            # Sort the QuerySet per thje parameter
             cards = cards.order_by(sort_param)
 
             return render(request=request,
-                        template_name='main/home.html',
-                        context={"data": cards, "form": form})
+                          template_name='main/home.html',
+                          context={"data": cards, "form": form})
         else:
-            #Restart the form submission process with bound data from previous request 
-            form = searchForm(request.POST)            
+            # Restart the form submission process with bound data from previous request
+            form = SearchForm(request.POST)
             return render(request = request,
                           template_name = "main/home.html",
                           context={"data": Card.objects.all(), "form": form})
     else:
         cards = Card.objects.all()
-        #display only 25 cards per page
+        # display only 25 cards per page
         paginator = Paginator(cards, 24)
         page = request.GET.get('page')
         try:
@@ -374,8 +374,7 @@ def search(request):
             # If page is out of range (e.g. 9999), deliver last page of results.
             page_obj = paginator.page(paginator.num_pages)
 
-        form = searchForm
+        form = SearchForm
         return render(request=request,
-                    template_name='main/home.html',
-                    # load necessary schemas
-                    context={'data': page_obj,'form': form})
+                      template_name='main/home.html',
+                      context={'data': page_obj, 'form': form})  # load necessary schemas

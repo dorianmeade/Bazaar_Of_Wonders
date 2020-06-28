@@ -3,15 +3,16 @@
 
 {% block content %}
 
-<!-- display search/sort form -->
-<div class="col s3" style="text-align: center;"> 
-    {% include 'main/includes/search.html' %}
-</div>
-
- <!-- display cards -->
- <div class="col s9" style="text-align: center;"> 
-    {% include 'main/includes/cards.html' %}
-</div>
+    <div class="row" style="display: flex">
+        <div class="column1" style="float: left; min-width: max-content;">
+            <!-- display search/sort form -->
+            {% include 'main/includes/search.html' %}
+        </div>
+        <div class="column2" style="float: left;">
+            <!-- display cards -->
+            {% include 'main/includes/cards.html' %}
+        </div>
+    </div>
 
  <!-- limit 24 cards per page, page indices here -->
 <footer class="page footer" style="text-align: center">
