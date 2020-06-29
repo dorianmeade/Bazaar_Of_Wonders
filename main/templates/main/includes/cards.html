@@ -10,6 +10,9 @@
                     <div class="card-image">
                         <img class="media responsive-img" src="{{l.product_id.card_image_loc}}" alt="{{l.product_id.name}}" style="min-width:15vw; min-height:20vw;" \>
                     </div>
+                    <div class="card-name" style="text-align: center; justify-content: center; display: flex; align-items: center; min-width: 15vw; border-radius: 25px; font-weight: bold ">
+                        <p>{{l.product_id.name}}</p>
+                    </div>
                     <!-- price + link to vendor REFERENCE LISTING DB-->
                     <div class="card-action" style="text-align: center; justify-content: center; display: flex; align-items: center; min-width: 15vw; border-radius: 25px; font-weight: bold ">
                         {% if l.price != -1 %}
