@@ -47,7 +47,7 @@ View on browser: http://localhost:8000
  
 Trello: https://trello.com/b/Z6YaeKNS/cis4934-project-group-bazaar
  ## Tests
- ### Steps to implement custom unit testing...
+ ### Steps to implement custom unit testing
 1. Locate correct testing file where '*' is models, views, or templates.
 ```shell
  directory: bazaar_of_wonders/main/tests/test_*.py
