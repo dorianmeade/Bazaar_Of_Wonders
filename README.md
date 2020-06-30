@@ -1,18 +1,16 @@
 # Bazaar of Wonders
+Bazaar of Wonders is a Django-based web application that aggregates card details and pricing statistics for trading card games, namely, Magic: The Gathering.
 
 ## Table of Contents
 
-- [Description](#description)
+- [Features](#features)
 - [Visuals](#visuals)
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Tests](#tests)
 - [Team](#team)
 
-## Description
-Bazaar of Wonders is a Django-based web application that aggregates card details and pricing statistics for trading card games, namely, Magic: The Gathering.
-
-### Features
+## Features
  - Card listings
  - Card information
  - Search and filter
