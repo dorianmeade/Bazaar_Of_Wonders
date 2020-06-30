@@ -10,79 +10,128 @@ from .models import Card, Listing, Collection, Collection_Content, Card_Type, Ca
 
 # homepage view
 def home(request):
-    # upon submit
-    if request.method == "POST":
-        form = SearchForm(request.POST)
-        # validate user input, create new user account, login user
+    raw_string = request.META['QUERY_STRING']
+    query_parameters = raw_string.split("&")
+    print("Raw_String",raw_string)
+    print("query_parameters: ",query_parameters)
+    
+
+    card_name = ''
+    card_type = 'NO_VALUE' 
+    card_rarity = 'NO_VALUE'
+    sort_by_choice = 'card_name'
+    sorting_order = 'ascending'
+    page = 1
+    if raw_string != '':
+        for parameter in query_parameters: 
+            print(parameter)
+            parameter_tokens = parameter.split("=")
+            parameter_name = parameter_tokens[0]
+            if len(parameter_tokens) == 0:
+                parameter_val = None
+            else:
+                parameter_val = parameter_tokens[1]
+            print ("Parameter_name:",parameter_name,"parameter_value",parameter_val)
+            if parameter_name == "card_name":
+                card_name = parameter_val
+            elif parameter_name == "card_type":
+                card_type = parameter_val
+            elif parameter_name == "card_rarity":
+                card_rarity = parameter_val
+            elif parameter_name == "sort_by_choice":
+                sort_by_choice = parameter_val
+            elif parameter_name == "sorting_order":
+                sorting_order = parameter_val
+            elif parameter_name == "page":
+                page = parameter_val
+
+
+
+    if request.method == "GET":              
+        #Place form variables from GET request into form
+        form = SearchForm({
+            'card_name': card_name,
+            'card_type': card_type,
+            'card_rarity': card_rarity,
+            'sort_by_choice': sort_by_choice,
+            'sorting_order': sorting_order
+        })
+
+
+    
         if form.is_valid():
             listing_manager = Listing.objects
             # Filtering by name (if name not specified, this will return all cards)
-            listings = listing_manager.filter(product_id__name__icontains = form.cleaned_data['card_name'])
+            listings = listing_manager.filter(product_id__name__icontains = card_name)
 
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
-                listings = listings.filter(product_id__type_id__card_type__contains = form.cleaned_data['card_type'])
+                listings = listings.filter(product_id__type_id__card_type__contains = card_type)
 
             # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
-                listings = listings.filter(product_id__rarity_id__card_rarity__iexact = form.cleaned_data['card_rarity'])
+                listings = listings.filter(product_id__rarity_id__card_rarity__iexact = card_rarity)
 
             # Implement sorts
-            if form.cleaned_data['sort_by_choice'] == 'card_name':
+
+            if sort_by_choice == 'card_name':
                 sort_param = "product_id__name"
-            elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
+            elif sort_by_choice == 'card_rarity':
                 sort_param = "product_id__rarity_id__card_rarity"
-            elif form.cleaned_data['sort_by_choice'] == 'card_type':
+            elif sort_by_choice == 'card_type':
                 sort_param = "product_id__type_id__card_type"
 
-            if form.cleaned_data['sorting_order'] == "descending":
+            if sorting_order == "descending":
                 sort_param = "-" + sort_param
 
             # Sort the QuerySet per the parameter
             listings = listings.order_by(sort_param)
             # display only 25 cards per page
             paginator = Paginator(listings, 24)
-            page = request.GET.get('page')
+
             try:
                 page_obj = paginator.page(page)
             except PageNotAnInteger:
                 # If page is not an integer, deliver first page.
-                page_obj = paginator.page(1)
+                page = 1
+                page_obj = paginator.page(page)
             except EmptyPage:
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 page_obj = paginator.page(paginator.num_pages)    
-
+            print("Rendering front page with filled valid form")
             return render(request=request,
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form})  # load necessary schemas
         else:
-
             listings = Listing.objects.all()
             # display only 25 cards per page
             paginator = Paginator(listings, 24)
-            page = request.GET.get('page')
+ 
 
+            try:
+                page_obj = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                page = 1
+                page_obj = paginator.page(page)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                page_obj = paginator.page(paginator.num_pages)
+
+            #Place form variables from GET request into form
+            form = SearchForm({
+                'card_name': card_name,
+                'card_type': card_type,
+                'card_rarity': card_rarity,
+                'sort_by_choice': sort_by_choice,
+                'sorting_order': sorting_order
+            })
+
+            print("Rendering front page with invalid form")       
             return render(request=request,
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form})  # load necessary schemas
-    else:
-        listings = Listing.objects.all()
-        # display only 25 cards per page
-        paginator = Paginator(listings, 24)
-        page = request.GET.get('page')
-        try:
-            page_obj = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            page_obj = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            page_obj = paginator.page(paginator.num_pages)
 
-        form = SearchForm
-        return render(request=request,
-                      template_name='main/home.html',
-                      context={'data': page_obj, 'form': form})  # load necessary schemas
 
 
 # registration page form

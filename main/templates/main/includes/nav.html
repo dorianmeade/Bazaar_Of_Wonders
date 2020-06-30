@@ -7,7 +7,6 @@
             <!-- Dropdown Trigger -->
             <li><a href="#"><i class="material-icons right">menu</i></a>
                 <ul>
-                    <li><a href="{% url 'main:search' %}">Search Settings</a></li>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'main:collection' %}">My Collection</a></li>
                     <!-- <li><a href="{% url 'main:notifications' %}">Account Preferences</a></li> -->
