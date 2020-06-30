@@ -1,14 +1,26 @@
-# Bazaar_Of_Wonders
-(purpose of the project + screenshot)
-Web app to showcase the lowest price magic the gathering card the internet can find.
+# Bazaar of Wonders
 
 ## Table of Contents
 
+- [Description](#description)
+- [Visuals](#visuals)
 - [Installation](#installation)
-- [Features](#features)
 - [Documentation](#documentation)
 - [Tests](#tests)
 - [Team](#team)
+
+## Description
+Bazaar of Wonders is a Django-based web application that aggregates card details and pricing statistics for trading card games, namely, Magic: The Gathering.
+
+### Features
+ - Card listings
+ - Card information
+ - Search and filter
+ - User portal
+ - Promotions
+
+## Visuals
+![Homepage Example](https://user-images.githubusercontent.com/41175151/86148117-d7c8c380-babf-11ea-9f4c-a574fba00d6c.png)
 
 ## Installation
 
@@ -34,21 +46,11 @@ $ python3 manage.py runserver
 ```
 view on browser http://localhost:8000 
  
- ## Features
-
- - Search/ browsing
- - Notification system (email and web push)
- - Admin portal
- - User login/ registration
- - Social integration -> auction portal -> live chat
- - Reporting and analytics?
- - Security
- 
  ## Documentation
  
+Trello: https://trello.com/b/Z6YaeKNS/cis4934-project-group-bazaar
  ## Tests
  ### Steps to implement custom unit testing...
-
 1. Locate correct testing file 
 ```shell
  directory: bazaar_of_wonders/main/tests/test_*.py
