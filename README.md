@@ -34,7 +34,6 @@ $ source env/bin/activate
 ### Install dependencies
 ```shell
 $ pip3 install -r requirements.txt
-$ python3 -m pip install django-tinymce4-lite
 ```
 ### Run project managament commands 
 ```shell
@@ -42,24 +41,22 @@ $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 $ python3 manage.py runserver
 ```
-view on browser http://localhost:8000 
+View on browser: http://localhost:8000 
  
  ## Documentation
  
 Trello: https://trello.com/b/Z6YaeKNS/cis4934-project-group-bazaar
  ## Tests
  ### Steps to implement custom unit testing...
-1. Locate correct testing file 
+1. Locate correct testing file where '*' is models, views, or templates.
 ```shell
  directory: bazaar_of_wonders/main/tests/test_*.py
 ```
-where '*' is models, views, or templates
-
-2. Run test command
+2. Run test command. The test file can be specified by concatenating the file name.
 ```shell
  python3 mangage.py test
 ```
-can specify test file by concatenating file name
+
  ## Team
  
 | <a href="http://github.com/ahillebra" target="_blank">**Project Manager**</a> | <a href="http://github.com/kdewey13" target="_blank">**SCRUM Master**</a> | <a href="http://github.com/kerekovskik" target="_blank">**Dev Team**</a> | <a href="http://github.com/dorianmeade" target="_blank">**Dev Team**</a> | <a href="http://github.com/matthewrabe" target="_blank">**Dev Team**</a> |
