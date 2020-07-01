@@ -1,1 +1,6 @@
 **/__pycache__
+###START: python build artifacts
+/bazaar_of_wonders.egg-info/
+/build/
+/dist/
+##END: python build artifacts

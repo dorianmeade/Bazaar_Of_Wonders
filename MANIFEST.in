@@ -1,0 +1,14 @@
+recursive-include bazaar_of_wonders **
+recursive-include bazaar_of_wonders_server_scripts **
+recursive-include main **
+recursive-include bazaar_of_wonders_db **
+include requirements.txt
+include readme.md
+global-include *.sqlite3
+global-include *.py
+global-include *.json
+global-include *.html
+global-include *.css
+global-include *.js
+global-include *.png
+global-exclude *.pyc
