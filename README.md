@@ -3,12 +3,24 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
 
 ## Table of Contents
 
-- [Features](#features)
-- [Visuals](#visuals)
-- [Installation](#installation)
-- [Documentation](#documentation)
-- [Tests](#tests)
-- [Team](#team)
+- [Bazaar of Wonders](#bazaar-of-wonders)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Visuals](#visuals)
+  - [Installations](#installations)
+    - [PyPi](#pypi)
+      - [Create virtual environment](#create-virtual-environment)
+      - [Use pip to install the package and its dependencies](#use-pip-to-install-the-package-and-its-dependencies)
+      - [Run the Web Server using the console script entry point](#run-the-web-server-using-the-console-script-entry-point)
+    - [From Source Code in repository](#from-source-code-in-repository)
+      - [Clone](#clone)
+      - [Create virtual environment](#create-virtual-environment-1)
+      - [Install dependencies](#install-dependencies)
+      - [Run project managament commands](#run-project-managament-commands)
+  - [Documentation](#documentation)
+  - [Tests](#tests)
+    - [Steps to implement custom unit testing](#steps-to-implement-custom-unit-testing)
+  - [Team](#team)
 
 ## Features
  - Card listings
@@ -20,27 +32,51 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
 ## Visuals
 ![Homepage Example](https://user-images.githubusercontent.com/41175151/86148117-d7c8c380-babf-11ea-9f4c-a574fba00d6c.png)
 
-## Installation
+## Installations 
 
-### Clone
-```shell
-$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git
-```
- ### Create virtual environment
+### PyPi 
+
+#### Create virtual environment
 ```shell
 $ virtualenv env --no-site-packages
 $ source env/bin/activate
 ```
-### Install dependencies
+
+#### Use pip to install the package and its dependencies
+```shell
+$ pip3 install django-bazaar-of-wonders
+```
+
+#### Run the Web Server using the console script entry point
+```shell
+$ bazaar_start
+```
+View on browser: http://localhost:8000 
+
+### From Source Code in repository
+
+#### Clone
+```shell
+$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git
+```
+
+#### Create virtual environment
+```shell
+$ virtualenv env --no-site-packages
+$ source env/bin/activate
+```
+
+#### Install dependencies
 ```shell
 $ pip3 install -r requirements.txt
 ```
-### Run project managament commands 
+#### Run project managament commands 
 ```shell
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 $ python3 manage.py runserver
 ```
+
 View on browser: http://localhost:8000 
  
  ## Documentation

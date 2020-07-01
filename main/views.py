@@ -12,9 +12,6 @@ from .models import Card, Listing, Collection, Collection_Content, Card_Type, Ca
 def home(request):
     raw_string = request.META['QUERY_STRING']
     query_parameters = raw_string.split("&")
-    print("Raw_String",raw_string)
-    print("query_parameters: ",query_parameters)
-    
 
     card_name = ''
     card_type = 'NO_VALUE' 
@@ -24,14 +21,12 @@ def home(request):
     page = 1
     if raw_string != '':
         for parameter in query_parameters: 
-            print(parameter)
             parameter_tokens = parameter.split("=")
             parameter_name = parameter_tokens[0]
             if len(parameter_tokens) == 0:
                 parameter_val = None
             else:
                 parameter_val = parameter_tokens[1]
-            print ("Parameter_name:",parameter_name,"parameter_value",parameter_val)
             if parameter_name == "card_name":
                 card_name = parameter_val
             elif parameter_name == "card_type":
@@ -98,7 +93,6 @@ def home(request):
             except EmptyPage:
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 page_obj = paginator.page(paginator.num_pages)    
-            print("Rendering front page with filled valid form")
             return render(request=request,
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form})  # load necessary schemas
@@ -126,8 +120,7 @@ def home(request):
                 'sort_by_choice': sort_by_choice,
                 'sorting_order': sorting_order
             })
-
-            print("Rendering front page with invalid form")       
+      
             return render(request=request,
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form})  # load necessary schemas
