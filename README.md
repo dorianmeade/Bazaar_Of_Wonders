@@ -9,19 +9,16 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
   - [Visuals](#visuals)
   - [Installation Methods](#installation-methods)
     - [PyPi](#pypi)
-      - [Create virtual environment](#create-virtual-environment)
       - [Use pip to install the package and its dependencies](#use-pip-to-install-the-package-and-its-dependencies)
       - [Run the Web Server using the console script entry point](#run-the-web-server-using-the-console-script-entry-point)
     - [Source Code in repository](#source-code-in-repository)
       - [Clone the repository](#clone-the-repository)
-      - [Create virtual environment and activate it](#create-virtual-environment-and-activate-it)
       - [Install modules for package creation](#install-modules-for-package-creation)
       - [Create a Source distribution using setuptools](#create-a-source-distribution-using-setuptools)
       - [Pip install the source distribution of the package](#pip-install-the-source-distribution-of-the-package)
       - [Run the Web Server using the console script entry point](#run-the-web-server-using-the-console-script-entry-point-1)
   - [Running the Django Application without installing it](#running-the-django-application-without-installing-it)
     - [Clone the repository](#clone-the-repository-1)
-    - [Create virtual environment](#create-virtual-environment-1)
     - [Install dependencies](#install-dependencies)
     - [Run project managament commands](#run-project-managament-commands)
   - [Documentation](#documentation)
@@ -43,12 +40,6 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
 
 ### PyPi 
 
-#### Create virtual environment
-```shell
-$ virtualenv env --no-site-packages
-$ source env/bin/activate
-```
-
 #### Use pip to install the package and its dependencies
 ```shell
 $ pip3 install django-bazaar-of-wonders
@@ -65,11 +56,6 @@ View on browser: http://localhost:8000
 #### Clone the repository 
 ```shell
 $ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git && cd Bazaar_Of_Wonders
-```
-
-#### Create virtual environment and activate it
-```shell
-python3 -m venv venv && source venv/bin/activate
 ```
 
 #### Install modules for package creation
@@ -98,12 +84,6 @@ View on browser: http://localhost:8000
 ### Clone the repository
 ```shell
 $ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git && cd Bazaar_Of_Wonders
-```
-
-### Create virtual environment
-```shell
-$ virtualenv env --no-site-packages
-$ source env/bin/activate
 ```
 
 ### Install dependencies
