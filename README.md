@@ -12,11 +12,17 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
       - [Create virtual environment](#create-virtual-environment)
       - [Use pip to install the package and its dependencies](#use-pip-to-install-the-package-and-its-dependencies)
       - [Run the Web Server using the console script entry point](#run-the-web-server-using-the-console-script-entry-point)
-    - [From Source Code in repository](#from-source-code-in-repository)
-      - [Clone](#clone)
-      - [Create virtual environment](#create-virtual-environment-1)
-      - [Install dependencies](#install-dependencies)
-      - [Run project managament commands](#run-project-managament-commands)
+    - [Source Code in repository](#source-code-in-repository)
+      - [Clone the repository](#clone-the-repository)
+      - [Create virtual environment and activate it](#create-virtual-environment-and-activate-it)
+      - [Install modules for package creation](#install-modules-for-package-creation)
+      - [Create a Source distribution using setuptools](#create-a-source-distribution-using-setuptools)
+      - [Pip install the source distribution of the package](#pip-install-the-source-distribution-of-the-package)
+  - [Running the Django Application without installing it](#running-the-django-application-without-installing-it)
+    - [Clone the repository](#clone-the-repository-1)
+    - [Create virtual environment](#create-virtual-environment-1)
+    - [Install dependencies](#install-dependencies)
+    - [Run project managament commands](#run-project-managament-commands)
   - [Documentation](#documentation)
   - [Tests](#tests)
     - [Steps to implement custom unit testing](#steps-to-implement-custom-unit-testing)
@@ -53,24 +59,52 @@ $ bazaar_start
 ```
 View on browser: http://localhost:8000 
 
-### From Source Code in repository
+### Source Code in repository
 
-#### Clone
+#### Clone the repository 
 ```shell
-$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git
+$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git && cd Bazaar_Of_Wonders
 ```
 
-#### Create virtual environment
+#### Create virtual environment and activate it
+```shell
+python3 -m venv venv && source venv/bin/activate
+```
+
+#### Install modules for package creation
+```shell
+$ python3 -m pip install -U wheel twine setuptools pip 
+```
+
+#### Create a Source distribution using setuptools
+```shell
+$ python3 setup.py sdist
+```
+
+#### Pip install the source distribution of the package 
+```shell
+$ pip3 install dist/django-bazaar-of-wonders*.tar.gz
+```
+
+
+## Running the Django Application without installing it
+
+### Clone the repository
+```shell
+$ git clone https://github.com/Bazaar-Trader/Bazaar_Of_Wonders.git && cd Bazaar_Of_Wonders
+```
+
+### Create virtual environment
 ```shell
 $ virtualenv env --no-site-packages
 $ source env/bin/activate
 ```
 
-#### Install dependencies
+### Install dependencies
 ```shell
 $ pip3 install -r requirements.txt
 ```
-#### Run project managament commands 
+### Run project managament commands 
 ```shell
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
@@ -78,8 +112,8 @@ $ python3 manage.py runserver
 ```
 
 View on browser: http://localhost:8000 
- 
- ## Documentation
+
+## Documentation
  
 Trello: https://trello.com/b/Z6YaeKNS/cis4934-project-group-bazaar
  ## Tests
