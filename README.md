@@ -7,7 +7,7 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Visuals](#visuals)
-  - [Installations](#installations)
+  - [Installation Methods](#installation-methods)
     - [PyPi](#pypi)
       - [Create virtual environment](#create-virtual-environment)
       - [Use pip to install the package and its dependencies](#use-pip-to-install-the-package-and-its-dependencies)
@@ -32,7 +32,7 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
 ## Visuals
 ![Homepage Example](https://user-images.githubusercontent.com/41175151/86148117-d7c8c380-babf-11ea-9f4c-a574fba00d6c.png)
 
-## Installations 
+## Installation Methods
 
 ### PyPi 
 
