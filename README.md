@@ -18,6 +18,7 @@ Bazaar of Wonders is a Django-based web application that aggregates card details
       - [Install modules for package creation](#install-modules-for-package-creation)
       - [Create a Source distribution using setuptools](#create-a-source-distribution-using-setuptools)
       - [Pip install the source distribution of the package](#pip-install-the-source-distribution-of-the-package)
+      - [Run the Web Server using the console script entry point](#run-the-web-server-using-the-console-script-entry-point-1)
   - [Running the Django Application without installing it](#running-the-django-application-without-installing-it)
     - [Clone the repository](#clone-the-repository-1)
     - [Create virtual environment](#create-virtual-environment-1)
@@ -86,6 +87,11 @@ $ python3 setup.py sdist
 $ pip3 install dist/django-bazaar-of-wonders*.tar.gz
 ```
 
+#### Run the Web Server using the console script entry point
+```shell
+$ bazaar_start
+```
+View on browser: http://localhost:8000 
 
 ## Running the Django Application without installing it
 
