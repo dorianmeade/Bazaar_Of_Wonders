@@ -24,7 +24,7 @@ SECRET_KEY = '6*vsa(*52dbiiyixgh&t&l!=am8t!0%^yxwib#8$$7q(%n-s5t'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
