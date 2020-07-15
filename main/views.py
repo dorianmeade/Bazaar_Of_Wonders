@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm, SearchForm, CollectionSearchForm
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, ChangeUsernameForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
@@ -506,3 +506,35 @@ def search(request):
         return render(request=request,
                       template_name='main/home.html',
                       context={'data': page_obj, 'form': form})  # load necessary schemas
+
+#user portal page- display profile
+def profile(request):
+    return render(request=request,
+                  template_name='main/account/profile.html',
+                  context={'user': request.user})
+
+#user portal page- dislay preferences 
+def preferences(request):
+    return render(request=request,
+                  template_name='main/account/preferences.html',
+                  context={})
+
+#user portal page- edit profile
+def edit(request):
+    if request.method == 'POST':
+        form = ChangeUsernameForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("main:profile")
+    
+    else:
+        form = ChangeUsernameForm(instance=request.user)
+    return render(request=request,
+                  template_name='main/account/edit.html',
+                  context={'form': form})
+
+#user portal page- edit preferences 
+def editpref(request):
+    return render(request=request,
+                template_name='main/account/editpref.html',
+                context={}) 
