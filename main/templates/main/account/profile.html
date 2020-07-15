@@ -1,0 +1,43 @@
+
+{% extends 'main/base.html' %}
+
+{% block content %}
+<!--h4 style="text-align: center; color: white;">My Account</h4-->
+
+<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+    <div class="row">
+        <ul class="tabs" style="text-align: center; display: flex;">
+            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; {% if request.path == '/acc' %} background: orange; {% endif %}">Profile</a></li>
+            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; {% if request.path == '/acc/pref' %} background: orange; {% endif %}">Preferences</a></li>
+        </ul>
+    </div>      
+    
+    <div class="row container">
+        <table>
+            <tr>
+                <td style="border: none;">Username</td>
+                <td>{{user.username}}</td>
+            </tr>
+            <tr>
+                <td style="border: none;">First Name</td>
+                <td>{{user.first_name|title}}</td>
+            </tr>
+            <tr>
+                <td style="border: none;">Last Name</td>
+                <td>{{user.last_name|title}}</td>
+            </tr>
+            <tr>
+                <td style="border: none;">Email</td>
+                <td>{{user.email}}</td>
+            </tr>
+            <tr>
+                <td style="border: none;">Member Since</td>
+                <td>{{user.date_joined.date}}</td>
+            </tr>
+        </table>
+        <br>
+        <a href="{% url 'main:edit' %}" style="text-align: center; color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;">Edit</a>
+    </div>
+
+</div>        
+{% endblock %}

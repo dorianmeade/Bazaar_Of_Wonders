@@ -18,4 +18,8 @@ urlpatterns = [
     path("remove_from_collection", views.remove_from_collection_view, name="remove_from_collection"),
     path("toggle_ownership", views.toggle_ownership_view, name="toggle_ownership"),
     path("search", views.search, name="search"),
+    path("acc", views.profile, name="profile"),
+    path("acc/pref", views.preferences, name="preferences"),
+    path("acc/edit", views.edit, name="edit"),
+    path("acc/pref/edit", views.editpref, name="editpref"),
 ]
