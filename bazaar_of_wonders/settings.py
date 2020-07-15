@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinymce',
-    'materializecssform'
+    'materializecssform',
+    'rest_framework',
+    'main.apps.MainConfig',
 ]
 
 MIDDLEWARE = [
