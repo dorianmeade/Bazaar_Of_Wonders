@@ -12,6 +12,7 @@ class CardAdmin(admin.ModelAdmin):
         }),
     )
 
+
 # Register your models here.
 admin.site.register(Card_Rarity)
 admin.site.register(Card_Type)

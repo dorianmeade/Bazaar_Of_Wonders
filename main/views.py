@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, ChangeUsernameForm
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, AddLocationForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Location, Seller
 
 
 # homepage view
@@ -509,9 +509,13 @@ def search(request):
 
 #user portal page- display profile
 def profile(request):
+    #get existing or initialize bazaar user object
+    user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
+    if not user:
+        user = newacc
     return render(request=request,
                   template_name='main/account/profile.html',
-                  context={'user': request.user})
+                  context={'user': user})
 
 #user portal page- dislay preferences 
 def preferences(request):
@@ -519,22 +523,64 @@ def preferences(request):
                   template_name='main/account/preferences.html',
                   context={})
 
+#user portal page- dislay bazaar user  
+def sell(request):
+    #get or instantiate seller object
+    userSell, newSell = Seller.objects.get_or_create(seller_user_id=request.user.id, completed_sales=0, seller_key=request.user.username)
+    if not userSell:
+        userSell = newSell
+    return render(request=request,
+                  template_name='main/account/vendor.html',
+                  context={'seller': userSell })
+
 #user portal page- edit profile
 def edit(request):
+    #get bazaar user instance
+    bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
+    #upon form submit
     if request.method == 'POST':
-        form = ChangeUsernameForm(request.POST, instance=request.user)
-        if form.is_valid():
+        form = EditUserForm(request.POST, instance=bazUser.auth_user_id)
+        bazForm = UpdateUserForm(request.POST, instance=bazUser.auth_user_id)
+        if form.is_valid() and bazForm.is_valid():
             form.save()
+            bazUser.location_id = bazForm.cleaned_data['location_id']
+            bazUser.save()
             return redirect("main:profile")
-    
+    #load forms with instance data 
     else:
-        form = ChangeUsernameForm(instance=request.user)
+        form = EditUserForm(instance=bazUser.auth_user_id)
+        bazForm = UpdateUserForm(instance=bazUser)
     return render(request=request,
                   template_name='main/account/edit.html',
-                  context={'form': form})
+                  context={'form': form, 'bazForm': bazForm})
 
 #user portal page- edit preferences 
 def editpref(request):
     return render(request=request,
                 template_name='main/account/editpref.html',
                 context={}) 
+
+#user portal page- create seller  
+def editsell(request):
+
+    #get seller user instance
+    userSell = Seller.objects.get(seller_user_id=request.user.id)
+
+    if request.method == 'POST':
+        form = UpdateSellerForm(request.POST, instance=userSell.seller_user)
+        #form = AddSellerUserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            if userSell.seller_user.get_full_name:
+                userSell.seller_name = userSell.seller_user.get_full_name
+            userSell.save()
+            #Location.objects.create(location=form.cleaned_data['location'])
+            #loc = Location.create(form.cleaned_data['location'])
+            #form.save()
+            return redirect("main:sell")
+
+    else:
+        form = UpdateSellerForm(instance = userSell)
+        #form = AddSellerUserForm(instance=request.user)
+    return render(request=request,
+                template_name='main/account/editvend.html',
+                context={'form': form}) 

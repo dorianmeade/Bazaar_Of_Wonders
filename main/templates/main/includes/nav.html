@@ -17,9 +17,24 @@
             </li>      
         </ul>
         <ul class="right">
-            <!-- Account info -->
+            {% if user %}
+                <!--li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_idfirst_name|title}}!</a></li-->
+            {% endif %}
+            <!-- Account functions -->
             {% if user.is_authenticated %}
+                <!-- display first name or username -->
+                {% if user.first_name%}
+                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.first_name|title}}!</a></li>
+                {% else %}
                 <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.username|title}}!</a></li>
+                {% endif %}
+                <li><a href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
+            {% elif user.auth_user_id != None %}
+                {% if user.auth_user_id.first_name%}
+                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_id.first_name|title}}!</a></li>
+                {% else %}
+                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_id.username|title}}!</a></li>
+                {% endif %}
                 <li><a href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
             {% else %}
                 <li><a style="{% if request.path == '/login' %} color: orange; {% endif %}" href="{% url 'main:login_req' %}" data-target="dropdown1">Login<i class="material-icons right">person</i></a></li>   
