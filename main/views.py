@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, AddLocationForm
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Location, Seller
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller
 
 
 # homepage view
@@ -543,7 +543,7 @@ def edit(request):
         bazForm = UpdateUserForm(request.POST, instance=bazUser.auth_user_id)
         if form.is_valid() and bazForm.is_valid():
             form.save()
-            bazUser.location_id = bazForm.cleaned_data['location_id']
+            bazUser.location = bazForm.cleaned_data['location']
             bazUser.save()
             return redirect("main:profile")
     #load forms with instance data 
@@ -562,25 +562,20 @@ def editpref(request):
 
 #user portal page- create seller  
 def editsell(request):
-
     #get seller user instance
     userSell = Seller.objects.get(seller_user_id=request.user.id)
 
     if request.method == 'POST':
-        form = UpdateSellerForm(request.POST, instance=userSell.seller_user)
+        form = UpdateSellerForm(request.POST, instance=userSell)
         #form = AddSellerUserForm(request.POST, instance=request.user)
         if form.is_valid():
             if userSell.seller_user.get_full_name:
                 userSell.seller_name = userSell.seller_user.get_full_name
             userSell.save()
-            #Location.objects.create(location=form.cleaned_data['location'])
-            #loc = Location.create(form.cleaned_data['location'])
-            #form.save()
             return redirect("main:sell")
 
     else:
-        form = UpdateSellerForm(instance = userSell)
-        #form = AddSellerUserForm(instance=request.user)
+        form = UpdateSellerForm(instance = userSell.seller_user)
     return render(request=request,
                 template_name='main/account/editvend.html',
                 context={'form': form}) 

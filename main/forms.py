@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-from .models import Bazaar_User, Seller, Location
+from .models import Bazaar_User, Seller
 
 
 # new user registration form
@@ -180,7 +180,7 @@ class UpdateUserForm(forms.ModelForm):
     class Meta: 
         model = Bazaar_User  
         fields = (
-            'location_id',
+            'location',
         )
 
 
@@ -188,19 +188,14 @@ class UpdateSellerForm(forms.ModelForm):
     class Meta: 
         model = Seller
         fields = (
+            'seller_key',
             'seller_name',
             'seller_type',
             'completed_sales',
-            'location_id',
+            'location',
         )
         readonly_fields = (
             'completed_sales',
         )
 
-class AddLocationForm(forms.ModelForm):
-    class Meta: 
-        model = Location  
-        fields = (
-            'location',
-        )
 

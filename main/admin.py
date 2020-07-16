@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Card_Rarity,Card_Type,Card,Location,Seller,Bazaar_User,Listing,Notification,Collection,Collection_Content
+from .models import Card_Rarity,Card_Type,Card,Seller,Bazaar_User,Listing,Notification,Collection,Collection_Content
 
 class CardAdmin(admin.ModelAdmin):
      fieldsets = (
@@ -17,7 +17,6 @@ class CardAdmin(admin.ModelAdmin):
 admin.site.register(Card_Rarity)
 admin.site.register(Card_Type)
 admin.site.register(Card, CardAdmin)
-admin.site.register(Location)
 admin.site.register(Seller)
 admin.site.register(Bazaar_User)
 admin.site.register(Listing)

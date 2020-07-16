@@ -10,6 +10,9 @@
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'main:collection' %}">My Collection</a></li>
                     <li><a href="{% url 'main:profile' %}">My Account</a></li>
+                    {% elif user.auth_user_id != None %}
+                    <li><a href="{% url 'main:collection' %}">My Collection</a></li>
+                    <li><a href="{% url 'main:profile' %}">My Account</a></li>
                     {% endif %}
                     <li><a href="https://magic.wizards.com/en">MTG Community</a></li>
                     <li><a href="mailto:ahillebrand@ufl.edu">Contact Us</a></li>

@@ -46,27 +46,18 @@ class Card(models.Model):
         return reverse('main:card_view', args=[str(self.product_id)])
 
 
-class Location(models.Model):
-    location = models.CharField(max_length=200, blank=True, null=True) 
-
-    def __str__(self):
-        return self.location
-
-
 class Seller(models.Model):
     seller_user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     seller_key = models.CharField(max_length=200, primary_key=True)
     seller_name = models.CharField(max_length=200)
     seller_type = models.CharField(max_length=200)
-    location_id = models.CharField(max_length=200, blank=True, null=True)
-    #location_id = models.ForeignKey('Location', on_delete=models.CASCADE)
+    location = models.CharField(max_length=200, blank=True, null=True)
     completed_sales = models.BigIntegerField(default=0)
 
 
 class Bazaar_User(models.Model):
     auth_user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    location_id = models.CharField(max_length=200)
-    #location_id = models.ForeignKey('Location',on_delete=models.CASCADE)
+    location = models.CharField(max_length=200, blank=True, null=True)
     completed_sales = models.BigIntegerField(default=0)
 
 
@@ -82,11 +73,8 @@ class Listing(models.Model):
     quantity = models.IntegerField()
     condition = models.CharField(max_length=200)
     seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
-    seller_type = models.CharField(max_length=200)
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
-    #selling_user_id = models.IntegerField()     
-    #selling_user_id = models.OneToOneField(Seller, on_delete=models.CASCADE) 
     def __str__(self):
         return self.product_name
 
@@ -99,8 +87,6 @@ class Notification(models.Model):
     greater_than_flag = models.BooleanField()
     equal_flag = models.BooleanField()
     seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
-    #selling_user_id = models.IntegerField()
-    #selling_auth_user_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
     models.ForeignKey('Card_Rarity', on_delete=models.CASCADE)
 
 class Collection(models.Model):
