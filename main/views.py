@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
@@ -510,7 +510,10 @@ def search(request):
 #user portal page- display profile
 def profile(request):
     #get or initialize bazaar user object
-    user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
+    try: 
+        user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
+    except:
+        raise Http404("Page does not exist")
     if not user:
         user = newacc
     return render(request=request,
@@ -519,7 +522,10 @@ def profile(request):
 
 #user portal page- dislay preferences 
 def preferences(request):
-    userPref, newPref = User_Preferences.objects.get_or_create(user_id_id=request.user.id)
+    try:
+        userPref, newPref = User_Preferences.objects.get_or_create(user_id_id=request.user.id)
+    except:
+        raise Http404("Page does not exist")
     if not userPref:
         userPref = newPref
     return render(request=request,
@@ -528,16 +534,22 @@ def preferences(request):
 
 #user portal page- dislay seller profile 
 def sell(request):
-    userSell, newSell = Seller.objects.get_or_create(seller_user_id=request.user.id, completed_sales=0, seller_key=request.user.username, seller_type="New")
-    if not userSell:
-        userSell = newSell
-    return render(request=request,
-                  template_name='main/account/vendor.html',
-                  context={'seller': userSell })
+    if not request.user.is_authenticated:
+        raise Http404("Page does not exist")
+    else:
+        userSell, newSell = Seller.objects.get_or_create(seller_user_id=request.user.id, completed_sales=0, seller_key=request.user.username, seller_type="New")
+        if not userSell:
+            userSell = newSell
+        return render(request=request,
+                    template_name='main/account/vendor.html',
+                    context={'seller': userSell })
 
 #user portal page- edit profile
 def edit(request):
-    bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
+    try: 
+        bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
+    except Bazaar_User.DoesNotExist:
+        raise Http404("Page does not exist")
     if request.method == 'POST':
         form = EditUserForm(request.POST, instance=bazUser.auth_user_id)
         bazForm = UpdateUserForm(request.POST, instance=bazUser.auth_user_id)
@@ -555,8 +567,10 @@ def edit(request):
 
 #user portal page- edit preferences 
 def editpref(request):
-    userPref = User_Preferences.objects.get(user_id_id=request.user.id)
-
+    try:
+        userPref = User_Preferences.objects.get(user_id_id=request.user.id)
+    except User_Preferences.DoesNotExist:
+        raise Http404("Page does not exist")
     if request.method == 'POST':
         form = UpdatePreferencesForm(request.POST)
         if form.is_valid():
@@ -574,15 +588,24 @@ def editpref(request):
 #user portal page- create seller  
 def editsell(request):
     #get seller user instance
-    userSell = Seller.objects.get(seller_user_id=request.user.id)
-    if request.method == 'POST':
-        form = UpdateSellerForm(request.POST, instance = userSell)
-        if form.is_valid():
-            userSell.seller_name = form.cleaned_data['seller_name']
-            userSell.save()
-            return redirect("main:sell")
+    if not request.user.is_authenticated:
+        raise Http404("Page does not exist")
     else:
-        form = UpdateSellerForm(instance = userSell)
-    return render(request=request,
-                template_name='main/account/editvend.html',
-                context={'form': form}) 
+        userSell = Seller.objects.get(seller_user_id=request.user.id)
+        
+        if request.method == 'POST':
+            form = UpdateSellerForm(request.POST, instance = userSell)
+            if form.is_valid():
+                userSell.seller_name = form.cleaned_data['seller_name']
+                userSell.save()
+                return redirect("main:sell")
+        else:
+            form = UpdateSellerForm(instance = userSell)
+        return render(request=request,
+                    template_name='main/account/editvend.html',
+                    context={'form': form}) 
+
+def handler404(request, exception, template_name="404.html"):
+    response = render_to_response(template_name)
+    response.status_code = 404
+    return response
