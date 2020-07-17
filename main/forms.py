@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from .models import Bazaar_User, Seller
 
 
 # new user registration form
@@ -159,7 +160,7 @@ class CollectionSearchForm(forms.Form):
                                     initial='ascending')
 
 
-class ChangeUsernameForm(UserChangeForm):
+class EditUserForm(UserChangeForm):
     class Meta: 
         model = User
         fields = (
@@ -170,3 +171,31 @@ class ChangeUsernameForm(UserChangeForm):
             'last_name'
         
         )
+        help_texts = {
+            'username': None,
+            'password': None,
+        }
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta: 
+        model = Bazaar_User  
+        fields = (
+            'location',
+        )
+
+
+class UpdateSellerForm(forms.ModelForm):
+    class Meta: 
+        model = Seller
+        fields = (
+            'seller_key',
+            'seller_name',
+            'seller_type',
+            'completed_sales',
+            'location',
+        )
+        readonly_fields = (
+            'completed_sales',
+        )
+
+

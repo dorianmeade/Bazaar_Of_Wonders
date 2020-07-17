@@ -1,13 +1,11 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<h4 style="text-align: center; color: white;">My Account</h4>
-
 <div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px;">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
-            <li class="tab col s4"><a href="{% url 'main:profile' %}" class="active">Profile</a></li>
-            <li class="tab col s4"><a href="{% url 'main:preferences' %}">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black;">Profile</a></li>
+            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; background: orange;">Preferences</a></li>
         </ul>
     </div>      
     
