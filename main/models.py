@@ -97,3 +97,9 @@ class Collection_Content(models.Model):
     collection_id = models.ForeignKey('Collection',on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
     obtained = models.BooleanField()
+
+class User_Preferences(models.Model):
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_notif = models.BooleanField(default=True)    
+    subscribe_email = models.BooleanField(default=False)
+    view_email = models.BooleanField(default=True)
