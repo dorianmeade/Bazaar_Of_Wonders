@@ -13,20 +13,28 @@
     <div class="row container">
         <table>
             <tr>
-                <td style="border: none;">Language</td>
-                <td>English</td>
+                <td style="border: none;">Allow Bazaar of Wonders to send you email notifications</td>
+                {% ifequal pref.email_notif False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Currency</td>
-                <td>USD</td>
+                <td style="border: none;">Recieve email newsletter</td>
+                {% ifequal pref.subscribe_email False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Recieve email newsletters</td>
-                <td>checkbox</td>
-            </tr>
-            <tr>
-                <td style="border: none;">Let others see your preferences</td>
-                <td>checkbox</td>
+                <td style="border: none;">Allow other Bazaar Traders to view your profile</td>
+                {% ifequal pref.view_email False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
         </table>
         <br>

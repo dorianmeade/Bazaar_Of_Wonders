@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm
+from django.http import HttpResponseRedirect, Http404
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences
 
 
 # homepage view
@@ -509,8 +509,11 @@ def search(request):
 
 #user portal page- display profile
 def profile(request):
-    #get existing or initialize bazaar user object
-    user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
+    #get or initialize bazaar user object
+    try: 
+        user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
+    except:
+        raise Http404("Page does not exist")
     if not user:
         user = newacc
     return render(request=request,
@@ -519,25 +522,34 @@ def profile(request):
 
 #user portal page- dislay preferences 
 def preferences(request):
+    try:
+        userPref, newPref = User_Preferences.objects.get_or_create(user_id_id=request.user.id)
+    except:
+        raise Http404("Page does not exist")
+    if not userPref:
+        userPref = newPref
     return render(request=request,
                   template_name='main/account/preferences.html',
-                  context={})
+                  context={'pref': userPref})
 
-#user portal page- dislay bazaar user  
+#user portal page- dislay seller profile 
 def sell(request):
-    #get or instantiate seller object
-    userSell, newSell = Seller.objects.get_or_create(seller_user_id=request.user.id, completed_sales=0, seller_key=request.user.username)
-    if not userSell:
-        userSell = newSell
-    return render(request=request,
-                  template_name='main/account/vendor.html',
-                  context={'seller': userSell })
+    if not request.user.is_authenticated:
+        raise Http404("Page does not exist")
+    else:
+        userSell, newSell = Seller.objects.get_or_create(seller_user_id=request.user.id, completed_sales=0, seller_key=request.user.username, seller_type="New")
+        if not userSell:
+            userSell = newSell
+        return render(request=request,
+                    template_name='main/account/vendor.html',
+                    context={'seller': userSell })
 
 #user portal page- edit profile
 def edit(request):
-    #get bazaar user instance
-    bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
-    #upon form submit
+    try: 
+        bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
+    except Bazaar_User.DoesNotExist:
+        raise Http404("Page does not exist")
     if request.method == 'POST':
         form = EditUserForm(request.POST, instance=bazUser.auth_user_id)
         bazForm = UpdateUserForm(request.POST, instance=bazUser.auth_user_id)
@@ -546,7 +558,6 @@ def edit(request):
             bazUser.location = bazForm.cleaned_data['location']
             bazUser.save()
             return redirect("main:profile")
-    #load forms with instance data 
     else:
         form = EditUserForm(instance=bazUser.auth_user_id)
         bazForm = UpdateUserForm(instance=bazUser)
@@ -556,26 +567,45 @@ def edit(request):
 
 #user portal page- edit preferences 
 def editpref(request):
+    try:
+        userPref = User_Preferences.objects.get(user_id_id=request.user.id)
+    except User_Preferences.DoesNotExist:
+        raise Http404("Page does not exist")
+    if request.method == 'POST':
+        form = UpdatePreferencesForm(request.POST)
+        if form.is_valid():
+            userPref.email_notif = form.cleaned_data['email_notif']
+            userPref.subscribe_email = form.cleaned_data['subscribe_email']
+            userPref.view_email = form.cleaned_data['view_email']
+            userPref.save()
+            return redirect("main:preferences")
+    else:
+        form = UpdatePreferencesForm(initial={'email_notif': userPref.email_notif, 'subscribe_email': userPref.subscribe_email, 'view_email': userPref.view_email })
     return render(request=request,
                 template_name='main/account/editpref.html',
-                context={}) 
+                context={'form': form}) 
 
 #user portal page- create seller  
 def editsell(request):
     #get seller user instance
-    userSell = Seller.objects.get(seller_user_id=request.user.id)
-
-    if request.method == 'POST':
-        form = UpdateSellerForm(request.POST, instance=userSell)
-        #form = AddSellerUserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            if userSell.seller_user.get_full_name:
-                userSell.seller_name = userSell.seller_user.get_full_name
-            userSell.save()
-            return redirect("main:sell")
-
+    if not request.user.is_authenticated:
+        raise Http404("Page does not exist")
     else:
-        form = UpdateSellerForm(instance = userSell.seller_user)
-    return render(request=request,
-                template_name='main/account/editvend.html',
-                context={'form': form}) 
+        userSell = Seller.objects.get(seller_user_id=request.user.id)
+        
+        if request.method == 'POST':
+            form = UpdateSellerForm(request.POST, instance = userSell)
+            if form.is_valid():
+                userSell.seller_name = form.cleaned_data['seller_name']
+                userSell.save()
+                return redirect("main:sell")
+        else:
+            form = UpdateSellerForm(instance = userSell)
+        return render(request=request,
+                    template_name='main/account/editvend.html',
+                    context={'form': form}) 
+
+def handler404(request, exception, template_name="404.html"):
+    response = render_to_response(template_name)
+    response.status_code = 404
+    return response

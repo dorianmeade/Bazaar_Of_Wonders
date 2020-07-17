@@ -20,21 +20,28 @@
                 <td>{{seller.seller_key}}</td>
             </tr>
             <tr>
-                    <td style="border: none;">Name</td>
-                    <td>{{seller.seller_user.get_full_name|title}}</td>
-                </tr>
+                <td style="border: none;">Trader display name</td>
+                <td>{{seller.seller_name|title}}</td>
+            </tr>
+            <tr>
+                <td style="border: none;">Trader status</td>
+                {% ifequal seller.seller_type '' %}
+                <td>New</td>
+                {% else %}
+                <td>{{seller.seller_type}}</td>
+                {% endifequal %}
+            </tr>
             <tr>
                 <td style="border: none;">Location</td>
-                
-                {% ifequal seller.location_id None %}
+                {% ifequal seller.location None %}
                 <td>Unknown</td>
                 {% else %}
-                <td>{{seller.location_id}}</td>
+                <td>{{seller.location|title}}</td>
                 {% endifequal %}
             </tr>
             <tr>
                 <td style="border: none;">Completed Sales</td>
-                {% ifequal seller.location_id None %}
+                {% ifequal seller.completed_sales None %}
                 <td>0</td>
                 {% else %}
                 <td>{{seller.completed_sales}}</td>
