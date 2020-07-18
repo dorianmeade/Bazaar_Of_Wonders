@@ -1,6 +1,8 @@
 from django.urls import path, include, re_path
 from django.conf.urls import url
 from . import views
+from django.views.generic.base import TemplateView
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 app_name = 'main'  # here for namespacing of urls.
 
@@ -24,4 +26,6 @@ urlpatterns = [
     path("account/pref/edit", views.editpref, name="editpref"),
     path("account/sell", views.sell, name="sell"),
     path("account/sell/edit", views.editsell, name="editsell"),
+    path("account/edit/password", views.changepass, name="changepass"),
+    #path("password_reset", views.password_reset_request, name="password_reset"),
 ]

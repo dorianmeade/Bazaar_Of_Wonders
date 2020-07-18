@@ -1,13 +1,15 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <div class="container">
-        <form class="white black-text" style="opacity:.8; padding: 10px; border-radius: 15px;" method="POST">
+    <div class="container" style="text-align: left; width: 40%;">
+        <form class="white black-text" style="margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS;" method="POST">
+            <h5 style="font-family: Trebuchet MS;">Log in</h5>
             {% csrf_token %}
             {{form.as_p}}
             <a class="btn btn-outline-info" style="background-color: black; color:white" href="/">Cancel</a>
             <button style="background-color: black; color:white" class="btn btn-outline-info" type="submit">Login</button>
         </form>
-        <p class="white-text"> Don't have an account? <a href="/register" target="_self"><strong>Register here</strong></a>!</p>
+        <p class="white-text" style="font-family: Trebuchet MS;"><a href="{% url 'password_reset' %}"target="_self"><strong>Forgot your password?</strong></a></p>
+        <p class="white-text" style="font-family: Trebuchet MS;"> Don't have an account? <a href="{% url 'main:register' %}" target="_self"><strong>Register here</strong></a>!</p>
     </div>
 {% endblock %}

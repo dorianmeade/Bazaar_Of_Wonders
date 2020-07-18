@@ -1,0 +1,28 @@
+
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+    <div class="row">
+        <ul class="tabs" style="text-align: center; display: flex;">
+            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; background: orange;">Profile</a></li>
+            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black;">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:sell' %}" style="color: black;">Become a trader</a></li>
+        </ul>
+    </div>      
+    
+    <div class="row container">
+        <form method="post" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <br>
+        <a href="{% url 'main:profile' %}" style="color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;">back</a>
+        <input style="color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;" type="submit" name="update" value="update">
+        </form>
+    </div>
+   </div>   
+</div>        
+{% endblock %}
