@@ -7,8 +7,9 @@
 <div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
-            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; {% if request.path == '/acc' %} background: orange; {% endif %}">Profile</a></li>
-            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; {% if request.path == '/acc/pref' %} background: orange; {% endif %}">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; background: orange;">Profile</a></li>
+            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; ">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:sell' %}" style="color: black;">Become a trader</a></li>
         </ul>
     </div>      
     
@@ -16,23 +17,43 @@
         <table>
             <tr>
                 <td style="border: none;">Username</td>
-                <td>{{user.username}}</td>
+                <td>{{user.auth_user_id.username}}</td>
             </tr>
             <tr>
-                <td style="border: none;">First Name</td>
-                <td>{{user.first_name|title}}</td>
+                    <td style="border: none;">Password</td>
+                    <td>*********</td>
+                </tr>
+            <tr>
+                <td style="border: none;">Email address</td>
+                <td>{{user.auth_user_id.email}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Last Name</td>
-                <td>{{user.last_name|title}}</td>
+                <td style="border: none;">First name</td>
+                <td>{{user.auth_user_id.first_name|title}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Email</td>
-                <td>{{user.email}}</td>
+                <td style="border: none;">Last name</td>
+                <td>{{user.auth_user_id.last_name|title}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Member Since</td>
-                <td>{{user.date_joined.date}}</td>
+                <td style="border: none;">Location</td>
+                {% if user.location %}
+                <td>{{user.location|title}}</td>
+                {% else %}
+                <td>Unknown</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td style="border: none;">Completed sales</td>
+                {% ifequal user.completed_sales None %}
+                <td>0</td>
+                {% else %}
+                <td>{{user.completed_sales}}</td>
+                {% endifequal %}
+            </tr>
+            <tr>
+                <td style="border: none;">Member since</td>
+                <td>{{user.auth_user_id.date_joined.date}}</td>
             </tr>
         </table>
         <br>

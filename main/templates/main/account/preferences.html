@@ -1,33 +1,40 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<h4 style="text-align: center; color: white;">My Account</h4>
-
 <div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
-            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; {% if request.path == '/acc' %} background: orange; {% endif %}">Profile</a></li>
-            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; {% if request.path == '/acc/pref' %} background: orange; {% endif %}">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black;">Profile</a></li>
+            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black;  background: orange;">Preferences</a></li>
+            <li class="tab col s4"><a href="{% url 'main:sell' %}" style="color: black;">Become a trader</a></li>
         </ul>
     </div>      
     
     <div class="row container">
         <table>
             <tr>
-                <td style="border: none;">Language</td>
-                <td>English</td>
+                <td style="border: none;">Allow Bazaar of Wonders to send you email notifications</td>
+                {% ifequal pref.email_notif False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Currency</td>
-                <td>USD</td>
+                <td style="border: none;">Recieve email newsletter</td>
+                {% ifequal pref.subscribe_email False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Recieve email updates</td>
-                <td>checkbox</td>
-            </tr>
-            <tr>
-                <td style="border: none;">Recieve text updates</td>
-                <td>checkbox</td>
+                <td style="border: none;">Allow other Bazaar Traders to view your profile</td>
+                {% ifequal pref.view_email False %} 
+                <td>No</td>
+                {% else %}
+                <td>Yes</td>
+                {% endifequal %}
             </tr>
         </table>
         <br>
