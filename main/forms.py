@@ -7,7 +7,7 @@ from django.urls import reverse
 
 # new user registration form
 class NewUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, label="Email address", help_text="Email address cannot be associated with another Bazaar of Wonders account.")
 
     class Meta:
         model = User
@@ -21,6 +21,7 @@ class NewUserForm(UserCreationForm):
         return user   
 
 
+# listing display filter form for home view
 class SearchForm(forms.Form):
     CARD_TYPES = [
     ('NO_VALUE','Any Card Type'),
@@ -82,6 +83,7 @@ class SearchForm(forms.Form):
                                     initial='ascending')
 
 
+# listing display filter form for collection view
 class CollectionSearchForm(forms.Form):
     CARD_TYPES = [
     ('NO_VALUE','Any Card Type'),
@@ -161,7 +163,7 @@ class CollectionSearchForm(forms.Form):
                                     initial='ascending')
 
 
-#form for user to edit their information
+# user portal - edit account info form
 class EditUserForm(UserChangeForm):
     password = forms.CharField(max_length=255, help_text=mark_safe("<a href='/account/edit/password'>Click to change your password</a>."))
     
@@ -182,6 +184,7 @@ class EditUserForm(UserChangeForm):
         }
 
 
+#user portal - edit account info extension
 class UpdateUserForm(forms.ModelForm):
     class Meta: 
         model = Bazaar_User  
@@ -189,7 +192,7 @@ class UpdateUserForm(forms.ModelForm):
             'location',
         )
 
-#form to edit user seller model data 
+#user portal - edit user seller info 
 class UpdateSellerForm(forms.ModelForm):
     disabled_fields = ['seller_key', 'seller_type', 'completed_sales']
 
@@ -217,7 +220,7 @@ class UpdateSellerForm(forms.ModelForm):
         else:
             self.fields['reviewed'].disabled = True
 
-#form to update user_preferences model data
+#user portal - preferences form
 class UpdatePreferencesForm(forms.Form):  
     TRUE_FALSE_CHOICES = {
         (True, 'Yes'),
@@ -235,11 +238,6 @@ class UpdatePreferencesForm(forms.Form):
     view_email = forms.CharField(label='Allow other Bazaar Traders to view your profile', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
                                                                                 'style': 'color: black; background-color: orange;'}))   
-    
-#reset password form
-class ResetPassForm(forms.Form):
-    email = forms.EmailField(required=True)
-
 
 
 

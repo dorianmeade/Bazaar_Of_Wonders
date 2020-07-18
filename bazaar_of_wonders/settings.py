@@ -39,15 +39,13 @@ INSTALLED_APPS = [
     'materializecssform'
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-EMAIL_USE_TLS = True
-EMAIL_HOST      = 'smtp.gmail.com'
-EMAIL_PORT      = 587
-EMAIL_HOST_USER = 'dorianalyse'
-EMAIL_HOST_PASSWORD = 'Dm022899!'
-DEFAULT_FROM_EMAIL = 'dorianalyse@gmail.com'
-SERVER_EMAIL    = 'root@gmail.com'
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.sendgrid.net'
+EMAIL_USE_TLS       = True
+EMAIL_PORT          = 587
+EMAIL_HOST_USER     = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+DEFAULT_FROM_EMAIL  = 'thebazaartraders@gmail.com'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
