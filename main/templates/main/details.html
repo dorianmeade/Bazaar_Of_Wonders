@@ -1,6 +1,5 @@
 {% extends 'main/base.html' %}
 <!-- access custom templatetag -->
-{% load fix_url %}
 {% block content %}
     <div style="background-color: peru; opacity: .8; text-align: center; margin-left: 35px; margin-right: 20px;">
         <div class="row" style="display: flex">
@@ -10,9 +9,8 @@
                     <!-- display all known card information -->
                     <img src="{{ c.card_image_loc }}" style="width: 145px; height: auto; margin-top: 20px; ">
                     {% if user.is_authenticated and card_saved %}
-                    <!--p><a style="color:white" href="{% url 'main:notifications' %}">Notify me when the card price drops.</a></p-->
-                    <p><a style="color:black" href="{% url 'main:collection' %}"><b>View in Collection</b></a></p>
-                    <p><a style="color:black" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}"><b>Remove from Collection</b></b><i class="black-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p><br>
+                        <p><a style="color:black" href="{% url 'main:collection' %}"><b>View in Collection</b></a></p>
+                        <p><a style="color:black" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}"><b>Remove from Collection</b></b><i class="black-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p>
                     {% elif user.is_authenticated and not card_saved %}
                         <p><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:black"><b>Add card to your collection</b></b>.</a></p>
                     {% else %}
@@ -181,6 +179,7 @@
                             {% if item.mtg_stocks_purchase_url != "" %}
                                 <p><a href="{{ item.mtg_stocks_purchase_url }}" target="_blank"><button>Buy Now at MTG Stocks</button></a></p>
                             {% endif %}
+                            <p><a href="{% url 'main:notifications' item.id %}"><button>Notify Me at Price Drop</button></a></p>
                         </td>
                     </tr>
                 {% endfor %}

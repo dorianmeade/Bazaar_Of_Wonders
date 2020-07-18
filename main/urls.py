@@ -15,7 +15,8 @@ urlpatterns = [
     path("details", views.card_view, name="details"),
     path("details/<int:pk>", views.card_view, name="detailsID"),
     path("collection", views.collection, name="collection"),
-    path("notifications", views.notifications, name="notifications"),
+    path("notifications/<l>", views.add_notif, name="notifications"),
+    #path("notifications/<int:pk>", views.notifications, name="notifications"),
     path("add_to_collection", views.add_to_collection_view, name="add_to_collection"),
     path("remove_from_collection", views.remove_from_collection_view, name="remove_from_collection"),
     path("toggle_ownership", views.toggle_ownership_view, name="toggle_ownership"),
@@ -27,5 +28,4 @@ urlpatterns = [
     path("account/sell", views.sell, name="sell"),
     path("account/sell/edit", views.editsell, name="editsell"),
     path("account/edit/password", views.changepass, name="changepass"),
-    #path("password_reset", views.password_reset_request, name="password_reset"),
 ]

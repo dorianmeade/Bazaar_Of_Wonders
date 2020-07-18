@@ -5,7 +5,7 @@
         <div class="col-md-3" style="width: min-content; margin: 20px;">
         <!-- cards = link to details page -->
             <div class="card black" style="border-radius: 25px; width: min-content;">
-                <a title="card-testing" class="btn-link" style="width:min-content" href="{% url 'main:details' %}?selected={{l.product_id.product_id}} ">
+                <a title="card-testing" class="btn-link" style="width:min-content" href="{% url 'main:details' %}?selected={{l.product_id.product_id}}">
                     {% load static %}
                     <div class="card-image">
                         <img class="media responsive-img" src="{{l.product_id.card_image_loc}}" alt="{{l.product_id.name}}" style="min-width:20vw; min-height:25vw;" \>
@@ -31,9 +31,9 @@
     {% empty %}
         <div class="col container s12 m6">
             <a class="btn-link">
-                <div class="card black hoverable" style="display: inline-block; width: 225px; height: auto; flex: 3;">
+                <div class="card black hoverable" style="display: inline-block; width: 100%; height: auto; flex: 3; border-radius: 15px;">
                     <div class="card-content" style="text-align: center;">
-                        <span class="card-title">No cards</span>
+                        <span class="card-title white-text">No cards currently matching this criteria</span>
                     </div>
                 </div>
             </a>

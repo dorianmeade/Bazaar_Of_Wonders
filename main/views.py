@@ -1,20 +1,15 @@
-from django.shortcuts import render, redirect
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth import logout, authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db import IntegrityError
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, redirect
 from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
-from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences
-#for password reset
-from django.core.mail import send_mail, BadHeaderError 
-from django.template.loader import render_to_string 
-from django.db.models.query_utils import Q
-from django.utils.http import urlsafe_base64_encode
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.conf import settings
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences, Notification
+
 
 
 # homepage view
@@ -292,13 +287,6 @@ def collection(request):
 
             except Collection_Content.DoesNotExist:
                 pass
-
-
-# notifications management ?
-def notifications(request):
-    return render(request=request,
-                  template_name='main/notifications.html',
-                  context={})
 
 
 # log user out of system
@@ -644,34 +632,19 @@ def changepass(request):
                     template_name='main/account/editpass.html',
                     context={'form': form}) 
                     
-'''
-#locally send password reset link
-def password_reset_request(request):
-	if request.method == "POST":
-		password_reset_form = PasswordResetForm(request.POST)
-		if password_reset_form.is_valid():
-			data = password_reset_form.cleaned_data['email']
-			associated_users = User.objects.filter(Q(email=data)|Q(username=data))
-			if associated_users.exists():
-				for user in associated_users:
-					subject = "Password Reset Requested"
-					email_template_name = "main/registration/password_reset_email.txt"
-					c = {
-					"email":user.email,
-					'domain':'127.0.0.1:8000',
-					'site_name': 'Website',
-					"uid": urlsafe_base64_encode(force_bytes(user.pk)),
-					"user": user,
-					'token': default_token_generator.make_token(user),
-					'protocol': 'http',
-					}
-					email = render_to_string(email_template_name, c)
-					try:
-						send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
-					except BadHeaderError:
-						return HttpResponse('Invalid header found.')
-					messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
-					return redirect ("main:home")
-	password_reset_form = PasswordResetForm()
-	return render(request=request, template_name="main/registration/password_reset_form.html", context={"form":password_reset_form})
-'''
+
+#add notif flag to db
+def add_notif(request, l=None):
+    #get listing object from url
+    listing = Listing.objects.get(pk = l)
+    #get card object from listing
+    card = Card.objects.get(product_id = listing.product_id.product_id)
+    #create and save notification object for desired user/card/price
+    try:
+        notif = Notification(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+        notif.save()
+    except IntegrityError:
+        notif = Notification.objects.get(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+    return render(request=request,
+                  template_name='main/notifications.html',
+                  context={'item': notif})
