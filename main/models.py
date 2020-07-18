@@ -83,11 +83,13 @@ class Notification(models.Model):
     auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
     price_threshold = models.FloatField()
-    less_than_flag = models.BooleanField()
-    greater_than_flag = models.BooleanField()
-    equal_flag = models.BooleanField()
-    seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
-    models.ForeignKey('Card_Rarity', on_delete=models.CASCADE)
+    less_than_flag = models.BooleanField(default=True)
+    greater_than_flag = models.BooleanField(default=False)
+    equal_flag = models.BooleanField(default=False)
+   # seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("auth_user_id", "card_id", "price_threshold"),)
 
 class Collection(models.Model):
     owning_auth_user_id = models.IntegerField() # Researching how to properly do an FK on a table not represented by a model (auth_user)
