@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout, authenticate, login, update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.models import User
 from django.contrib import messages
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm, ResetPassForm
 from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences
+#for password reset
+from django.core.mail import send_mail, BadHeaderError
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
 
 
 # homepage view
@@ -585,14 +593,12 @@ def editpref(request):
                 template_name='main/account/editpref.html',
                 context={'form': form}) 
 
-#user portal page- create seller  
+#user portal page- edit seller details
 def editsell(request):
-    #get seller user instance
     if not request.user.is_authenticated:
         raise Http404("Page does not exist")
     else:
         userSell = Seller.objects.get(seller_user_id=request.user.id)
-        
         if request.method == 'POST':
             form = UpdateSellerForm(request.POST, instance = userSell)
             if form.is_valid():
@@ -605,7 +611,71 @@ def editsell(request):
                     template_name='main/account/editvend.html',
                     context={'form': form}) 
 
-def handler404(request, exception, template_name="404.html"):
-    response = render_to_response(template_name)
-    response.status_code = 404
-    return response
+#user portal page - form to change password when known
+def changepass(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('main:profile')
+        else:
+            messages.error(request, 'Incorrect password entered.')
+            return redirect('main:changepass')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request=request,
+                template_name='main/account/editpass.html',
+                context={'form': form}) 
+
+
+def resetpass(request): 
+    if request.method == 'POST':
+        form = ResetPassForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('main:home')
+        else:
+            messages.error(request, 'Invalid email entered.')
+            return redirect('main:resetpass')
+    else:
+        form = ResetPassForm
+    return render(request=request,
+                template_name='main/registration/reset_pass.html',
+                context={'form': form}) 
+
+def resetconfirm(request):
+    return render(request=request,
+                template_name='main/registration/reset_confirm.html',
+                context={})
+
+
+def password_reset_request(request):
+	if request.method == "POST":
+		password_reset_form = PasswordResetForm(request.POST)
+		if password_reset_form.is_valid():
+			data = password_reset_form.cleaned_data['email']
+			associated_users = User.objects.filter(Q(email=data)|Q(username=data))
+			if associated_users.exists():
+				for user in associated_users:
+					subject = "Password Reset Requested"
+					email_template_name = "main/registration/password_reset_email.txt"
+					c = {
+					"email":user.email,
+					'domain':'127.0.0.1:8000',
+					'site_name': 'Website',
+					"uid": urlsafe_base64_encode(force_bytes(user.pk)),
+					"user": user,
+					'token': default_token_generator.make_token(user),
+					'protocol': 'http',
+					}
+					email = render_to_string(email_template_name, c)
+					try:
+						send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
+					except BadHeaderError:
+						return HttpResponse('Invalid header found.')
+					messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
+					return redirect ("main:home")
+	password_reset_form = PasswordResetForm()
+	return render(request=request, template_name="main/registration/password_reset_form.html", context={"form":password_reset_form})

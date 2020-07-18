@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from .models import Bazaar_User, Seller, User_Preferences
-
-
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 # new user registration form
 class NewUserForm(UserCreationForm):
@@ -161,7 +161,10 @@ class CollectionSearchForm(forms.Form):
                                     initial='ascending')
 
 
+#form for user to edit their information
 class EditUserForm(UserChangeForm):
+    password = forms.CharField(max_length=255, help_text=mark_safe("<a href='/account/edit/password'>Click to change your password</a>."))
+    
     class Meta: 
         model = User
         fields = (
@@ -169,23 +172,15 @@ class EditUserForm(UserChangeForm):
             'password',
             'email',
             'first_name',
-            'last_name'
-        
+            'last_name',
         )
-        '''
         labels = {
-            "username": "username",
-            "subscribe_email": "Recieve email newsletter",
-            "view_email": "Allow other Bazaar Traders to view your profile",
+            "email": "Email address",
         }
-        '''
         help_texts = {
             'username': None,
-            'password': None,
         }
-        readonly_fields = (
-            'username',
-        )
+
 
 class UpdateUserForm(forms.ModelForm):
     class Meta: 
@@ -194,7 +189,7 @@ class UpdateUserForm(forms.ModelForm):
             'location',
         )
 
-#form to edit user seller model credentials 
+#form to edit user seller model data 
 class UpdateSellerForm(forms.ModelForm):
     disabled_fields = ['seller_key', 'seller_type', 'completed_sales']
 
@@ -222,9 +217,8 @@ class UpdateSellerForm(forms.ModelForm):
         else:
             self.fields['reviewed'].disabled = True
 
-
+#form to update user_preferences model data
 class UpdatePreferencesForm(forms.Form):  
-
     TRUE_FALSE_CHOICES = {
         (True, 'Yes'),
         (False, 'No'),
@@ -241,23 +235,10 @@ class UpdatePreferencesForm(forms.Form):
     view_email = forms.CharField(label='Allow other Bazaar Traders to view your profile', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
                                                                                 'style': 'color: black; background-color: orange;'}))   
-    '''
-    class Meta: 
-        model = User_Preferences
-        exclude = ('user_id',)
-        
-        fields = (
-            'email_notif',
-            'subscribe_email',
-            'view_email',
-        )
-        labels = {
-            "email_notif": "Allow Bazaar of Wonders to send you email notifications",
-            "subscribe_email": "Recieve email newsletter",
-            "view_email": "Allow other Bazaar Traders to view your profile",
-        }
-    '''
     
+#reset password form
+class ResetPassForm(forms.Form):
+    email = forms.EmailField(required=True)
 
 
 
