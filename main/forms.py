@@ -59,27 +59,31 @@ class SearchForm(forms.Form):
                                                                         attrs={'class': 'dropdown-trigger btn',
                                                                                'style': 'background-color: '
                                                                                         'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold'}))
+                                                                                        'font-weight: bold; '
+                                                                                        'font-family: Trebuchet MS;'}))
     card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES,
                                                                             attrs={'class': 'dropdown-trigger btn',
                                                                                    'style': 'background-color: '
                                                                                             'darkolivegreen; '
                                                                                             'color: black; '
-                                                                                            'font-weight: bold'}),
+                                                                                            'font-weight: bold; '
+                                                                                            'font-family: Trebuchet MS;'}),
                                   initial='NO_VALUE')
     sort_by_choice = forms.CharField(label='Sort Criteria:', widget=forms.Select(choices=SORT_BY,
                                                                                  attrs={'class': 'dropdown-trigger btn',
                                                                                         'style': 'background-color: '
                                                                                                  'darkolivegreen; '
                                                                                                  'color: black; '
-                                                                                                 'font-weight: bold'}),
+                                                                                                 'font-weight: bold;'
+                                                                                                 'font-family: Trebuchet MS;'}),
                                      initial='card_name')
     sorting_order = forms.CharField(label='Sort Ordering:', widget=forms.Select(choices=SORT_ORDERS,
                                                                                 attrs={'class': 'dropdown-trigger btn',
                                                                                        'style': 'background-color: '
                                                                                                 'darkolivegreen; '
                                                                                                 'color: black; '
-                                                                                                'font-weight: bold'}),
+                                                                                                'font-weight: bold;'
+                                                                                                'font-family: Trebuchet MS;'}),
                                     initial='ascending')
 
 
@@ -165,7 +169,7 @@ class CollectionSearchForm(forms.Form):
 
 # user portal - edit account info form
 class EditUserForm(UserChangeForm):
-    password = forms.CharField(max_length=255, help_text=mark_safe("<a href='/account/edit/password'>Click to change your password</a>."))
+    password = forms.CharField(max_length=255, help_text=mark_safe("<a href='/account/edit/password'>Click to change your password</a>."), widget=forms.PasswordInput)
     
     class Meta: 
         model = User
@@ -206,7 +210,7 @@ class UpdateSellerForm(forms.ModelForm):
             'location',
         )
         labels = {
-            "seller_key": "Usernname",
+            "seller_key": "Username",
             "seller_name": "Trader display name",
             "seller_type": "Trader status",
         }
@@ -228,16 +232,16 @@ class UpdatePreferencesForm(forms.Form):
     }
     email_notif = forms.CharField(label='Allow Bazaar of Wonders to send you email notifications', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange;'}))   
+                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
 
 
     subscribe_email = forms.CharField(label='Recieve email newsletter', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange;'}))   
+                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
 
     view_email = forms.CharField(label='Allow other Bazaar Traders to view your profile', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange;'}))   
+                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
 
 
 

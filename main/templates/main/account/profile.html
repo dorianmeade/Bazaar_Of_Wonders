@@ -2,7 +2,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS;">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
             <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; background: orange;">Profile</a></li>
@@ -14,27 +14,27 @@
     <div class="row container">
         <table>
             <tr>
-                <td style="border: none;">Username</td>
+                <td style="border: none;"><b>Username</b></td>
                 <td>{{user.auth_user_id.username}}</td>
             </tr>
             <tr>
-                    <td style="border: none;">Password</td>
+                    <td style="border: none;"><b>Password</b></td>
                     <td>*********</td>
                 </tr>
             <tr>
-                <td style="border: none;">Email address</td>
+                <td style="border: none;"><b>Email address</b></td>
                 <td>{{user.auth_user_id.email}}</td>
             </tr>
             <tr>
-                <td style="border: none;">First name</td>
+                <td style="border: none;"><b>First name</b></td>
                 <td>{{user.auth_user_id.first_name|title}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Last name</td>
+                <td style="border: none;"><b>Last name</b></td>
                 <td>{{user.auth_user_id.last_name|title}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Location</td>
+                <td style="border: none;"><b>Location</b></td>
                 {% if user.location %}
                 <td>{{user.location|title}}</td>
                 {% else %}
@@ -42,7 +42,7 @@
                 {% endif %}
             </tr>
             <tr>
-                <td style="border: none;">Completed sales</td>
+                <td style="border: none;"><b>Completed sales</b></td>
                 {% ifequal user.completed_sales None %}
                 <td>0</td>
                 {% else %}
@@ -50,7 +50,7 @@
                 {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Member since</td>
+                <td style="border: none;"><b>Member since</b></td>
                 <td>{{user.auth_user_id.date_joined.date}}</td>
             </tr>
         </table>

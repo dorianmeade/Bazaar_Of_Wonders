@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
             <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black;">Profile</a></li>
@@ -13,7 +13,7 @@
     <div class="row container">
         <table>
             <tr>
-                <td style="border: none;">Allow Bazaar of Wonders to send you email notifications</td>
+                <td style="border: none;"><b>Allow Bazaar of Wonders to send you email notifications</b></td>
                 {% ifequal pref.email_notif False %} 
                 <td>No</td>
                 {% else %}
@@ -21,7 +21,7 @@
                 {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Recieve email newsletter</td>
+                <td style="border: none;"><b>Recieve email newsletter</b></td>
                 {% ifequal pref.subscribe_email False %} 
                 <td>No</td>
                 {% else %}
@@ -29,7 +29,7 @@
                 {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Allow other Bazaar Traders to view your profile</td>
+                <td style="border: none;"><b>Allow other Bazaar Traders to view your profile</b></td>
                 {% ifequal pref.view_email False %} 
                 <td>No</td>
                 {% else %}

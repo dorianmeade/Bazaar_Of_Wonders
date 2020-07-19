@@ -4,7 +4,7 @@
 {% block content %}
 <!--h4 style="text-align: center; color: white;">My Account</h4-->
 
-<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
             <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; ">Profile</a></li>
@@ -16,15 +16,15 @@
     <div class="row container">
         <table>
             <tr>
-                <td style="border: none;">Username</td>
+                <td style="border: none;"><b>Username</b></td>
                 <td>{{seller.seller_key}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Trader display name</td>
+                <td style="border: none;"><b>Trader display name</b></td>
                 <td>{{seller.seller_name|title}}</td>
             </tr>
             <tr>
-                <td style="border: none;">Trader status</td>
+                <td style="border: none;"><b>Trader status</b></td>
                 {% ifequal seller.seller_type '' %}
                 <td>New</td>
                 {% else %}
@@ -32,7 +32,7 @@
                 {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Location</td>
+                <td style="border: none;"><b>Location</b></td>
                 {% ifequal seller.location None %}
                 <td>Unknown</td>
                 {% else %}
@@ -40,7 +40,7 @@
                 {% endifequal %}
             </tr>
             <tr>
-                <td style="border: none;">Completed Sales</td>
+                <td style="border: none;"><b>Completed Sales</b></td>
                 {% ifequal seller.completed_sales None %}
                 <td>0</td>
                 {% else %}
