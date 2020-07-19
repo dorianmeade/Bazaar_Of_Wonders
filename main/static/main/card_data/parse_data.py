@@ -75,7 +75,8 @@ def listing_skeleton():
 transfer_to_db = {}
 
 # open the scryfall data and load as json
-with open('scryfall_data.json', 'r') as json_file:
+# open MTGJSON data and load
+with open('detail_data.json', 'r') as json_file:
     data = json.load(json_file)
     for card in data:
         # going to make each card a dictionary with its oracle id as the key and all the attributes in their
@@ -100,18 +101,22 @@ with open('scryfall_data.json', 'r') as json_file:
                     transfer_to_db[id]['card_image_loc'] = card['image_uris']['large']
             if 'mana_cost' in card.keys():
                 transfer_to_db[id]['mana_cost'] = card['mana_cost']
+            if 'cmc' in card.keys():
+                transfer_to_db[id]['converted_mana_cost'] = card['cmc']
             if 'type_line' in card.keys():
                 transfer_to_db[id]['type'] = card['type_line']
+            if 'oracle_text' in card.keys():
+                transfer_to_db[id]['card_text'] = card['oracle_text']
+            if 'power' in card.keys():
+                transfer_to_db[id]['power'] = card['power']
+            if 'toughness' in card.keys():
+                transfer_to_db[id]['toughness'] = card['toughness']
             if 'colors' in card.keys():
                 transfer_to_db[id]['card_color'] = card['colors']
             if 'keywords' in card.keys():
                 transfer_to_db[id]['card_keywords'] = card['keywords']
             if 'set_name' in card.keys():
                 transfer_to_db[id]['set_name'] = card['set_name']
-            if 'power' in card.keys():
-                transfer_to_db[id]['power'] = card['power']
-            if 'toughness' in card.keys():
-                transfer_to_db[id]['toughness'] = card['toughness']
             if 'collector_number' in card.keys():
                 transfer_to_db[id]['collection_number'] = card['collector_number']
             if 'rarity' in card.keys():
@@ -123,6 +128,13 @@ with open('scryfall_data.json', 'r') as json_file:
             if 'prices' in card.keys():
                 if 'usd' in card['prices'].keys():
                     transfer_to_db[id]['price'] = card['prices']['usd']
+            if 'purchase_uris' in card.keys():
+                if 'tcgplayer' in card['purchaseUrls'].keys():
+                    transfer_to_db[id]['tcg_player_purchase_url'] = card['purchaseUrls']['tcgplayer']
+                if 'cardmarket' in card['purchaseUrls'].keys():
+                    transfer_to_db[id]['card_market_purchase_url'] = card['purchaseUrls']['cardmarket']
+                if 'mtgstocks' in card['purchaseUrls'].keys():
+                    transfer_to_db[id]['mtg_stocks_purchase_url'] = card['purchaseUrls']['mtgstocks']
         # if there is no scryfall oracle id, there is no way to link to mtg json data so skip it
         else:
             continue
@@ -131,7 +143,7 @@ with open('scryfall_data.json', 'r') as json_file:
 json_file.close()
 
 # open MTGJSON data and load
-f = open('mtg_json_cards_data', 'r')
+f = open('details_data', 'r')
 data = json.load(f)  # this is a dict of the following format:  key='card name', value={<dictionary of card info>}
 for key, card in zip(data.keys(), data.values()):
     if card['scryfallOracleId']:
@@ -203,6 +215,7 @@ for key, card in zip(data.keys(), data.values()):
     else:
         continue
 f.close()
+
 
 # create json fixtures
 rarities, types, cards, listings, rarity_strings, type_strings= [], [], [], [], [], []

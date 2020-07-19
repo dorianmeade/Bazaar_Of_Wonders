@@ -37,8 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tinymce',
     'materializecssform',
-    'rest_framework',
-    'main.apps.MainConfig',
 ]
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
