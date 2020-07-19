@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponseRedirect, Http404
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout, authenticate, login, update_session_auth_hash
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences
+from django.db import IntegrityError
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, redirect
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
+from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences, Notification
+
 
 
 # homepage view
@@ -40,8 +44,6 @@ def home(request):
             elif parameter_name == "page":
                 page = parameter_val
 
-
-
     if request.method == "GET":              
         #Place form variables from GET request into form
         form = SearchForm({
@@ -51,8 +53,6 @@ def home(request):
             'sort_by_choice': sort_by_choice,
             'sorting_order': sorting_order
         })
-
-
     
         if form.is_valid():
             listing_manager = Listing.objects
@@ -100,7 +100,6 @@ def home(request):
             listings = Listing.objects.all()
             # display only 25 cards per page
             paginator = Paginator(listings, 24)
- 
 
             try:
                 page_obj = paginator.page(page)
@@ -153,9 +152,8 @@ def register(request):
                   context={"form": form})
 
 
-# login page/form
+# login form
 def login_request(request):
-    # upon form submit
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
         # validate user input
@@ -289,13 +287,6 @@ def collection(request):
 
             except Collection_Content.DoesNotExist:
                 pass
-
-
-# user collection and notification management
-def notifications(request):
-    return render(request=request,
-                  template_name='main/notifications.html',
-                  context={})
 
 
 # log user out of system
@@ -507,10 +498,12 @@ def search(request):
                       template_name='main/home.html',
                       context={'data': page_obj, 'form': form})  # load necessary schemas
 
-#user portal page- display profile
+
+# user portal page - display profile
 def profile(request):
-    #get or initialize bazaar user object
+    #only load page if user is authenticated
     try: 
+        #get or initialize bazaar user object
         user, newacc = Bazaar_User.objects.get_or_create(auth_user_id_id=request.user.id, completed_sales=0)
     except:
         raise Http404("Page does not exist")
@@ -520,7 +513,8 @@ def profile(request):
                   template_name='main/account/profile.html',
                   context={'user': user})
 
-#user portal page- dislay preferences 
+
+# user portal page - dislay preferences 
 def preferences(request):
     try:
         userPref, newPref = User_Preferences.objects.get_or_create(user_id_id=request.user.id)
@@ -532,7 +526,8 @@ def preferences(request):
                   template_name='main/account/preferences.html',
                   context={'pref': userPref})
 
-#user portal page- dislay seller profile 
+
+# user portal page - dislay seller profile 
 def sell(request):
     if not request.user.is_authenticated:
         raise Http404("Page does not exist")
@@ -544,8 +539,10 @@ def sell(request):
                     template_name='main/account/vendor.html',
                     context={'seller': userSell })
 
-#user portal page- edit profile
+
+#user portal page - edit profile
 def edit(request):
+    #only load page if user is authenticated 
     try: 
         bazUser = Bazaar_User.objects.get(auth_user_id_id=request.user.id)
     except Bazaar_User.DoesNotExist:
@@ -555,17 +552,21 @@ def edit(request):
         bazForm = UpdateUserForm(request.POST, instance=bazUser.auth_user_id)
         if form.is_valid() and bazForm.is_valid():
             form.save()
+            #save form data in user instance
             bazUser.location = bazForm.cleaned_data['location']
             bazUser.save()
+            #return to user profile page displaying updated data
             return redirect("main:profile")
     else:
+        #instantiate model data in built in and custom user forms
         form = EditUserForm(instance=bazUser.auth_user_id)
         bazForm = UpdateUserForm(instance=bazUser)
     return render(request=request,
                   template_name='main/account/edit.html',
                   context={'form': form, 'bazForm': bazForm})
 
-#user portal page- edit preferences 
+
+# user portal page - edit preferences 
 def editpref(request):
     try:
         userPref = User_Preferences.objects.get(user_id_id=request.user.id)
@@ -574,25 +575,26 @@ def editpref(request):
     if request.method == 'POST':
         form = UpdatePreferencesForm(request.POST)
         if form.is_valid():
+            #update user preference object instance with form data
             userPref.email_notif = form.cleaned_data['email_notif']
             userPref.subscribe_email = form.cleaned_data['subscribe_email']
             userPref.view_email = form.cleaned_data['view_email']
             userPref.save()
             return redirect("main:preferences")
     else:
+        #instantiate form with current user preferences from model
         form = UpdatePreferencesForm(initial={'email_notif': userPref.email_notif, 'subscribe_email': userPref.subscribe_email, 'view_email': userPref.view_email })
     return render(request=request,
                 template_name='main/account/editpref.html',
                 context={'form': form}) 
 
-#user portal page- create seller  
+
+# user portal page - edit seller details
 def editsell(request):
-    #get seller user instance
     if not request.user.is_authenticated:
         raise Http404("Page does not exist")
     else:
         userSell = Seller.objects.get(seller_user_id=request.user.id)
-        
         if request.method == 'POST':
             form = UpdateSellerForm(request.POST, instance = userSell)
             if form.is_valid():
@@ -605,7 +607,44 @@ def editsell(request):
                     template_name='main/account/editvend.html',
                     context={'form': form}) 
 
-def handler404(request, exception, template_name="404.html"):
-    response = render_to_response(template_name)
-    response.status_code = 404
-    return response
+
+# user portal page - form to change password when known
+def changepass(request):
+    #only load page if user is authenticated
+    if not request.user.is_authenticated:
+        raise Http404("Page does not exist")
+    else:
+        if request.method == 'POST':
+            #built-in change pass form with user instance
+            form = PasswordChangeForm(data=request.POST, user=request.user)
+            if form.is_valid():
+                form.save()
+                #authenticate user
+                update_session_auth_hash(request, form.user)
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('main:profile')
+            else:
+                messages.error(request, 'Incorrect password entered.')
+                return redirect('main:changepass')
+        else:
+            form = PasswordChangeForm(request.user)
+        return render(request=request,
+                    template_name='main/account/editpass.html',
+                    context={'form': form}) 
+                    
+
+#add notif flag to db
+def add_notif(request, l=None):
+    #get listing object from url
+    listing = Listing.objects.get(pk = l)
+    #get card object from listing
+    card = Card.objects.get(product_id = listing.product_id.product_id)
+    #create and save notification object for desired user/card/price
+    try:
+        notif = Notification(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+        notif.save()
+    except IntegrityError:
+        notif = Notification.objects.get(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+    return render(request=request,
+                  template_name='main/notifications.html',
+                  context={'item': notif})

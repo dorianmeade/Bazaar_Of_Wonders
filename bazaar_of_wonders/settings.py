@@ -41,6 +41,14 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
 ]
 
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.sendgrid.net'
+EMAIL_USE_TLS       = True
+EMAIL_PORT          = 587
+EMAIL_HOST_USER     = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+DEFAULT_FROM_EMAIL  = 'thebazaartraders@gmail.com'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
