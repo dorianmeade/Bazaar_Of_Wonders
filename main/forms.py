@@ -1,11 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-
+from .models import Bazaar_User, Seller, User_Preferences
+from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 # new user registration form
 class NewUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, label="Email address", help_text="Email address cannot be associated with another Bazaar of Wonders account.")
 
     class Meta:
         model = User
@@ -19,6 +21,7 @@ class NewUserForm(UserCreationForm):
         return user   
 
 
+# listing display filter form for home view
 class SearchForm(forms.Form):
     CARD_TYPES = [
     ('NO_VALUE','Any Card Type'),
@@ -80,6 +83,7 @@ class SearchForm(forms.Form):
                                     initial='ascending')
 
 
+# listing display filter form for collection view
 class CollectionSearchForm(forms.Form):
     CARD_TYPES = [
     ('NO_VALUE','Any Card Type'),
@@ -159,7 +163,10 @@ class CollectionSearchForm(forms.Form):
                                     initial='ascending')
 
 
-class ChangeUsernameForm(UserChangeForm):
+# user portal - edit account info form
+class EditUserForm(UserChangeForm):
+    password = forms.CharField(max_length=255, help_text=mark_safe("<a href='/account/edit/password'>Click to change your password</a>."))
+    
     class Meta: 
         model = User
         fields = (
@@ -167,6 +174,70 @@ class ChangeUsernameForm(UserChangeForm):
             'password',
             'email',
             'first_name',
-            'last_name'
-        
+            'last_name',
         )
+        labels = {
+            "email": "Email address",
+        }
+        help_texts = {
+            'username': None,
+        }
+
+
+#user portal - edit account info extension
+class UpdateUserForm(forms.ModelForm):
+    class Meta: 
+        model = Bazaar_User  
+        fields = (
+            'location',
+        )
+
+#user portal - edit user seller info 
+class UpdateSellerForm(forms.ModelForm):
+    disabled_fields = ['seller_key', 'seller_type', 'completed_sales']
+
+    class Meta: 
+        model = Seller
+        fields = (
+            'seller_key',
+            'seller_name',
+            'seller_type',
+            'completed_sales',
+            'location',
+        )
+        labels = {
+            "seller_key": "Usernname",
+            "seller_name": "Trader display name",
+            "seller_type": "Trader status",
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(UpdateSellerForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            for field in self.disabled_fields:
+                self.fields[field].disabled = True
+        else:
+            self.fields['reviewed'].disabled = True
+
+#user portal - preferences form
+class UpdatePreferencesForm(forms.Form):  
+    TRUE_FALSE_CHOICES = {
+        (True, 'Yes'),
+        (False, 'No'),
+    }
+    email_notif = forms.CharField(label='Allow Bazaar of Wonders to send you email notifications', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
+                                                                        attrs={'class': 'dropdown-trigger btn',
+                                                                                'style': 'color: black; background-color: orange;'}))   
+
+
+    subscribe_email = forms.CharField(label='Recieve email newsletter', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
+                                                                        attrs={'class': 'dropdown-trigger btn',
+                                                                                'style': 'color: black; background-color: orange;'}))   
+
+    view_email = forms.CharField(label='Allow other Bazaar Traders to view your profile', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
+                                                                        attrs={'class': 'dropdown-trigger btn',
+                                                                                'style': 'color: black; background-color: orange;'}))   
+
+
+

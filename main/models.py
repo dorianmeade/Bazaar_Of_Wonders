@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Card_Rarity(models.Model):
@@ -45,22 +46,19 @@ class Card(models.Model):
         return reverse('main:card_view', args=[str(self.product_id)])
 
 
-class Location(models.Model):
-    location = models.CharField(max_length=200) 
-
-
 class Seller(models.Model):
+    seller_user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     seller_key = models.CharField(max_length=200, primary_key=True)
     seller_name = models.CharField(max_length=200)
     seller_type = models.CharField(max_length=200)
-    location_id = models.ForeignKey('Location', on_delete=models.CASCADE)
-    completed_sales = models.BigIntegerField()
+    location = models.CharField(max_length=200, blank=True, null=True)
+    completed_sales = models.BigIntegerField(default=0)
 
 
 class Bazaar_User(models.Model):
-    auth_user_id = models.IntegerField() # Researching how to properly do an FK on a table not represented by a model (auth_user)
-    location_id = models.ForeignKey('Location',on_delete=models.CASCADE)
-    completed_sales = models.BigIntegerField()
+    auth_user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=200, blank=True, null=True)
+    completed_sales = models.BigIntegerField(default=0)
 
 
 class Listing(models.Model):
@@ -75,32 +73,35 @@ class Listing(models.Model):
     quantity = models.IntegerField()
     condition = models.CharField(max_length=200)
     seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
-    seller_type = models.CharField(max_length=200)
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
-    selling_user_id = models.IntegerField() # Researching how to properly do an FK on a table not represented by a model (auth_user)
     def __str__(self):
         return self.product_name
 
 
 class Notification(models.Model):
-    auth_user_id = models.IntegerField() # Researching how to properly do an FK on a table not represented by a model (auth_user)
+    auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
     price_threshold = models.FloatField()
-    less_than_flag = models.BooleanField()
-    greater_than_flag = models.BooleanField()
-    equal_flag = models.BooleanField()
-    seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
-    selling_auth_user_id = models.IntegerField() #Researching how to properly do an FK on a table not represented by a model (auth_user)
-    models.ForeignKey('Card_Rarity', on_delete=models.CASCADE)
+    less_than_flag = models.BooleanField(default=True)
+    greater_than_flag = models.BooleanField(default=False)
+    equal_flag = models.BooleanField(default=False)
+   # seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = (("auth_user_id", "card_id", "price_threshold"),)
 
 class Collection(models.Model):
     owning_auth_user_id = models.IntegerField() # Researching how to properly do an FK on a table not represented by a model (auth_user)
     collection_name = models.CharField(max_length=200)
 
-
 class Collection_Content(models.Model):
     collection_id = models.ForeignKey('Collection',on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
     obtained = models.BooleanField()
+
+class User_Preferences(models.Model):
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_notif = models.BooleanField(default=True)    
+    subscribe_email = models.BooleanField(default=False)
+    view_email = models.BooleanField(default=True)

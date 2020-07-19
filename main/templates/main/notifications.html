@@ -1,6 +1,8 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<p>This is {{user.username|title}}'s notifications page</p>
-            
+<div class="container white black-text" style="width: 40%; margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS; text-align: center;">
+    <h5>We will notify you via email</h5> <hr>
+    <p>An email will be sent to {{user.email }} when {{ item.card_id.name }}'s price drops below ${{ item.price_threshold }}. Stay tuned!</p>
+</div>
 {% endblock %}

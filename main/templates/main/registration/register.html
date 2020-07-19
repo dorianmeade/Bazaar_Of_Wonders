@@ -2,12 +2,13 @@
 
 {% block content %}
 <div class="container" style="padding-top: 10px;">
-   <form class="white black-text" style="opacity:.8; padding: 15px; border-radius: 15px;" method="POST">
+   <form class="white black-text" style="opacity:.8; padding: 15px; border-radius: 15px; font-family: Trebuchet MS;" method="POST">
+        <h5 style="font-family: Trebuchet MS;">Sign up</h5>
        {% csrf_token %}
        {{form.as_p}}
        <a class="btn btn-outline-info" style="background-color: black; color:white" href="/">Cancel</a>
        <button style="background-color:black; color:white" class="btn btn-outline-info" type="submit">Sign Up</button>
    </form>
-   <p class="white-text"> Already have an account? <a href="/login" target="_self"><strong>Login</strong></a> here. </p>
+   <p class="white-text" style="font-family: Trebuchet MS;"> Already have an account? <a href="{% url 'main:login_req' %}" target="_self"><strong>Login</strong></a> here. </p>
 </div>
 {% endblock %}
