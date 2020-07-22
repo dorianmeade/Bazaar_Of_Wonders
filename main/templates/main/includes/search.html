@@ -1,9 +1,245 @@
 <div class="row" style="background-color: rgba(245, 225, 215, .8); padding: 10px; border-radius: 15px; text-align: center; margin-left: 15px; margin-top: 20px;">
     <h6 style="font:inherit; font-size: 20px; font-weight: bold; background-color: darkolivegreen; height: 35px; border-radius: 5px; font-family: Trebuchet MS; padding-top: 3px;"><b>Search for cards</b></h6>
     <form class="col" method="GET" style="text-align: center; display: inline-block;">
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input style="margin-top:10px; font:inherit; font-weight: bold; font-size: 20px; background-color: darkolivegreen; height: 35px; width: 30%; border-radius: 5px; font-family: Trebuchet MS;" type="submit" value="Go">
+      {{ form.non_field_errors }}
+      {{ form.source.errors }}
+      {{ form.source }}
+      <table>
+          <tr>
+            <th>{{ form.auction_house_search.label_tag }}</th>
+            <td>
+              {{ form.auction_house_search.errors }}
+
+              {% for choice in form.YES_NO_CHOICE %}
+                <p>
+                  <label>
+                    <input class="with-gap" name="auction_house_search" type="radio" value="{{choice.0}}" />
+                    <span>{{choice.1}}</span>
+                  </label>
+                </p>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.sponsored.label_tag }}</th>
+            <td>
+              {{ form.sponsored.errors }}
+              {% for choice in form.YES_NO_CHOICE %}
+                <p>
+                  <label>
+                    <input class="with-gap" name="sponsored" type="radio" value="{{choice.0}}" />
+                    <span>{{choice.1}}</span>
+                  </label>
+                </p>
+              {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_name.label_tag }}</th>
+            <td>
+              {{ form.card_name.errors }}
+              {{ form.card_name }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_text.label_tag }}</th>
+            <td>
+              {{ form.card_text.errors }}
+              {{ form.card_text }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_flavor_text.label_tag }}</th>
+            <td>
+              {{ form.card_flavor_text.errors }}
+              {{ form.card_flavor_text }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_keywords.label_tag }}</th>
+            <td>
+              {{ form.card_keywords.errors }}
+              {{ form.card_keywords }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_artist.label_tag }}</th>
+            <td>
+              {{ form.card_artist.errors }}
+              {{ form.card_artist }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.set_name.label_tag }}</th>
+            <td>
+              {{ form.set_name.errors }}
+              {{ form.set_name }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.seller_name.label_tag }}</th>
+            <td>
+              {{ form.seller_name.errors }}
+              {{ form.seller_name }}
+            </td>
+          </tr>
+          <tr>
+            <th>Price Range Picker </th>
+            <td>
+              {{ form.minprice.errors }}
+              <br>
+              {{ form.maxprice.errors }}
+              
+              <div id="price-slider"></div>
+              <table style="width:100%">
+                <tr>
+                  <th><label for="id_minprice">Min Price:</label></th>
+                  <th><label for="id_maxprice">Max Price:</label></th> 
+                </tr>
+                <tr>
+                  <td>{{ form.minprice.errors }}</td>
+                  <td>{{ form.maxprice.errors }}</td>
+                </tr>
+                <tr>
+                  <td><input type="number" name="minprice" value="{{ form.minprice.value }}" id="id_minprice"></td>
+                  <td><input type="number" name="maxprice" value="{{ form.maxprice.value }}" id="id_maxprice"></td>
+                </tr>
+              </table>
+              <script>
+
+                
+
+                var priceSlider = document.getElementById('price-slider');
+                var dom_minprice = document.getElementById("id_minprice");
+                var dom_maxprice = document.getElementById("id_maxprice");
+                noUiSlider.create(priceSlider, {
+                 start: [dom_minprice.value, dom_maxprice.value],
+                 connect: true,
+                 step: 1,
+                 orientation: 'horizontal', // 'horizontal' or 'vertical'
+                 range: {
+                   'min': 0,
+                   'max': 100
+                 },
+                 format: wNumb({
+                     decimals: 3,
+                     thousand: '.'
+                 }),
+                 tooltips: true
+                });
+
+                priceSlider.noUiSlider.on('update', function (values, handle) {
+                    message = "Update handle #";
+                    message = message.concat(handle, ": OLD: (",dom_minprice.value,",",dom_maxprice.value,") NEW: (", values[0],",",values[1],")");
+                    console.log(message);
+                    dom_minprice.value = values[0];
+                    dom_maxprice.value = values[1];
+
+                });
+
+                dom_minprice.addEventListener('change', function(){
+                  message = "Change minprice ("
+                  message = message.concat(dom_minprice.value,",",dom_maxprice.value,")");
+                  console.log(message)
+                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                });
+
+                dom_maxprice.addEventListener('change', function(){
+                  message = "Change maxprice (";
+                  message = message.concat(dom_minprice.value,",",dom_maxprice.value,")");
+                  console.log(message);
+                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                });
+
+              </script>
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.converted_mana_cost_mode.label_tag }}</th>
+            <td>
+              {{ form.converted_mana_cost_mode.errors }}
+              {{ form.converted_mana_cost_mode }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.converted_mana_cost.label_tag }}</th>
+            <td>
+              {{ form.converted_mana_cost.errors }}
+              {{ form.converted_mana_cost }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.power_mode.label_tag }}</th>
+            <td>
+              {{ form.power_mode.errors }}
+              {{ form.power_mode }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.power.label_tag }}</th>
+            <td>
+              {{ form.power.errors }}
+              {{ form.power }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.toughness_mode.label_tag }}</th>
+            <td>
+              {{ form.toughness_mode.errors }}
+              {{ form.toughness_mode }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.toughness.label_tag }}</th>
+            <td>
+              {{ form.toughness.errors }}
+              {{ form.toughness }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_color.label_tag }}</th>
+            <td>
+              {{ form.card_color.errors }}
+              {{ form.card_color }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_type.label_tag }}</th>
+            <td>
+              {{ form.card_type.errors }}
+              {{ form.card_type }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.card_rarity.label_tag }}</th>
+            <td>
+              {{ form.card_rarity.errors }}
+              {{ form.card_rarity }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.collection_number.label_tag }}</th>
+            <td>
+              {{ form.collection_number.errors }}
+              {{ form.collection_number }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.sort_by_choice.label_tag }}</th>
+            <td>
+              {{ form.sort_by_choice.errors }}
+              {{ form.sort_by_choice }}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ form.sorting_order.label_tag }}</th>
+            <td>
+              {{ form.sorting_order.errors }}
+              {{ form.sorting_order }}
+            </td>
+          </tr>
+      </table>
+    
+      <input style="margin-top:10px; font:inherit; font-weight: bold; font-size: 20px; background-color: darkolivegreen; height: 35px; width: 30%; border-radius: 5px; font-family: Trebuchet MS;" type="submit" value="Go">
     </form>
 </div>

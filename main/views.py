@@ -40,14 +40,15 @@ def home(request):
     converted_mana_cost = 0
     #Arbitrarily picked -7777777 as a default sentinel value
     collection_number = -7777777
-    price = 0
+    minprice = 0
+    maxprice = 0
 
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
 
     power_mode = 'NO_VALUE'
     toughness_mode = 'NO_VALUE'
-    price_mode = 'NO_VALUE'
+
     converted_mana_cost_mode = 'NO_VALUE'
 
     sort_by_choice = 'card_name'
@@ -107,10 +108,16 @@ def home(request):
             elif parameter_name == "set_name":
                 set_name_raw = parameter_val
                 set_name = unquote_plus(set_name_raw)
-            elif parameter_name == "price":
-                price = int(parameter_val)
-            elif parameter_name == "price_mode":
-                price_mode = parameter_val
+            elif parameter_name == "minprice":
+                if parameter_val == '':
+                    minprice = 0
+                else:
+                    minprice = int(parameter_val)
+            elif parameter_name == "maxprice":
+                if parameter_val == '':
+                    maxprice = 0
+                else:
+                    maxprice = int(parameter_val)
             elif parameter_name == "seller_name":
                 seller_name_raw = parameter_val
                 seller_name = unquote_plus(seller_name_raw)
@@ -133,8 +140,8 @@ def home(request):
             'card_artist': card_artist,
             'set_name': set_name,
             'seller_name': seller_name, 
-            'price': price,
-            'price_mode': price_mode,
+            'minprice': minprice,
+            'maxprice': maxprice,
             'converted_mana_cost': converted_mana_cost,
             'converted_mana_cost_mode': converted_mana_cost_mode,
             'power_mode': power_mode,
@@ -235,16 +242,9 @@ def home(request):
                         listings = listings.filter(product_id__converted_mana_cost__gt = converted_mana_cost)
 
             #Filter by Price
-            if int(price) > 0:
-                if price_mode != 'NO_VALUE':
-                    if price_mode == 'lte':
-                        listings = listings.filter(price__lte = price)
-                    elif price_mode == 'gte':
-                        listings = listings.filter(price__gte = price)
-                    elif price_mode == 'lt':
-                        listings = listings.filter(price__lt = price)
-                    elif price_mode == 'gt':
-                        listings = listings.filter(price__gt = price)
+            if minprice != 0 and maxprice != 0:
+                listings = listings.filter(price__lte = maxprice)
+                listings = listings.filter(price__gte = minprice)
 
             #Filter by Card Colors
             if len(colors) > 0:
@@ -363,12 +363,8 @@ def home(request):
             else:
                 dynamic_form_qs = dynamic_form_qs + r"set_name=" + set_name 
 
-            if price_mode != '': 
-                dynamic_form_qs = dynamic_form_qs + r"price_mode=" + quote_plus(price_mode)
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"price_mode=" + price_mode 
-
-            dynamic_form_qs = dynamic_form_qs + r"price=" + str(price) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"minprice=" + str(minprice) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"maxprice=" + str(maxprice) + r"&"
 
             if seller_name != '': 
                 dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name)
@@ -432,8 +428,8 @@ def home(request):
                 'card_artist': card_artist,
                 'set_name': set_name,
                 'seller_name': seller_name, 
-                'price': price,
-                'price_mode': price_mode,
+                'minprice': minprice,
+                'maxprice': maxprice,
                 'converted_mana_cost': converted_mana_cost,
                 'converted_mana_cost_mode': converted_mana_cost_mode,
                 'power_mode': power_mode,

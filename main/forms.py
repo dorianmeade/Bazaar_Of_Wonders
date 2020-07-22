@@ -71,16 +71,20 @@ class SearchForm(forms.Form):
         ('gt','Greater than'),
     }
 
-    auction_house_search = forms.CharField(required=False,initial='no',widget=forms.Select(choices=[('no', 'No'), ('yes', 'Yes')],
+    YES_NO_CHOICE = {
+        ('yes','Yes'),
+        ('no','No')
+    }
+
+    auction_house_search = forms.CharField(required=False,initial='no',widget=forms.Select(choices=YES_NO_CHOICE,
                                                             attrs={ 'class': 'dropdown-trigger btn',
                                                                     'style': 'background-color: '
                                                                             'darkolivegreen; color: black; '
                                                                             'font-weight: bold; '
                                                                             'font-family: Trebuchet MS;'
-                                                                            
                                                                             }))
 
-    sponsored = forms.CharField(required=False,initial='no',widget=forms.Select(choices=[('no', 'No'), ('yes', 'Yes')],
+    sponsored = forms.CharField(required=False,initial='no',widget=forms.Select(choices=YES_NO_CHOICE,
                                                             attrs={ 'class': 'dropdown-trigger btn',
                                                                     'style': 'background-color: '
                                                                             'darkolivegreen; color: black; '
@@ -95,15 +99,9 @@ class SearchForm(forms.Form):
     card_artist = forms.CharField(max_length=200, required=False)
     set_name = forms.CharField(max_length=200, required=False)
     seller_name = forms.CharField(max_length=200, required=False)
-    price_mode = forms.CharField(label='Filter option (Price):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
-                                                                        attrs={ 'class': 'dropdown-trigger btn',
-                                                                                'style': 'background-color: '
-                                                                                        'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        
-                                                                                        }))
-    price = forms.IntegerField(required=False, initial=0)
+
+    minprice = forms.IntegerField(required=False, initial=0)
+    maxprice = forms.IntegerField(required=False, initial=0)
 
     converted_mana_cost_mode = forms.CharField(label='Filter option (Converted Mana Cost):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
                                                                         attrs={ 'class': 'dropdown-trigger btn',
