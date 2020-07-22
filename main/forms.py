@@ -77,6 +77,17 @@ class SearchForm(forms.Form):
     card_keywords = forms.CharField(max_length=200, required=False)
     card_artist = forms.CharField(max_length=200, required=False)
     set_name = forms.CharField(max_length=200, required=False)
+
+    price_mode = forms.CharField(label='Filter option (Power):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
+                                                                        attrs={ 'class': 'dropdown-trigger btn',
+                                                                                'style': 'background-color: '
+                                                                                        'darkolivegreen; color: black; '
+                                                                                        'font-weight: bold; '
+                                                                                        'font-family: Trebuchet MS;'
+                                                                                        
+                                                                                        }))
+    price = forms.IntegerField(required=False, initial=0)
+
     converted_mana_cost_mode = forms.CharField(label='Filter option (Converted Mana Cost):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
                                                                         attrs={ 'class': 'dropdown-trigger btn',
                                                                                 'style': 'background-color: '

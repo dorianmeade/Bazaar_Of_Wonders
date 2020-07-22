@@ -100,6 +100,10 @@ def home(request):
             elif parameter_name == "set_name":
                 set_name_raw = parameter_val
                 set_name = unquote_plus(set_name_raw)
+            elif parameter_name == "price":
+                price = int(parameter_val)
+            elif parameter_name == "price_mode":
+                price_mode = parameter_val
 
 
     if request.method == "GET":              
@@ -110,6 +114,8 @@ def home(request):
             'card_flavor_text': card_flavor_text,
             'card_artist': card_artist,
             'set_name': set_name,
+            'price': price,
+            'price_mode': price_mode,
             'converted_mana_cost': converted_mana_cost,
             'converted_mana_cost_mode': converted_mana_cost_mode,
             'power_mode': power_mode,
@@ -302,9 +308,16 @@ def home(request):
                 dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + sorting_order 
 
             if set_name != '': 
-                dynamic_form_qs = dynamic_form_qs + r"set_name=" + quote_plus(sorting_order)
+                dynamic_form_qs = dynamic_form_qs + r"set_name=" + quote_plus(set_name)
             else:
-                dynamic_form_qs = dynamic_form_qs + r"set_name=" + sorting_order 
+                dynamic_form_qs = dynamic_form_qs + r"set_name=" + set_name 
+
+            if price_mode != '': 
+                dynamic_form_qs = dynamic_form_qs + r"price_mode=" + quote_plus(price_mode)
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"price_mode=" + price_mode 
+
+            dynamic_form_qs = dynamic_form_qs + r"price=" + str(price) + r"&"
                 
             #TODO: Debug pring statement for form query string
             #print("DYNAMIC_STRING:")
@@ -350,6 +363,8 @@ def home(request):
                 'card_flavor_text': card_flavor_text,
                 'card_artist': card_artist,
                 'set_name': set_name,
+                'price': price,
+                'price_mode': price_mode,
                 'converted_mana_cost': converted_mana_cost,
                 'converted_mana_cost_mode': converted_mana_cost_mode,
                 'power_mode': power_mode,
