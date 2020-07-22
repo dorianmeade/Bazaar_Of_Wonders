@@ -6,15 +6,15 @@ from django.contrib.auth.models import User
 class Card_Rarity(models.Model):
     card_rarity = models.CharField(max_length=200, unique=True) 
 
-    def __str__(self):
-        return self.card_rarity
+    #def __str__(self):
+    #   return self.card_rarity
 
 
 class Card_Type(models.Model):
     card_type = models.CharField(max_length=200, unique=True)
 
-    def __str__(self):
-        return self.card_type
+    #def __str__(self):
+    #    return self.card_type
 
 
 class Card(models.Model):
@@ -26,7 +26,7 @@ class Card(models.Model):
     card_image_loc = models.CharField(max_length=800)
     mana_cost = models.CharField(max_length=200)
     converted_mana_cost = models.IntegerField()
-    type_id = models.ForeignKey('Card_Type',on_delete=models.CASCADE)
+    type_id = models.ForeignKey(Card_Type,on_delete=models.CASCADE)
     card_text = models.CharField(max_length=4000)
     card_color = models.CharField(max_length=200, default='N/A')
     card_keywords = models.CharField(max_length=200)
@@ -34,12 +34,19 @@ class Card(models.Model):
     power = models.IntegerField() 
     toughness = models.IntegerField()
     collection_number = models.IntegerField()
-    rarity_id = models.ForeignKey('Card_Rarity',on_delete=models.CASCADE)
+    rarity_id = models.ForeignKey(Card_Rarity,on_delete=models.CASCADE)
     flavor_text = models.CharField(max_length=4000)
     artist = models.CharField(max_length=200)
     
-    def __str__(self):
-        return self.name
+    #def __str__(self):
+    #    return self.name
+
+    def save(self, *args, **kwargs):
+        rarity, _ = Card_Rarity.objects.get_or_create(card_rarity = self.card_rarity) # pylint: disable=maybe-no-member
+        self.rarity = rarity
+        type, _ = Card_Type.objects.get_or_create(card_type = self.card_type) # pylint: disable=maybe-no-member
+        self.type = type
+        super(Card, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Returns the url to access a particular author instance."""
@@ -62,7 +69,7 @@ class Bazaar_User(models.Model):
 
 
 class Listing(models.Model):
-    product_id = models.ForeignKey('Card', on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Card, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=200)
     product_line = models.CharField(max_length=50)
     set_name = models.CharField(max_length=200)
@@ -72,16 +79,23 @@ class Listing(models.Model):
     mtg_stocks_purchase_url = models.CharField(max_length=2000, default="https://www.mtgstocks.com/news")
     quantity = models.IntegerField()
     condition = models.CharField(max_length=200)
-    seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
+    seller_key = models.ForeignKey(Seller, on_delete=models.CASCADE)
     sponsored = models.BooleanField()
     user_listing = models.BooleanField()
-    def __str__(self):
-        return self.product_name
+    #def __str__(self):
+    #    return self.product_name
+
+    def save(self, *args, **kwargs):
+        card, _ = Card.objects.get_or_create(product_id = self.product_id) # pylint: disable=maybe-no-member
+        self.card = card
+        #seller, _ = Seller.objects.get_or_create(seller_key = self.seller_key) # pylint: disable=maybe-no-member
+        #self.seller = seller
+        super(Listing, self).save(*args, **kwargs)
 
 
 class Notification(models.Model):
     auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
+    card_id = models.ForeignKey(Card, on_delete=models.CASCADE)
     price_threshold = models.FloatField()
     less_than_flag = models.BooleanField(default=True)
     greater_than_flag = models.BooleanField(default=False)
@@ -96,8 +110,8 @@ class Collection(models.Model):
     collection_name = models.CharField(max_length=200)
 
 class Collection_Content(models.Model):
-    collection_id = models.ForeignKey('Collection',on_delete=models.CASCADE)
-    card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
+    collection_id = models.ForeignKey(Collection,on_delete=models.CASCADE)
+    card_id = models.ForeignKey(Card, on_delete=models.CASCADE)
     obtained = models.BooleanField()
 
 class User_Preferences(models.Model):
