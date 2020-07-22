@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tinymce',
-    'materializecssform',
     'celery',
     'redis'
+    'materializecssform',
+    'background_task',
+#    'multiselectfield'
 ]
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'

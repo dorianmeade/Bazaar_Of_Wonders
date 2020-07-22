@@ -1,6 +1,6 @@
-django-tinymce4-lite
 django-materializecss-form
 PyYAML
 django
 celery
 redis
+django-background-tasks

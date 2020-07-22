@@ -19,7 +19,7 @@
     <ul class="pagination" >
         {% if data.has_previous %}
         <li>
-        <a style="color: white;" href="?page={{data.previous_page_number}}&{{'card_name' | urlencode }}={{form.card_name.value | urlencode }}&{{'card_type' | urlencode }}={{form.card_type.value | urlencode }}&{{'card_rarity' | urlencode }}={{form.card_rarity.value | urlencode }}&{{'sort_by_choice' | urlencode }}={{form.sort_by_choice.value | urlencode }}&{{'sorting_order' | urlencode }}={{form.sorting_order.value | urlencode }}" aria-label="Previous">
+        <a style="color: white;" href="?page={{data.previous_page_number}}&{{dynamic_form_qs}}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
         </a>
         </li>
@@ -27,15 +27,15 @@
         {% for p in data.paginator.page_range %}
             {% if p <= data.number|add:4 and p >= data.number|add:-4 %}
                 {% if data.number == p %}
-                    <li><a style="background:black; color: orange;" href="?page={{p}}&{{'card_name' | urlencode }}={{form.card_name.value | urlencode }}&{{'card_type' | urlencode }}={{form.card_type.value | urlencode }}&{{'card_rarity' | urlencode }}={{form.card_rarity.value | urlencode }}&{{'sort_by_choice' | urlencode }}={{form.sort_by_choice.value | urlencode }}&{{'sorting_order' | urlencode }}={{form.sorting_order.value | urlencode }}">{{p}}</a></li>
+                    <li><a style="background:black; color: orange;" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% else %}
-                    <li><a style="background:black; color: white;" href="?page={{p}}&{{'card_name' | urlencode }}={{form.card_name.value | urlencode }}&{{'card_type' | urlencode }}={{form.card_type.value | urlencode }}&{{'card_rarity' | urlencode }}={{form.card_rarity.value | urlencode }}&{{'sort_by_choice' | urlencode }}={{form.sort_by_choice.value | urlencode }}&{{'sorting_order' | urlencode }}={{form.sorting_order.value | urlencode }}">{{p}}</a></li>
+                    <li><a style="background:black; color: white;" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% endif %}
         {% endif %}
         {% endfor %}
         {% if data.has_next %}
         <li>
-        <a style="color: white;" href="?page={{data.next_page_number}}&{{'card_name' | urlencode }}={{form.card_name.value | urlencode }}&{{'card_type' | urlencode }}={{form.card_type.value | urlencode }}&{{'card_rarity' | urlencode }}={{form.card_rarity.value | urlencode }}&{{'sort_by_choice' | urlencode }}={{form.sort_by_choice.value | urlencode }}&{{'sorting_order' | urlencode }}={{form.sorting_order.value | urlencode }}" aria-label="Next">
+        <a style="color: white;" href="?page={{data.next_page_number}}&{{dynamic_form_qs}}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
         </a>
         </li>
