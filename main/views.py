@@ -32,6 +32,9 @@ def home(request):
     seller_name = ''
     seller_name_raw = ''
 
+    auction_house_search = 'no'
+    auction_house_search_raw = 'no'
+    
     power = 0
     toughness = 0
     converted_mana_cost = 0
@@ -111,11 +114,15 @@ def home(request):
             elif parameter_name == "seller_name":
                 seller_name_raw = parameter_val
                 seller_name = unquote_plus(seller_name_raw)
+            elif parameter_name == "auction_house_search":
+                auction_house_search_raw = parameter_val
+                auction_house_search = unquote_plus(auction_house_search_raw)
 
 
     if request.method == "GET":              
         #Place form variables from GET request into form
         form = SearchForm({
+            'auction_house_search': auction_house_search,
             'card_name': card_name,
             'card_text': card_text,
             'card_flavor_text': card_flavor_text,
@@ -231,8 +238,11 @@ def home(request):
                 listings = listings.filter(product_id__collection_number__iexact = collection_number)
 
             #Filter by seller name 
-            if seller_name != '':
-                listings = listing_manager.filter(seller_key_id__seller_name__icontains = seller_name)              
+            #TODO: Implement Auction house search, may require model change
+            if auction_house_search == 'no':
+                if seller_name != '':
+                    listings = listing_manager.filter(seller_key_id__seller_name__icontains = seller_name)
+
   
             # Implement sorts
             if sort_by_choice == 'card_name':
@@ -335,6 +345,11 @@ def home(request):
                 dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name)
             else:
                 dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name 
+
+            if auction_house_search != '': 
+                dynamic_form_qs = dynamic_form_qs + r"auction_house_search=" + quote_plus(auction_house_search)
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"auction_house_search=" + auction_house_search 
                 
             #TODO: Debug pring statement for form query string
             #print("DYNAMIC_STRING:")
@@ -375,6 +390,7 @@ def home(request):
 
             #Place form variables from GET request into form
             form = SearchForm({
+                'auction_house_search': auction_house_search,
                 'card_name': card_name,
                 'card_text': card_text,
                 'card_flavor_text': card_flavor_text,

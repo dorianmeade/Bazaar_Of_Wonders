@@ -71,6 +71,15 @@ class SearchForm(forms.Form):
         ('gt','Greater than'),
     }
 
+    action_house_search = forms.CharField(required=False,initial=False,widget=forms.Select(choices=[('no', 'No'), ('yes', 'Yes')],
+                                                            attrs={ 'class': 'dropdown-trigger btn',
+                                                                    'style': 'background-color: '
+                                                                            'darkolivegreen; color: black; '
+                                                                            'font-weight: bold; '
+                                                                            'font-family: Trebuchet MS;'
+                                                                            
+                                                                            }))
+
     card_name = forms.CharField(max_length=200, required=False)
     card_text = forms.CharField(max_length=4000, required=False)
     card_flavor_text = forms.CharField(max_length=4000, required=False)
