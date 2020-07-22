@@ -279,7 +279,7 @@ def home(request):
             
             #Add the colors to the query string
             for color in colors:
-                dynamic_form_qs = dynamic_form_qs + r"card_color=" +quote_plus(card_color) + r"&"
+                dynamic_form_qs = dynamic_form_qs + r"card_color=" +quote_plus(color) + r"&"
 
 
             if card_text != '': 
