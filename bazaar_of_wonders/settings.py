@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'materializecssform',
     'background_task',
+#    'multiselectfield'
 ]
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'

@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm
 from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences, Notification
-
+from urllib.parse import unquote_plus, quote_plus
 
 
 # homepage view
@@ -18,21 +18,45 @@ def home(request):
     query_parameters = raw_string.split("&")
 
     card_name = ''
+    card_name_raw = ''
+    card_text = ''
+    card_text_raw= ''
+    card_flavor_text = ''
+    card_flavor_text_raw = ''
+    card_keywords = ''
+    card_keywords_raw = ''
+    card_artist = ''
+    card_artist_raw = ''
+
+    power = 0
+    toughness = 0
+    converted_mana_cost = 0
+    #Arbitrarily picked -7777777 as a default sentinel value
+    collection_number = -7777777
+
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
+
+    power_mode = 'NO_VALUE'
+    toughness_mode = 'NO_VALUE'
+    converted_mana_cost_mode = 'NO_VALUE'
+
     sort_by_choice = 'card_name'
     sorting_order = 'ascending'
+
+    colors = []
     page = 1
     if raw_string != '':
         for parameter in query_parameters: 
             parameter_tokens = parameter.split("=")
             parameter_name = parameter_tokens[0]
-            if len(parameter_tokens) == 0:
+            if len(parameter_tokens) <= 0:
                 parameter_val = None
             else:
                 parameter_val = parameter_tokens[1]
             if parameter_name == "card_name":
-                card_name = parameter_val
+                card_name_raw = parameter_val
+                card_name = unquote_plus(card_name_raw)
             elif parameter_name == "card_type":
                 card_type = parameter_val
             elif parameter_name == "card_rarity":
@@ -43,13 +67,54 @@ def home(request):
                 sorting_order = parameter_val
             elif parameter_name == "page":
                 page = parameter_val
+            elif parameter_name == "card_text":
+                card_text_raw = parameter_val
+                card_text = unquote_plus(card_text_raw)
+            elif parameter_name == "card_color":
+                colors += [parameter_val]
+            elif parameter_name == "card_keywords":
+                card_keywords_raw = parameter_val
+                card_keywords = unquote_plus(card_keywords_raw)
+            elif parameter_name == "power":
+                power = int(parameter_val)
+            elif parameter_name == "toughness":
+                toughness = int(parameter_val)
+            elif parameter_name == "power_mode":
+                power_mode = parameter_val
+            elif parameter_name == "toughness_mode":
+                toughness_mode = parameter_val
+            elif parameter_name == "converted_mana_cost":
+                converted_mana_cost = int(parameter_val)
+            elif parameter_name == "converted_mana_cost_mode":
+                converted_mana_cost_mode = parameter_val
+            elif parameter_name == "collection_number":
+                collection_number = int(parameter_val)
+            elif parameter_name == "card_flavor_text":
+                card_flavor_text_raw = parameter_val
+                card_flavor_text = unquote_plus(card_flavor_text_raw)
+            elif parameter_name == "card_artist":
+                card_artist_raw = parameter_val
+                card_artist = unquote_plus(card_artist_raw)
 
     if request.method == "GET":              
         #Place form variables from GET request into form
         form = SearchForm({
             'card_name': card_name,
+            'card_text': card_text,
+            'card_flavor_text': card_flavor_text,
+            'card_artist': card_artist,
+            'converted_mana_cost': converted_mana_cost,
+            'converted_mana_cost_mode': converted_mana_cost_mode,
+            'power_mode': power_mode,
+            'power': power,
+            'toughness_mode': toughness_mode,
+            'toughness': toughness,
+            'card_keywords': card_keywords,
             'card_type': card_type,
+            #Added to form after instantiation by parsing the query string 
+            #'card_color': 
             'card_rarity': card_rarity,
+            'collection_number': collection_number,
             'sort_by_choice': sort_by_choice,
             'sorting_order': sorting_order
         })
@@ -59,6 +124,22 @@ def home(request):
             # Filtering by name (if name not specified, this will return all cards)
             listings = listing_manager.filter(product_id__name__icontains = card_name)
 
+            # Filtering by card_text (if card_text not specified, this will return all cards)
+            if card_text != '':
+                listings = listing_manager.filter(product_id__card_text__icontains = card_text)
+
+            # Filtering by card_artist (if card_artist not specified, this will return all cards)
+            if card_artist != '':
+                listings = listing_manager.filter(product_id__artist__icontains = card_artist)
+
+            # Filtering by card_flavor_text (if card_flavor_text not specified, this will return all cards)
+            if card_flavor_text != '':
+                listings = listing_manager.filter(product_id__flavor_text__icontains = card_flavor_text)
+
+            #Filter by Card Keywords
+            if card_keywords != '':
+                listings = listing_manager.filter(product_id__card_keywords__icontains = card_keywords)
+
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
                 listings = listings.filter(product_id__type_id__card_type__contains = card_type)
@@ -67,8 +148,64 @@ def home(request):
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
                 listings = listings.filter(product_id__rarity_id__card_rarity__iexact = card_rarity)
 
-            # Implement sorts
+            #Filter by Toughness
+            if int(toughness) > 0:
+                if toughness_mode != 'NO_VALUE':
+                    if toughness_mode == 'lte':
+                        listings = listings.filter(product_id__toughness__lte = toughness)
+                    elif toughness_mode == 'gte':
+                        listings = listings.filter(product_id__toughness__gte = toughness)
+                    elif toughness_mode == 'lt':
+                        listings = listings.filter(product_id__toughness__lt = toughness)
+                    elif toughness_mode == 'gt':
+                         listings = listings.filter(product_id__toughness__gt = toughness)
+            
+            #Filter by Power
+            if int(power) > 0:
+                if power_mode != 'NO_VALUE':
+                    if power_mode == 'lte':
+                        listings = listings.filter(product_id__power__lte = power)
+                    elif power_mode == 'gte':
+                        listings = listings.filter(product_id__power__gte = power)
+                    elif power_mode == 'lt':
+                        listings = listings.filter(product_id__power__lt = power)
+                    elif power_mode == 'gt':
+                        listings = listings.filter(product_id__power__gt = power)
 
+            #Filter by Converted Mana Cost
+            if int(converted_mana_cost) > 0:
+                if converted_mana_cost_mode != 'NO_VALUE':
+                    if converted_mana_cost_mode == 'lte':
+                        listings = listings.filter(product_id__converted_mana_cost__lte = converted_mana_cost)
+                    elif converted_mana_cost_mode == 'gte':
+                        listings = listings.filter(product_id__converted_mana_cost__gte = converted_mana_cost)
+                    elif converted_mana_cost_mode == 'lt':
+                        listings = listings.filter(product_id__converted_mana_cost__lt = converted_mana_cost)
+                    elif converted_mana_cost_mode == 'gt':
+                        listings = listings.filter(product_id__converted_mana_cost__gt = converted_mana_cost)
+
+
+            #Filter by Card Colors
+            if len(colors) > 0:
+                for i in colors:
+                    if i == "white":
+                        listings = listings.filter(product_id__card_color__contains = 'W')
+                    elif i == "blue":
+                        listings = listings.filter(product_id__card_color__icontains = 'U')
+                    elif i == "black":
+                        listings = listings.filter(product_id__card_color__icontains = 'B')
+                    elif i == "red":
+                        listings = listings.filter(product_id__card_color__icontains = 'R')
+                    elif i == "green":
+                        listings = listings.filter(product_id__card_color__icontains = 'G')
+                listings = listings.exclude(product_id__card_color = 'No color available')
+
+
+            #Filter by Collection Number 
+            if collection_number != -7777777:
+                listings = listings.filter(product_id__collection_number__iexact = collection_number)
+  
+            # Implement sorts
             if sort_by_choice == 'card_name':
                 sort_param = "product_id__name"
             elif sort_by_choice == 'card_rarity':
@@ -78,6 +215,85 @@ def home(request):
 
             if sorting_order == "descending":
                 sort_param = "-" + sort_param
+### BEGIN query string 
+
+            if card_name != '': 
+                dynamic_form_qs = r"card_name=" + quote_plus(card_name) + r"&"
+            else:
+                dynamic_form_qs = r"card_name=" + card_name + r"&"
+
+            dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost=" + str(converted_mana_cost) + r"&"
+
+            if converted_mana_cost_mode != '': 
+                dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost_mode=" + quote_plus(converted_mana_cost_mode) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost_mode=" + converted_mana_cost_mode + r"&"
+
+            dynamic_form_qs = dynamic_form_qs + r"power=" + str(power) + r"&"
+
+            if power_mode != '': 
+                dynamic_form_qs = dynamic_form_qs + r"power_mode=" + quote_plus(power_mode) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"power_mode=" + power_mode + r"&"
+
+            dynamic_form_qs = dynamic_form_qs + r"toughness=" + str(toughness) + r"&"
+
+            if toughness_mode != '': 
+                dynamic_form_qs = dynamic_form_qs + r"toughness_mode=" + quote_plus(toughness_mode) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"toughness_mode=" + toughness_mode + r"&"
+
+            if card_keywords != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + quote_plus(card_keywords) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + card_keywords + r"&"
+            
+            #Add the colors to the query string
+            for color in colors:
+                dynamic_form_qs = dynamic_form_qs + r"card_color=" +quote_plus(card_color) + r"&"
+
+
+            if card_text != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_text=" + quote_plus(card_text) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_text=" + card_text + r"&"
+
+            if card_flavor_text != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_flavor_text=" + quote_plus(card_flavor_text) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_flavor_text=" + card_flavor_text + r"&"
+
+            if card_type != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_type=" + quote_plus(card_type) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_type=" + card_type + r"&"
+
+            if card_rarity != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_rarity=" + quote_plus(card_rarity) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_rarity=" + card_rarity + r"&"
+
+            dynamic_form_qs = dynamic_form_qs + r"collection_number=" + str(collection_number) + r"&"
+
+            if sort_by_choice != '': 
+                dynamic_form_qs = dynamic_form_qs + r"sort_by_choice=" + quote_plus(sort_by_choice) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"sort_by_choice=" + sort_by_choice + r"&"
+
+            if card_artist != '': 
+                dynamic_form_qs = dynamic_form_qs + r"card_artist=" + quote_plus(card_artist) + r"&"
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"card_artist=" + card_artist + r"&"
+
+            if sorting_order != '': 
+                dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + quote_plus(sorting_order)
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + sorting_order 
+                
+            #TODO: Debug pring statement for form query string
+            print("DYNAMIC_STRING:")
+            print(dynamic_form_qs)
+### END query string 
 
             # Sort the QuerySet per the parameter
             listings = listings.order_by(sort_param)
@@ -95,7 +311,7 @@ def home(request):
                 page_obj = paginator.page(paginator.num_pages)    
             return render(request=request,
                           template_name='main/home.html',
-                          context={'data': page_obj, 'form': form})  # load necessary schemas
+                          context={'data': page_obj, 'form': form,'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
         else:
             listings = Listing.objects.all()
             # display only 25 cards per page
@@ -111,18 +327,33 @@ def home(request):
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 page_obj = paginator.page(paginator.num_pages)
 
-            #Place form variables from GET request into form
+                #Place form variables from GET request into form
             form = SearchForm({
                 'card_name': card_name,
+                'card_text': card_text,
+                'card_flavor_text': card_flavor_text,
+                'card_artist': card_artist,
+                'converted_mana_cost': converted_mana_cost,
+                'converted_mana_cost_mode': converted_mana_cost_mode,
+                'power_mode': power_mode,
+                'power': power,
+                'toughness_mode': toughness_mode,
+                'toughness': toughness,
+                'card_keywords': card_keywords,
                 'card_type': card_type,
+                #Added to form after instantiation by parsing the query string 
+                #'card_color': 
                 'card_rarity': card_rarity,
+                'collection_number': collection_number,
                 'sort_by_choice': sort_by_choice,
                 'sorting_order': sorting_order
             })
-      
+
+
+            
             return render(request=request,
                           template_name='main/home.html',
-                          context={'data': page_obj, 'form': form})  # load necessary schemas
+                          context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
 
 
 
