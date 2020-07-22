@@ -27,6 +27,8 @@ def home(request):
     card_keywords_raw = ''
     card_artist = ''
     card_artist_raw = ''
+    set_name = ''
+    set_name_raw = ''
 
     power = 0
     toughness = 0
@@ -95,6 +97,10 @@ def home(request):
             elif parameter_name == "card_artist":
                 card_artist_raw = parameter_val
                 card_artist = unquote_plus(card_artist_raw)
+            elif parameter_name == "set_name":
+                set_name_raw = parameter_val
+                set_name = unquote_plus(set_name_raw)
+
 
     if request.method == "GET":              
         #Place form variables from GET request into form
@@ -103,6 +109,7 @@ def home(request):
             'card_text': card_text,
             'card_flavor_text': card_flavor_text,
             'card_artist': card_artist,
+            'set_name': set_name,
             'converted_mana_cost': converted_mana_cost,
             'converted_mana_cost_mode': converted_mana_cost_mode,
             'power_mode': power_mode,
@@ -139,6 +146,10 @@ def home(request):
             #Filter by Card Keywords
             if card_keywords != '':
                 listings = listing_manager.filter(product_id__card_keywords__icontains = card_keywords)
+
+            #Filter by Card Keywords
+            if set_name != '':
+                listings = listing_manager.filter(product_id__set_name__icontains = set_name)
 
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
@@ -289,10 +300,15 @@ def home(request):
                 dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + quote_plus(sorting_order)
             else:
                 dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + sorting_order 
+
+            if set_name != '': 
+                dynamic_form_qs = dynamic_form_qs + r"set_name=" + quote_plus(sorting_order)
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"set_name=" + sorting_order 
                 
             #TODO: Debug pring statement for form query string
-            print("DYNAMIC_STRING:")
-            print(dynamic_form_qs)
+            #print("DYNAMIC_STRING:")
+            #print(dynamic_form_qs)
 ### END query string 
 
             # Sort the QuerySet per the parameter
@@ -327,12 +343,13 @@ def home(request):
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 page_obj = paginator.page(paginator.num_pages)
 
-                #Place form variables from GET request into form
+            #Place form variables from GET request into form
             form = SearchForm({
                 'card_name': card_name,
                 'card_text': card_text,
                 'card_flavor_text': card_flavor_text,
                 'card_artist': card_artist,
+                'set_name': set_name,
                 'converted_mana_cost': converted_mana_cost,
                 'converted_mana_cost_mode': converted_mana_cost_mode,
                 'power_mode': power_mode,
