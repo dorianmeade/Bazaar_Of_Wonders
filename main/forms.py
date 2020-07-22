@@ -77,7 +77,7 @@ class SearchForm(forms.Form):
     card_keywords = forms.CharField(max_length=200, required=False)
     card_artist = forms.CharField(max_length=200, required=False)
     set_name = forms.CharField(max_length=200, required=False)
-
+    seller_name = forms.CharField(max_length=200, required=False)
     price_mode = forms.CharField(label='Filter option (Power):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
                                                                         attrs={ 'class': 'dropdown-trigger btn',
                                                                                 'style': 'background-color: '

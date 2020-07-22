@@ -29,18 +29,22 @@ def home(request):
     card_artist_raw = ''
     set_name = ''
     set_name_raw = ''
+    seller_name = ''
+    seller_name_raw = ''
 
     power = 0
     toughness = 0
     converted_mana_cost = 0
     #Arbitrarily picked -7777777 as a default sentinel value
     collection_number = -7777777
+    price = 0
 
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
 
     power_mode = 'NO_VALUE'
     toughness_mode = 'NO_VALUE'
+    price_mode = 'NO_VALUE'
     converted_mana_cost_mode = 'NO_VALUE'
 
     sort_by_choice = 'card_name'
@@ -104,6 +108,9 @@ def home(request):
                 price = int(parameter_val)
             elif parameter_name == "price_mode":
                 price_mode = parameter_val
+            elif parameter_name == "seller_name":
+                seller_name_raw = parameter_val
+                seller_name = unquote_plus(seller_name_raw)
 
 
     if request.method == "GET":              
@@ -114,6 +121,7 @@ def home(request):
             'card_flavor_text': card_flavor_text,
             'card_artist': card_artist,
             'set_name': set_name,
+            'seller_name': seller_name, 
             'price': price,
             'price_mode': price_mode,
             'converted_mana_cost': converted_mana_cost,
@@ -221,6 +229,10 @@ def home(request):
             #Filter by Collection Number 
             if collection_number != -7777777:
                 listings = listings.filter(product_id__collection_number__iexact = collection_number)
+
+            #Filter by seller name 
+            if seller_name != '':
+                listings = listing_manager.filter(seller_key_id__seller_name__icontains = seller_name)              
   
             # Implement sorts
             if sort_by_choice == 'card_name':
@@ -318,6 +330,11 @@ def home(request):
                 dynamic_form_qs = dynamic_form_qs + r"price_mode=" + price_mode 
 
             dynamic_form_qs = dynamic_form_qs + r"price=" + str(price) + r"&"
+
+            if seller_name != '': 
+                dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name)
+            else:
+                dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name 
                 
             #TODO: Debug pring statement for form query string
             #print("DYNAMIC_STRING:")
@@ -363,6 +380,7 @@ def home(request):
                 'card_flavor_text': card_flavor_text,
                 'card_artist': card_artist,
                 'set_name': set_name,
+                'seller_name': seller_name, 
                 'price': price,
                 'price_mode': price_mode,
                 'converted_mana_cost': converted_mana_cost,
