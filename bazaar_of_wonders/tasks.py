@@ -12,5 +12,5 @@ def update_data():
 
     management.call_command('loaddata', 'cards.json', verbosity=0)
     print("Cards updated")
-    management.call_command('loaddata', 'listings.json', verbosity=0)
-    print("Listings updated")
+    # management.call_command('loaddata', 'listings.json', verbosity=0)
+    # print("Listings updated")
