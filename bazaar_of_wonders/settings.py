@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from celery.schedules import crontab
+import bazaar_of_wonders.tasks
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tinymce',
-    'materializecssform'
+    'materializecssform',
+    'celery',
+    'redis'
 ]
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
@@ -157,6 +161,16 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
     }
+
+# CELERY SETTINGS
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BEAT_SCHEDULE = {
+    "update_data": {
+        "task": "bazaar_of_wonders.tasks.update_data",
+        "schedule": crontab(minute="*/10"),
+    },
+}
 
 # redirect after login
 LOGIN_REDIRECT_URL = '/'
