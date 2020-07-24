@@ -100,36 +100,19 @@ class SearchForm(forms.Form):
     set_name = forms.CharField(max_length=200, required=False)
     seller_name = forms.CharField(max_length=200, required=False)
 
-    minprice = forms.IntegerField(required=False, initial=0)
-    maxprice = forms.IntegerField(required=False, initial=0)
+    minprice = forms.DecimalField(required=False, initial=0,decimal_places=2)
+    maxprice = forms.DecimalField(required=False, initial=0,decimal_places=2)
 
-    converted_mana_cost_mode = forms.CharField(label='Filter option (Converted Mana Cost):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
-                                                                        attrs={ 'class': 'dropdown-trigger btn',
-                                                                                'style': 'background-color: '
-                                                                                        'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        
-                                                                                        }))
-    converted_mana_cost = forms.IntegerField(required=False, initial=0)
-    power_mode = forms.CharField(label='Filter option (Power):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
-                                                                        attrs={ 'class': 'dropdown-trigger btn',
-                                                                                'style': 'background-color: '
-                                                                                        'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        
-                                                                                        }))
-    power = forms.IntegerField(required=False, initial=0)
-    toughness_mode = forms.CharField(label='Filter option (Toughness):', initial = 'NO_VALUE', required = False, widget=forms.Select(choices=FILTER_MODES,
-                                                                        attrs={ 'class': 'dropdown-trigger btn',
-                                                                                'style': 'background-color: '
-                                                                                        'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        
-                                                                                        }))
-    toughness = forms.IntegerField(required=False, initial=0)
+
+    min_converted_mana_cost = forms.IntegerField(required=False, initial=0)
+    max_converted_mana_cost = forms.IntegerField(required=False, initial=0)
+
+    min_power = forms.IntegerField(required=False, initial=0)
+    max_power = forms.IntegerField(required=False, initial=0)
+
+    min_toughness = forms.IntegerField(required=False, initial=0)
+    max_toughness = forms.IntegerField(required=False, initial=0)
+
     card_color = forms.MultipleChoiceField(choices=COLORS,required=False, widget = forms.SelectMultiple(choices=COLORS, attrs={
                                                                                 'class': 'browser-default',
                                                                                'style': 'background-color: '

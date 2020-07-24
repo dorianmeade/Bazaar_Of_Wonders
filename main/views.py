@@ -35,21 +35,22 @@ def home(request):
     auction_house_search_raw = ''
     sponsored = ''
     sponsored_raw = ''  
-    power = 0
-    toughness = 0
-    converted_mana_cost = 0
+    min_power = 0
+    max_power = 0
+    min_toughness = 0
+    max_toughness = 0
+    min_converted_mana_cost = 0
+    max_converted_mana_cost = 0
     #Arbitrarily picked -7777777 as a default sentinel value
     collection_number = -7777777
-    minprice = 0
-    maxprice = 0
+    minprice = 0.00
+    maxprice = 0.00
 
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
 
-    power_mode = 'NO_VALUE'
-    toughness_mode = 'NO_VALUE'
 
-    converted_mana_cost_mode = 'NO_VALUE'
+
 
     sort_by_choice = 'card_name'
     sorting_order = 'ascending'
@@ -85,18 +86,18 @@ def home(request):
             elif parameter_name == "card_keywords":
                 card_keywords_raw = parameter_val
                 card_keywords = unquote_plus(card_keywords_raw)
-            elif parameter_name == "power":
-                power = int(parameter_val)
-            elif parameter_name == "toughness":
-                toughness = int(parameter_val)
-            elif parameter_name == "power_mode":
-                power_mode = parameter_val
-            elif parameter_name == "toughness_mode":
-                toughness_mode = parameter_val
-            elif parameter_name == "converted_mana_cost":
-                converted_mana_cost = int(parameter_val)
-            elif parameter_name == "converted_mana_cost_mode":
-                converted_mana_cost_mode = parameter_val
+            elif parameter_name == "min_power":
+                min_power = int(parameter_val)
+            elif parameter_name == "max_power":
+                max_power = int(parameter_val)                
+            elif parameter_name == "min_toughness":
+                min_toughness = int(parameter_val)
+            elif parameter_name == "max_toughness":
+                max_toughness = int(parameter_val)
+            elif parameter_name == "min_converted_mana_cost":
+                min_converted_mana_cost = int(parameter_val)
+            elif parameter_name == "max_converted_mana_cost":
+                max_converted_mana_cost = int(parameter_val)                
             elif parameter_name == "collection_number":
                 collection_number = int(parameter_val)
             elif parameter_name == "card_flavor_text":
@@ -109,15 +110,9 @@ def home(request):
                 set_name_raw = parameter_val
                 set_name = unquote_plus(set_name_raw)
             elif parameter_name == "minprice":
-                if parameter_val == '':
-                    minprice = 0
-                else:
-                    minprice = int(parameter_val)
+                 minprice = float(parameter_val)
             elif parameter_name == "maxprice":
-                if parameter_val == '':
-                    maxprice = 0
-                else:
-                    maxprice = int(parameter_val)
+                 maxprice = float(parameter_val)
             elif parameter_name == "seller_name":
                 seller_name_raw = parameter_val
                 seller_name = unquote_plus(seller_name_raw)
@@ -142,12 +137,12 @@ def home(request):
             'seller_name': seller_name, 
             'minprice': minprice,
             'maxprice': maxprice,
-            'converted_mana_cost': converted_mana_cost,
-            'converted_mana_cost_mode': converted_mana_cost_mode,
-            'power_mode': power_mode,
-            'power': power,
-            'toughness_mode': toughness_mode,
-            'toughness': toughness,
+            'min_converted_mana_cost': min_converted_mana_cost,
+            'max_converted_mana_cost': max_converted_mana_cost,
+            'min_power': min_power,
+            'max_power': max_power,
+            'min_toughness': min_toughness,
+            'max_toughness': max_toughness,
             'card_keywords': card_keywords,
             'card_type': card_type,
             #Added to form after instantiation by parsing the query string 
@@ -206,43 +201,22 @@ def home(request):
                 listings = listings.filter(product_id__rarity_id__card_rarity__iexact = card_rarity)
 
             #Filter by Toughness
-            if int(toughness) > 0:
-                if toughness_mode != 'NO_VALUE':
-                    if toughness_mode == 'lte':
-                        listings = listings.filter(product_id__toughness__lte = toughness)
-                    elif toughness_mode == 'gte':
-                        listings = listings.filter(product_id__toughness__gte = toughness)
-                    elif toughness_mode == 'lt':
-                        listings = listings.filter(product_id__toughness__lt = toughness)
-                    elif toughness_mode == 'gt':
-                         listings = listings.filter(product_id__toughness__gt = toughness)
+            if min_toughness != 0 and max_toughness != 0:
+                listings = listings.filter(product_id__toughness__lte = max_toughness)
+                listings = listings.filter(product_id__toughness__gte = min_toughness)
             
             #Filter by Power
-            if int(power) > 0:
-                if power_mode != 'NO_VALUE':
-                    if power_mode == 'lte':
-                        listings = listings.filter(product_id__power__lte = power)
-                    elif power_mode == 'gte':
-                        listings = listings.filter(product_id__power__gte = power)
-                    elif power_mode == 'lt':
-                        listings = listings.filter(product_id__power__lt = power)
-                    elif power_mode == 'gt':
-                        listings = listings.filter(product_id__power__gt = power)
+            if min_power != 0 and max_power != 0:
+                listings = listings.filter(product_id__power__lte = max_power)
+                listings = listings.filter(product_id__power__gte = min_power)
 
             #Filter by Converted Mana Cost
-            if int(converted_mana_cost) > 0:
-                if converted_mana_cost_mode != 'NO_VALUE':
-                    if converted_mana_cost_mode == 'lte':
-                        listings = listings.filter(product_id__converted_mana_cost__lte = converted_mana_cost)
-                    elif converted_mana_cost_mode == 'gte':
-                        listings = listings.filter(product_id__converted_mana_cost__gte = converted_mana_cost)
-                    elif converted_mana_cost_mode == 'lt':
-                        listings = listings.filter(product_id__converted_mana_cost__lt = converted_mana_cost)
-                    elif converted_mana_cost_mode == 'gt':
-                        listings = listings.filter(product_id__converted_mana_cost__gt = converted_mana_cost)
-
+            if min_converted_mana_cost != 0 and max_converted_mana_cost != 0:
+                listings = listings.filter(product_id__converted_mana_cost__lte = max_converted_mana_cost)
+                listings = listings.filter(product_id__converted_mana_cost__gte = min_converted_mana_cost)
+      
             #Filter by Price
-            if minprice != 0 and maxprice != 0:
+            if minprice != float(0) and maxprice != float(0):
                 listings = listings.filter(price__lte = maxprice)
                 listings = listings.filter(price__gte = minprice)
 
@@ -290,26 +264,16 @@ def home(request):
             else:
                 dynamic_form_qs = r"card_name=" + card_name + r"&"
 
-            dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost=" + str(converted_mana_cost) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"min_converted_mana_cost=" + str(min_converted_mana_cost) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"max_converted_mana_cost=" + str(max_converted_mana_cost) + r"&"
 
-            if converted_mana_cost_mode != '': 
-                dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost_mode=" + quote_plus(converted_mana_cost_mode) + r"&"
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"converted_mana_cost_mode=" + converted_mana_cost_mode + r"&"
 
-            dynamic_form_qs = dynamic_form_qs + r"power=" + str(power) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"min_power=" + str(min_power) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"max_power=" + str(max_power) + r"&"
 
-            if power_mode != '': 
-                dynamic_form_qs = dynamic_form_qs + r"power_mode=" + quote_plus(power_mode) + r"&"
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"power_mode=" + power_mode + r"&"
 
-            dynamic_form_qs = dynamic_form_qs + r"toughness=" + str(toughness) + r"&"
-
-            if toughness_mode != '': 
-                dynamic_form_qs = dynamic_form_qs + r"toughness_mode=" + quote_plus(toughness_mode) + r"&"
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"toughness_mode=" + toughness_mode + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"min_toughness=" + str(min_toughness) + r"&"
+            dynamic_form_qs = dynamic_form_qs + r"max_toughness=" + str(max_toughness) + r"&"
 
             if card_keywords != '': 
                 dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + quote_plus(card_keywords) + r"&"
@@ -430,12 +394,12 @@ def home(request):
                 'seller_name': seller_name, 
                 'minprice': minprice,
                 'maxprice': maxprice,
-                'converted_mana_cost': converted_mana_cost,
-                'converted_mana_cost_mode': converted_mana_cost_mode,
-                'power_mode': power_mode,
-                'power': power,
-                'toughness_mode': toughness_mode,
-                'toughness': toughness,
+                'min_converted_mana_cost': min_converted_mana_cost,
+                'max_converted_mana_cost': max_converted_mana_cost,
+                'min_power': min_power,
+                'max_power': max_power,
+                'min_toughness': min_toughness,
+                'max_toughness': max_toughness,
                 'card_keywords': card_keywords,
                 'card_type': card_type,
                 #Added to form after instantiation by parsing the query string 

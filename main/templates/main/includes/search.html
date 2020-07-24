@@ -84,7 +84,7 @@
             </td>
           </tr>
           <tr>
-            <th>Price Range Picker </th>
+            <th>Price Range Picker:</th>
             <td>
               {{ form.minprice.errors }}
               <br>
@@ -101,8 +101,8 @@
                   <td>{{ form.maxprice.errors }}</td>
                 </tr>
                 <tr>
-                  <td><input type="number" name="minprice" value="{{ form.minprice.value }}" id="id_minprice"></td>
-                  <td><input type="number" name="maxprice" value="{{ form.maxprice.value }}" id="id_maxprice"></td>
+                  <td><input type="number" step=".01" name="minprice" value="{{ form.minprice.value }}" id="id_minprice"></td>
+                  <td><input type="number" step=".01" name="maxprice" value="{{ form.maxprice.value }}" id="id_maxprice"></td>
                 </tr>
               </table>
               <script>
@@ -114,6 +114,125 @@
                 var dom_maxprice = document.getElementById("id_maxprice");
                 noUiSlider.create(priceSlider, {
                  start: [dom_minprice.value, dom_maxprice.value],
+                 connect: true,
+                 step: .01,
+                 orientation: 'horizontal', // 'horizontal' or 'vertical'
+                 range: {
+                   'min': 0.00,
+                   'max': 1000.00
+                 },
+                 format: wNumb({
+                     decimals: 2,
+                 }),
+                 tooltips: [wNumb({decimals: 2}),wNumb({decimals: 2})]
+                });
+
+                priceSlider.noUiSlider.on('update', function (values, handle) {
+                    dom_minprice.value = values[0];
+                    dom_maxprice.value = values[1];
+
+                });
+
+                dom_minprice.addEventListener('change', function(){
+                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                });
+
+                dom_maxprice.addEventListener('change', function(){
+                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                });
+
+              </script>
+            </td>
+          </tr>
+          <tr>
+            <th>Converted Mana Cost Picker:</th>
+            <td>
+              {{ form.min_converted_mana_cost.errors }}
+              <br>
+              {{ form.max_converted_mana_cost.errors }}
+              
+              <div id="mana-cost-slider"></div>
+              <table style="width:100%">
+                <tr>
+                  <th><label for="id_min_converted_mana_cost">Min Price:</label></th>
+                  <th><label for="id_max_converted_mana_cost">Max Price:</label></th> 
+                </tr>
+                <tr>
+                  <td>{{ form.min_converted_mana_cost.errors }}</td>
+                  <td>{{ form.max_converted_mana_cost.errors }}</td>
+                </tr>
+                <tr>
+                  <td><input type="number" name="min_converted_mana_cost" value="{{ form.min_converted_mana_cost.value }}" id="id_min_converted_mana_cost"></td>
+                  <td><input type="number" name="max_converted_mana_cost" value="{{ form.max_converted_mana_cost.value }}" id="id_max_converted_mana_cost"></td>
+                </tr>
+              </table>
+              <script>
+
+                
+
+                var manaCostSlider = document.getElementById('mana-cost-slider');
+                var dom_min_converted_mana_cost = document.getElementById("id_min_converted_mana_cost");
+                var dom_max_converted_mana_cost = document.getElementById("id_max_converted_mana_cost");
+                noUiSlider.create(manaCostSlider, {
+                 start: [dom_min_converted_mana_cost.value, dom_max_converted_mana_cost.value],
+                 connect: true,
+                 step: 1,
+                 orientation: 'horizontal', // 'horizontal' or 'vertical'
+                 range: {
+                   'min': -1,
+                   'max': 1000000
+                 },
+                 format: wNumb({
+                     decimals: 3,
+                     thousand: '.'
+                 }),
+                 tooltips: true
+                });
+
+                manaCostSlider.noUiSlider.on('update', function (values, handle) {
+                    dom_min_converted_mana_cost.value = values[0];
+                    dom_max_converted_mana_cost.value = values[1];
+
+                });
+
+                dom_min_converted_mana_cost.addEventListener('change', function(){
+                  manaCostSlider.noUiSlider.set([dom_min_converted_mana_cost.value, dom_max_converted_mana_cost.value]);
+                });
+
+                dom_max_converted_mana_cost.addEventListener('change', function(){
+                  manaCostSlider.noUiSlider.set([dom_min_converted_mana_cost.value, dom_max_converted_mana_cost.value]);
+                });
+
+              </script>
+          </tr>
+          <tr>
+            <th>Power Picker:</th>
+            <td>
+              {{ form.min_power.errors }}
+              <br>
+              {{ form.max_power.errors }}
+              
+              <div id="power-slider"></div>
+              <table style="width:100%">
+                <tr>
+                  <th><label for="id_min_power">Min Power:</label></th>
+                  <th><label for="id_max_power">Max Power:</label></th> 
+                </tr>
+                <tr>
+                  <td>{{ form.min_power.errors }}</td>
+                  <td>{{ form.max_power.errors }}</td>
+                </tr>
+                <tr>
+                  <td><input type="number" name="min_power" value="{{ form.min_power.value }}" id="id_min_power"></td>
+                  <td><input type="number" name="max_power" value="{{ form.max_power.value }}" id="id_max_power"></td>
+                </tr>
+              </table>
+              <script>
+                var powerSlider = document.getElementById('power-slider');
+                var dom_min_power = document.getElementById("id_min_power");
+                var dom_max_power = document.getElementById("id_max_power");
+                noUiSlider.create(powerSlider, {
+                 start: [dom_min_power.value, dom_max_power.value],
                  connect: true,
                  step: 1,
                  orientation: 'horizontal', // 'horizontal' or 'vertical'
@@ -128,74 +247,84 @@
                  tooltips: true
                 });
 
-                priceSlider.noUiSlider.on('update', function (values, handle) {
-                    message = "Update handle #";
-                    message = message.concat(handle, ": OLD: (",dom_minprice.value,",",dom_maxprice.value,") NEW: (", values[0],",",values[1],")");
-                    console.log(message);
-                    dom_minprice.value = values[0];
-                    dom_maxprice.value = values[1];
+                powerSlider.noUiSlider.on('update', function (values, handle) {
+                    dom_min_power.value = values[0];
+                    dom_max_power.value = values[1];
 
                 });
 
-                dom_minprice.addEventListener('change', function(){
-                  message = "Change minprice ("
-                  message = message.concat(dom_minprice.value,",",dom_maxprice.value,")");
-                  console.log(message)
-                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                dom_min_power.addEventListener('change', function(){
+                  powerSlider.noUiSlider.set([dom_min_power.value, dom_max_power.value]);
                 });
 
-                dom_maxprice.addEventListener('change', function(){
-                  message = "Change maxprice (";
-                  message = message.concat(dom_minprice.value,",",dom_maxprice.value,")");
-                  console.log(message);
-                  priceSlider.noUiSlider.set([dom_minprice.value, dom_maxprice.value]);
+                dom_max_power.addEventListener('change', function(){
+                  powerSlider.noUiSlider.set([dom_min_power.value, dom_max_power.value]);
                 });
 
               </script>
-            </td>
           </tr>
           <tr>
-            <th>{{ form.converted_mana_cost_mode.label_tag }}</th>
+            <th>Toughness Picker:</th>
             <td>
-              {{ form.converted_mana_cost_mode.errors }}
-              {{ form.converted_mana_cost_mode }}
+              {{ form.min_toughness.errors }}
+              <br>
+              {{ form.max_toughness.errors }}
+              
+              <div id="toughness-slider"></div>
+              <table style="width:100%">
+                <tr>
+                  <th><label for="id_min_toughness">Min Toughness:</label></th>
+                  <th><label for="id_max_toughness">Max Toughness:</label></th> 
+                </tr>
+                <tr>
+                  <td>{{ form.min_toughness.errors }}</td>
+                  <td>{{ form.max_toughness.errors }}</td>
+                </tr>
+                <tr>
+                  <td><input type="number" name="min_toughness" value="{{ form.min_toughness.value }}" id="id_min_toughness"></td>
+                  <td><input type="number" name="max_toughness" value="{{ form.max_toughness.value }}" id="id_max_toughness"></td>
+                </tr>
+              </table>
+              <script>
+                var toughnessSlider = document.getElementById('toughness-slider');
+                var dom_min_toughness = document.getElementById("id_min_toughness");
+                var dom_max_toughness = document.getElementById("id_max_toughness");
+                noUiSlider.create(toughnessSlider, {
+                 start: [dom_min_toughness.value, dom_max_toughness.value],
+                 connect: true,
+                 step: 1,
+                 orientation: 'horizontal', // 'horizontal' or 'vertical'
+                 range: {
+                   'min': 0,
+                   'max': 100
+                 },
+                 format: wNumb({
+                     decimals: 3,
+                     thousand: '.'
+                 }),
+                 tooltips: true
+                });
+
+                toughnessSlider.noUiSlider.on('update', function (values, handle) {
+                    dom_min_toughness.value = values[0];
+                    dom_max_toughness.value = values[1];
+
+                });
+
+                dom_min_toughness.addEventListener('change', function(){
+                  toughnessSlider.noUiSlider.set([dom_min_toughness.value, dom_max_toughness.value]);
+                });
+
+                dom_max_toughness.addEventListener('change', function(){
+                  toughnessSlider.noUiSlider.set([dom_min_toughness.value, dom_max_toughness.value]);
+                });
+
+              </script>
+
+
             </td>
           </tr>
-          <tr>
-            <th>{{ form.converted_mana_cost.label_tag }}</th>
-            <td>
-              {{ form.converted_mana_cost.errors }}
-              {{ form.converted_mana_cost }}
-            </td>
-          </tr>
-          <tr>
-            <th>{{ form.power_mode.label_tag }}</th>
-            <td>
-              {{ form.power_mode.errors }}
-              {{ form.power_mode }}
-            </td>
-          </tr>
-          <tr>
-            <th>{{ form.power.label_tag }}</th>
-            <td>
-              {{ form.power.errors }}
-              {{ form.power }}
-            </td>
-          </tr>
-          <tr>
-            <th>{{ form.toughness_mode.label_tag }}</th>
-            <td>
-              {{ form.toughness_mode.errors }}
-              {{ form.toughness_mode }}
-            </td>
-          </tr>
-          <tr>
-            <th>{{ form.toughness.label_tag }}</th>
-            <td>
-              {{ form.toughness.errors }}
-              {{ form.toughness }}
-            </td>
-          </tr>
+
           <tr>
             <th>{{ form.card_color.label_tag }}</th>
             <td>
