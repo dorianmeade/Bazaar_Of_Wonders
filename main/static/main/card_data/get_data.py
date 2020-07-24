@@ -1,7 +1,10 @@
 import requests
 import json
 
-# get the all cards data from MTGJSON
-response = requests.request(method="GET", url="https://www.mtgjson.com/files/AllCards.json", )
-with open('mtg_json_cards_data', 'w') as f:
-    json.dump(response.json(), f)
+# get the default cards from Scryfall
+bulk = requests.get('https://api.scryfall.com/bulk-data/oracle-cards')
+r = bulk.json()
+uri = r.get('download_uri')
+card_json = requests.get(uri)
+with open('detail_data.json', 'w') as f:
+    json.dump(card_json.json(), f)

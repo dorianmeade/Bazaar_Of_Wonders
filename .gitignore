@@ -3,4 +3,5 @@
 django_bazaar_of_wonders.egg-info/
 /build/
 /dist/
+config.py
 ##END: python build artifacts
