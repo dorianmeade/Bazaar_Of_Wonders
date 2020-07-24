@@ -119,7 +119,7 @@ def home(request):
             elif parameter_name == "auction_house_search":
                 auction_house_search_raw = parameter_val
                 auction_house_search = unquote_plus(auction_house_search_raw)
-            elif parameter_name == "auction_house_search":
+            elif parameter_name == "sponsored":
                 sponsored_raw = parameter_val
                 sponsored = unquote_plus(sponsored_raw)
 

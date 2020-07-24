@@ -76,22 +76,9 @@ class SearchForm(forms.Form):
         ('no','No')
     }
 
-    auction_house_search = forms.CharField(required=False,initial='no',widget=forms.Select(choices=YES_NO_CHOICE,
-                                                            attrs={ 'class': 'dropdown-trigger btn',
-                                                                    'style': 'background-color: '
-                                                                            'darkolivegreen; color: black; '
-                                                                            'font-weight: bold; '
-                                                                            'font-family: Trebuchet MS;'
-                                                                            }))
-
-    sponsored = forms.CharField(required=False,initial='no',widget=forms.Select(choices=YES_NO_CHOICE,
-                                                            attrs={ 'class': 'dropdown-trigger btn',
-                                                                    'style': 'background-color: '
-                                                                            'darkolivegreen; color: black; '
-                                                                            'font-weight: bold; '
-                                                                            'font-family: Trebuchet MS;'
-                                                                            
-                                                                            }))
+    auction_house_search = forms.CharField(required=False,initial='no')
+    sponsored = forms.CharField(required=False,initial='no')
+    
     card_name = forms.CharField(max_length=200, required=False)
     card_text = forms.CharField(max_length=4000, required=False)
     card_flavor_text = forms.CharField(max_length=4000, required=False)

@@ -6,32 +6,39 @@
       {{ form.source }}
       <table>
           <tr>
-            <th>{{ form.auction_house_search.label_tag }}</th>
+            <th>Search only Auction House Listings</th>
             <td>
               {{ form.auction_house_search.errors }}
-
-              {% for choice in form.YES_NO_CHOICE %}
-                <p>
+                <div class="switch">
                   <label>
-                    <input class="with-gap" name="auction_house_search" type="radio" value="{{choice.0}}" />
-                    <span>{{choice.1}}</span>
+                    No
+                    {% if form.auction_house_search.value == 'yes' %}
+                        <input name= "auction_house_search" type="checkbox" value="yes" checked="checked">
+                    {% else %}
+                        <input name= "auction_house_search" type="checkbox" value="yes">
+                    {% endif %}
+                    <span class="lever"></span>
+                    Yes
                   </label>
-                </p>
-              {% endfor %}
+                </div>
             </td>
           </tr>
           <tr>
-            <th>{{ form.sponsored.label_tag }}</th>
+            <th>Show only Sponsored Listings </th>
             <td>
               {{ form.sponsored.errors }}
-              {% for choice in form.YES_NO_CHOICE %}
-                <p>
+                <div class="switch">
                   <label>
-                    <input class="with-gap" name="sponsored" type="radio" value="{{choice.0}}" />
-                    <span>{{choice.1}}</span>
+                    No
+                    {% if form.sponsored.value == 'yes' %}
+                        <input name="sponsored" type="checkbox" value="yes" checked="checked">
+                    {% else %}
+                        <input name="sponsored" type="checkbox" value="yes">
+                    {% endif %}
+                    <span class="lever"></span>
+                    Yes
                   </label>
-                </p>
-              {% endfor %}
+                </div>
             </td>
           </tr>
           <tr>
