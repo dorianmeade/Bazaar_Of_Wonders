@@ -63,22 +63,9 @@ class SearchForm(forms.Form):
         ('green','Green'),
     }
 
-    FILTER_MODES = {
-        ('NO_VALUE','Pick a Filter option'),
-        ('lte','Less than or Equal'),
-        ('gte','Greater than or Equal'),
-        ('lt','Less than'),
-        ('gt','Greater than'),
-    }
-
-    YES_NO_CHOICE = {
-        ('yes','Yes'),
-        ('no','No')
-    }
-
     auction_house_search = forms.CharField(required=False,initial='no')
     sponsored = forms.CharField(required=False,initial='no')
-    
+
     card_name = forms.CharField(max_length=200, required=False)
     card_text = forms.CharField(max_length=4000, required=False)
     card_flavor_text = forms.CharField(max_length=4000, required=False)
@@ -100,7 +87,8 @@ class SearchForm(forms.Form):
     min_toughness = forms.IntegerField(required=False, initial=0)
     max_toughness = forms.IntegerField(required=False, initial=0)
 
-    card_color = forms.MultipleChoiceField(choices=COLORS,required=False, widget = forms.SelectMultiple(choices=COLORS, attrs={
+    card_color = forms.MultipleChoiceField(choices=COLORS,required=False, widget = forms.Select(choices=COLORS, attrs={
+                                                                                'multiple'
                                                                                 'class': 'browser-default',
                                                                                'style': 'background-color: '
                                                                                         'darkolivegreen; color: black; '
