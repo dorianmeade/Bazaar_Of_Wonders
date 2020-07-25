@@ -1,11 +1,34 @@
 import requests
 import os
+import sys
 import json
 import datetime
 import pytz
 import html
 from bs4 import BeautifulSoup, SoupStrainer
 from django.conf import settings
+from django import setup
+sys.path.append("../../../Bazaar_Of_Wonders")
+os.environ["DJANGO_SETTINGS_MODULE"] = "bazaar_of_wonders.settings"
+setup()
+from django.db import connection
+
+# While this is done via fixtures, need to delete the old files
+if os.path.exists("../fixtures/rarities.json"):
+    os.chmod("../fixtures/rarities.json", 777)
+    os.remove("../fixtures/rarities.json")
+if os.path.exists("../fixtures/types.json"):
+    os.chmod("../fixtures/types.json", 777)
+    os.remove("../fixtures/types.json")
+if os.path.exists("../fixtures/sellers.json"):
+    os.chmod("../fixtures/sellers.json", 777)
+    os.remove("../fixtures/sellers.json")
+if os.path.exists("../fixtures/cards.json"):
+    os.chmod("../fixtures/cards.json", 777)
+    os.remove("../fixtures/cards.json")
+if os.path.exists("../fixtures/listings.json"):
+    os.chmod("../fixtures/listings.json", 777)
+    os.remove("../fixtures/listings.json")
 
 print("Data download start time: {0}".format(datetime.datetime.now()))
 """
@@ -505,7 +528,7 @@ for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values(
             listing['fields']['last_updated'] = datetime.datetime.isoformat(datetime.datetime.now())
             listings.append(listing)
 
-basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "fixtures", "{0}"))
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), "", "../fixtures", "{0}"))
 with open(basepath.format("rarities.json"), 'w') as f:
     json.dump(rarities, f)
 f.close()
@@ -522,10 +545,17 @@ with open(basepath.format("listings.json"), 'w') as f:
     json.dump(listings, f)
 f.close()
 
+with connection.cursor() as cursor:
+    cursor.execute("BEGIN")
+    cursor.execute("DELETE FROM main_listing")
+    cursor.execute("DELETE FROM main_seller")
+    cursor.execute("DELETE FROM main_card")
+    cursor.execute("DELETE FROM main_card_type")
+    cursor.execute("DELETE FROM main_card_rarity")
+    cursor.execute("COMMIT")
+
 """
-For now to update the db run the commands below. 
-This will delete everything out of all the tables and then import all the data as fixtures.
-manage.py sqlflush
+For now to update the db run the commands below.
 manage.py loaddata rarities.json 
 manage.py loaddata types.json 
 manage.py loaddata sellers.json 

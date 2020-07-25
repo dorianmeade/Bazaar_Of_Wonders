@@ -1,0 +1,1 @@
+[{"model": "main.Card_Rarity", "pk": 1, "fields": {"card_rarity": "Uncommon"}}, {"model": "main.Card_Rarity", "pk": 2, "fields": {"card_rarity": "Common"}}, {"model": "main.Card_Rarity", "pk": 3, "fields": {"card_rarity": "Rare"}}, {"model": "main.Card_Rarity", "pk": 4, "fields": {"card_rarity": "Land"}}]
