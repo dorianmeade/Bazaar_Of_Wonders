@@ -34,7 +34,12 @@ def home(request):
     auction_house_search = ''
     auction_house_search_raw = ''
     sponsored = ''
-    sponsored_raw = ''  
+    sponsored_raw = ''
+    color_black = ''
+    color_red = ''
+    color_white = ''
+    color_blue = ''
+    color_green = ''  
     min_power = 0
     max_power = 0
     min_toughness = 0
@@ -55,7 +60,7 @@ def home(request):
     sort_by_choice = 'card_name'
     sorting_order = 'ascending'
 
-    colors = []
+
     page = 1
     if raw_string != '':
         for parameter in query_parameters: 
@@ -81,8 +86,16 @@ def home(request):
             elif parameter_name == "card_text":
                 card_text_raw = parameter_val
                 card_text = unquote_plus(card_text_raw)
-            elif parameter_name == "card_color":
-                colors += [parameter_val]
+            elif parameter_name == "color_black" and parameter_val == "on":
+                color_black = "on"
+            elif parameter_name == "color_red" and parameter_val == "on":
+                color_red = "on"
+            elif parameter_name == "color_white" and parameter_val == "on":
+                color_white = "on"
+            elif parameter_name == "color_blue" and parameter_val == "on":
+                color_blue = "on"
+            elif parameter_name == "color_green" and parameter_val == "on":
+                color_green = "on"                                                                             
             elif parameter_name == "card_keywords":
                 card_keywords_raw = parameter_val
                 card_keywords = unquote_plus(card_keywords_raw)
@@ -145,8 +158,11 @@ def home(request):
             'max_toughness': max_toughness,
             'card_keywords': card_keywords,
             'card_type': card_type,
-            #Added to form after instantiation by parsing the query string 
-            #'card_color': 
+            'color_black': color_black, 
+            'color_red': color_red,
+            'color_white': color_white,
+            'color_blue': color_blue,
+            'color_green': color_green,
             'card_rarity': card_rarity,
             'collection_number': collection_number,
             'sort_by_choice': sort_by_choice,
@@ -221,18 +237,25 @@ def home(request):
                 listings = listings.filter(price__gte = minprice)
 
             #Filter by Card Colors
-            if len(colors) > 0:
-                for i in colors:
-                    if i == "white":
-                        listings = listings.filter(product_id__card_color__contains = 'W')
-                    elif i == "blue":
-                        listings = listings.filter(product_id__card_color__icontains = 'U')
-                    elif i == "black":
-                        listings = listings.filter(product_id__card_color__icontains = 'B')
-                    elif i == "red":
-                        listings = listings.filter(product_id__card_color__icontains = 'R')
-                    elif i == "green":
-                        listings = listings.filter(product_id__card_color__icontains = 'G')
+            color_filter = False
+            if color_black == "on":
+                listings = listings.filter(product_id__card_color__icontains = 'B')
+                color_filter = True
+            if color_red == "on":
+                listings = listings.filter(product_id__card_color__contains = 'R')
+                color_filter = True
+            if color_white == "on":
+                listings = listings.filter(product_id__card_color__icontains = 'W')
+                color_filter = True
+            if color_blue == "on":
+                listings = listings.filter(product_id__card_color__icontains = 'U')
+                color_filter = True
+            if color_green == "on":
+                listings = listings.filter(product_id__card_color__icontains = 'G')
+                color_filter = True
+            
+            #Exclude non-colored cards if any filtering based on color has been done
+            if color_filter:
                 listings = listings.exclude(product_id__card_color = 'No color available')
 
 
@@ -281,9 +304,20 @@ def home(request):
                 dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + card_keywords + r"&"
             
             #Add the colors to the query string
-            for color in colors:
-                dynamic_form_qs = dynamic_form_qs + r"card_color=" +quote_plus(color) + r"&"
+            if color_black != '':
+                dynamic_form_qs = dynamic_form_qs + r"color_black=" + quote_plus(color_black) + r"&"
 
+            if color_red != '':
+                dynamic_form_qs = dynamic_form_qs + r"color_red=" + quote_plus(color_red) + r"&"
+
+            if color_white != '':
+                dynamic_form_qs = dynamic_form_qs + r"color_white=" + quote_plus(color_white) + r"&"
+
+            if color_blue != '':
+                dynamic_form_qs = dynamic_form_qs + r"color_blue=" + quote_plus(color_blue) + r"&"
+
+            if color_green != '':
+                dynamic_form_qs = dynamic_form_qs + r"color_green=" + quote_plus(color_green) + r"&"
 
             if card_text != '': 
                 dynamic_form_qs = dynamic_form_qs + r"card_text=" + quote_plus(card_text) + r"&"
@@ -402,8 +436,11 @@ def home(request):
                 'max_toughness': max_toughness,
                 'card_keywords': card_keywords,
                 'card_type': card_type,
-                #Added to form after instantiation by parsing the query string 
-                #'card_color': 
+                'color_black': color_black, 
+                'color_red': color_red,
+                'color_white': color_white,
+                'color_blue': color_blue,
+                'color_green': color_green,
                 'card_rarity': card_rarity,
                 'collection_number': collection_number,
                 'sort_by_choice': sort_by_choice,

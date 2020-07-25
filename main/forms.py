@@ -55,14 +55,6 @@ class SearchForm(forms.Form):
         ('card_type', 'Card Type'),
     }
 
-    COLORS = {
-        ('white','White'),
-        ('blue','Blue'),
-        ('black','Black'),
-        ('red','Red'),
-        ('green','Green'),
-    }
-
     auction_house_search = forms.CharField(required=False,initial='no')
     sponsored = forms.CharField(required=False,initial='no')
 
@@ -87,15 +79,11 @@ class SearchForm(forms.Form):
     min_toughness = forms.IntegerField(required=False, initial=0)
     max_toughness = forms.IntegerField(required=False, initial=0)
 
-    card_color = forms.MultipleChoiceField(choices=COLORS,required=False, widget = forms.Select(choices=COLORS, attrs={
-                                                                                'multiple'
-                                                                                'class': 'browser-default',
-                                                                               'style': 'background-color: '
-                                                                                        'darkolivegreen; color: black; '
-                                                                                        'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        'height: auto;'
-                                                                                        'padding: 35px;'}))
+    color_black = forms.CharField(max_length=200, required=False)
+    color_red = forms.CharField(max_length=200, required=False)
+    color_white = forms.CharField(max_length=200, required=False)
+    color_blue = forms.CharField(max_length=200, required=False)
+    color_green = forms.CharField(max_length=200, required=False)
 
     card_type = forms.CharField(label='Card Type:', widget=forms.Select(choices=CARD_TYPES,
                                                                         attrs={ 'class': 'dropdown-trigger btn',

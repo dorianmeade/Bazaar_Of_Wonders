@@ -333,10 +333,54 @@
           </tr>
 
           <tr>
-            <th>{{ form.card_color.label_tag }}</th>
+            <th>Card Color: </th>
             <td>
-              {{ form.card_color.errors }}
-              {{ form.card_color }}
+              <span>&#124;</span> 
+              <label style="border-stye: dotted;">
+                {% if form.color_black.value == 'on' %}
+                  <input type="checkbox" name="color_black" checked="checked" />
+                {% else %}
+                  <input type="checkbox" name="color_black" />
+                {% endif %}
+                <span>Black</span>
+              </label>
+              <span>&#124;</span> 
+              <label>
+                {% if form.color_red.value == 'on' %}
+                  <input type="checkbox" name="color_red" checked="checked" />
+                {% else %}
+                  <input type="checkbox" name="color_red" />
+                {% endif %}
+                <span>Red</span>
+              </label>
+              <span>&#124;</span>          
+              <label>
+                {% if form.color_white.value == 'on' %}
+                  <input type="checkbox" name="color_white" checked="checked" />
+                {% else %}
+                  <input type="checkbox" name="color_white" />
+                {% endif %}
+                <span>White</span>
+              </label>
+              <span>&#124;</span> 
+              <label>
+                {% if form.color_blue.value == 'on' %}
+                  <input type="checkbox" name="color_blue" checked="checked" />
+                {% else %}
+                  <input type="checkbox" name="color_blue" />
+                {% endif %}
+                <span>Blue</span>
+              </label>
+              <span>&#124;</span> 
+              <label>
+                {% if form.color_green.value == 'on' %}
+                  <input type="checkbox" name="color_green" checked="checked" />
+                {% else %}
+                  <input type="checkbox" name="color_green" />
+                {% endif %}
+                <span>Green</span>
+              </label>
+              <span>&#124;</span>
             </td>
           </tr>
           <tr>
