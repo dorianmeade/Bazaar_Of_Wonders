@@ -78,35 +78,36 @@ for product in tcg_data:
     listings = BeautifulSoup(response, 'html.parser',
                              parse_only=SoupStrainer("script", attrs={'type': 'text/javascript'})).find_all("script")
 
-    # Checks if there are no listings for a product
-    if not listings:
-        continue
-    product_listings = []
-    listings.pop(0)
-    for listing in listings:
-        result = listing.contents[0].split('\r\n')
-        this_listing = {}
-        # the string manipulation of these items assumes standard format where the desired item appears after a colon
-        # and is formatted as "<desired item>", html unescape takes care of escape sequences, however since the
-        # content is in a string format it leaves behind the leading \\, so this also assumes that no strings will
-        # purposefully have a \\ in them, and removes all instances of \\ from strings
-        for item in result:
-            if item.find('"set_name":') > 0:
-                this_listing['set_name'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
-            elif item.find('"price":') > 0:
-                this_listing['price'] = float(item.strip().split(':')[1].strip()[1:-2])
-            elif item.find('"quantity":') > 0:
-                # only do if a quantity is available
-                if item.strip().split(':')[1].strip()[1:-2]:
-                    this_listing['quantity'] = int(item.strip().split(':')[1].strip()[1:-2])
-            elif item.find('"condition":') > 0:
-                this_listing['condition'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
-            elif item.find('"seller":') > 0:
-                this_listing['seller_name'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
-            else:
-                pass
-        product_listings.append(this_listing)
-    product['listings'] = product_listings
+    if listings:
+        product_listings = []
+        listings.pop(0)
+        for listing in listings:
+            try:
+                result = listing.contents[0].split('\r\n')
+                this_listing = {}
+                # the string manipulation of these items assumes standard format where the desired item appears after a colon
+                # and is formatted as "<desired item>", html unescape takes care of escape sequences, however since the
+                # content is in a string format it leaves behind the leading \\, so this also assumes that no strings will
+                # purposefully have a \\ in them, and removes all instances of \\ from strings
+                for item in result:
+                    if item.find('"set_name":') > 0:
+                        this_listing['set_name'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
+                    elif item.find('"price":') > 0:
+                        this_listing['price'] = float(item.strip().split(':')[1].strip()[1:-2])
+                    elif item.find('"quantity":') > 0:
+                        # only do if a quantity is available
+                        if item.strip().split(':')[1].strip()[1:-2]:
+                            this_listing['quantity'] = int(item.strip().split(':')[1].strip()[1:-2])
+                    elif item.find('"condition":') > 0:
+                        this_listing['condition'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
+                    elif item.find('"seller":') > 0:
+                        this_listing['seller_name'] = html.unescape(item.strip().split(':')[1].strip()[1:-2]).replace('\\', '')
+                    else:
+                        pass
+                product_listings.append(this_listing)
+            except Exception:
+                continue  # if there are no contents in the listing, skip it
+        product['listings'] = product_listings
 
 print("TCG Data grab ended: {0}".format(datetime.datetime.now()))
 
@@ -279,8 +280,8 @@ for item in scryfall_data:
             # add data specific to Scryfall
             if 'oracle_id' in item.keys():
                 dict_entry['scryfall_id'] = item['oracle_id']
-                # add to matching dict for matching the MTG JSON data
-                match_tcg_to_scryfall[item['scryfall_id']] = item['oracle_id']
+                # make a dict that matches oracle ids to TCGPlayer ids b/c MTGJSON only has oracle
+                match_tcg_to_scryfall[item['oracle_id']] = item['tcgplayer_id']
             if 'mana_cost' in item.keys():
                 dict_entry['mana_cost'] = item['mana_cost']
             if 'cmc' in item.keys():
@@ -468,40 +469,41 @@ for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values(
     cards.append(card)
 
     # create listing JSON
-    for listing_data in card_data['listings']:
-        # make sure we have the seller set up and there is a price
-        if 'seller_name' not in listing_data.keys() or \
-                ('price' in listing_data.keys() and listing_data['price'] == ''):
-            continue
-        else:
-            if listing_data['seller_name'] in seller_strings:
-                seller_id = seller_strings.index(listing_data['seller_name']) + 1
+    if 'listings' in card_data.keys():
+        for listing_data in card_data['listings']:
+            # make sure we have the seller set up and there is a price
+            if 'seller_name' not in listing_data.keys() or \
+                    ('price' in listing_data.keys() and listing_data['price'] == ''):
+                continue
             else:
-                seller = seller_skeleton()
-                seller_id = len(seller_strings) + 1
-                seller["pk"] = seller_id
-                seller["fields"]["seller_name"] = listing_data['seller_name']
-                seller_strings.append(listing_data['seller_name'])
-                sellers.append(seller)
-        listing = listing_skeleton()
-        listing["pk"] = len(listings) + 1
-        listing["fields"]["product_id"] = tcgplayer_id
-        listing["fields"]["product_name"] = card_data["name"] if "name" in card_data.keys() else "Card has no name"
-        listing["fields"]["set_name"] = listing_data['set_name'] if "set_name" in listing_data.keys() \
-            else "No set name available"
-        try:
-            if "price" in listing_data.keys() and listing_data['price'] is not None:
-                listing["fields"]["price"] = float(listing_data['price'])
-            else:
+                if listing_data['seller_name'] in seller_strings:
+                    seller_id = seller_strings.index(listing_data['seller_name']) + 1
+                else:
+                    seller = seller_skeleton()
+                    seller_id = len(seller_strings) + 1
+                    seller["pk"] = seller_id
+                    seller["fields"]["seller_name"] = listing_data['seller_name']
+                    seller_strings.append(listing_data['seller_name'])
+                    sellers.append(seller)
+            listing = listing_skeleton()
+            listing["pk"] = len(listings) + 1
+            listing["fields"]["product_id"] = tcgplayer_id
+            listing["fields"]["product_name"] = card_data["name"] if "name" in card_data.keys() else "Card has no name"
+            listing["fields"]["set_name"] = listing_data['set_name'] if "set_name" in listing_data.keys() \
+                else "No set name available"
+            try:
+                if "price" in listing_data.keys() and listing_data['price'] is not None:
+                    listing["fields"]["price"] = float(listing_data['price'])
+                else:
+                    listing["fields"]["price"] = -1
+            except ValueError:
                 listing["fields"]["price"] = -1
-        except ValueError:
-            listing["fields"]["price"] = -1
-        listing["fields"]["quantity"] = listing_data['quantity'] if "quantity" in listing_data.keys() else -1
-        listing["fields"]["condition"] = listing_data['condition'] if "condition" in listing_data.keys() \
-            else "No condition information available"
-        listing['fields']['seller_key'] = seller_id
-        listing['fields']['last_updated'] = datetime.datetime.isoformat(datetime.datetime.now())
-        listings.append(listing)
+            listing["fields"]["quantity"] = listing_data['quantity'] if "quantity" in listing_data.keys() else -1
+            listing["fields"]["condition"] = listing_data['condition'] if "condition" in listing_data.keys() \
+                else "No condition information available"
+            listing['fields']['seller_key'] = seller_id
+            listing['fields']['last_updated'] = datetime.datetime.isoformat(datetime.datetime.now())
+            listings.append(listing)
 
 basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "fixtures", "{0}"))
 with open(basepath.format("rarities.json"), 'w') as f:
