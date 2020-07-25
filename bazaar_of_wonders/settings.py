@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+# Module to read .env file
 import environ
 env = environ.Env(
     #set casting, default value
@@ -24,6 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Keys from .env
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 TCGPLAYER_PUBLIC_KEY = env('TCGPLAYER_PUBLIC_KEY')
 TCGPLAYER_PRIVATE_KEY = env('TCGPLAYER_PRIVATE_KEY')
