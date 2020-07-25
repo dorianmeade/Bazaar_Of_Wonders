@@ -1,12 +1,11 @@
 import requests
 import os
 import json
-import config
 import datetime
 import pytz
 import html
 from bs4 import BeautifulSoup, SoupStrainer
-# from main.models import Card, Listing, Card_Rarity, Card_Type, Seller
+from django.conf import settings
 
 print("Data download start time: {0}".format(datetime.datetime.now()))
 """
@@ -34,7 +33,7 @@ if not token:
     response = requests.request(method="POST", url="https://api.tcgplayer.com/token",
                                 headers={'accept': '*/*', 'Content-Type': 'text/plain'},
                                 data="grant_type=client_credentials&client_id={0}&client_secret={1}".
-                                format(config.TCGPlayer_public_key, config.TCGPlayer_private_key))
+                                format(settings.TCGPLAYER_PUBLIC_KEY, settings.TCGPLAYER_PRIVATE_KEY))
     token = json.loads(response.text)["access_token"]
     # save token for later use
     with open('tcg_bearer_token.json', 'w') as f:

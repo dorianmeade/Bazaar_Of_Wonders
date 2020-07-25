@@ -8,7 +8,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import config
+import environ
+env = environ.Env(
+    #set casting, default value
+    DEBUG=(bool, False)
+)
+
+#reading .env file
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config.django_secret_key
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+TCGPLAYER_PUBLIC_KEY = env('TCGPLAYER_PUBLIC_KEY')
+TCGPLAYER_PRIVATE_KEY = env('TCGPLAYER_PRIVATE_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
