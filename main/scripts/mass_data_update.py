@@ -5,6 +5,7 @@ import json
 import datetime
 import pytz
 import html
+import time
 from bs4 import BeautifulSoup, SoupStrainer
 from django.conf import settings
 from django import setup
@@ -80,7 +81,7 @@ while mtg_cat_id < 0 and last_total == 100 and len(categories) < 10000:
 
 # get info about all the mtg cards
 last_total, tcg_data = 100, []
-while len(tcg_data) < 1000000 and last_total == 100:
+while len(tcg_data) < 10000 and last_total == 100:
     response = json.loads(requests.request(method="GET", url="https://api.tcgplayer.com/catalog/products?limit=100&"
                                                              "offset={0}&categoryId={1}&getExtendedFields=True".
                                            format(len(tcg_data), mtg_cat_id),
@@ -92,11 +93,22 @@ while len(tcg_data) < 1000000 and last_total == 100:
 # use scraper to get vendor information
 for product in tcg_data:
     # maxes out at 100 listings, but honestly that seems like plenty so leaving it
-    response = requests.get(url='https://shop.tcgplayer.com/productcatalog/product/getpricetable?'
-                                'captureFeaturedSellerData=True&pageSize=100&productId={0}'.
-                            format(product['productId']),
-                            headers={'User-Agent': 'Mozilla/5.0', 'Authorization': "Bearer {0}".format(token)}).text
-
+    try:
+        response = requests.get(url='https://shop.tcgplayer.com/productcatalog/product/getpricetable?'
+                                    'captureFeaturedSellerData=True&pageSize=100&productId={0}'.
+                                format(product['productId']),
+                                headers={'User-Agent': 'Mozilla/5.0', 'Authorization': "Bearer {0}".format(token)}).text
+    except Exception:
+        # wait a few seconds and try again, if it fails again, skip it
+        time.sleep(5)
+        try:
+            response = requests.get(url='https://shop.tcgplayer.com/productcatalog/product/getpricetable?'
+                                        'captureFeaturedSellerData=True&pageSize=100&productId={0}'.
+                                    format(product['productId']),
+                                    headers={'User-Agent': 'Mozilla/5.0',
+                                             'Authorization': "Bearer {0}".format(token)}).text
+        except Exception:
+            continue
     # Creates a BeautifulSoup object with the retrieved HTML, then does find to get result set
     listings = BeautifulSoup(response, 'html.parser',
                              parse_only=SoupStrainer("script", attrs={'type': 'text/javascript'})).find_all("script")
