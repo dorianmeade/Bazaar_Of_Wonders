@@ -81,7 +81,7 @@ while mtg_cat_id < 0 and last_total == 100 and len(categories) < 10000:
 
 # get info about all the mtg cards
 last_total, tcg_data = 100, []
-while len(tcg_data) < 10000 and last_total == 100:
+while len(tcg_data) < 1000000 and last_total == 100:
     response = json.loads(requests.request(method="GET", url="https://api.tcgplayer.com/catalog/products?limit=100&"
                                                              "offset={0}&categoryId={1}&getExtendedFields=True".
                                            format(len(tcg_data), mtg_cat_id),
@@ -405,7 +405,6 @@ for key in mtg_json_data.keys():
 
 rarities, types, sellers, cards, listings, rarity_strings, type_strings, seller_strings = [], [], [], [], [], [], [], []
 
-# make a generic seller to use for now
 for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values()):
     rarity_id, type_id, seller_id = 0, 0, 0
 
@@ -540,6 +539,8 @@ for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values(
             listing['fields']['last_updated'] = datetime.datetime.isoformat(datetime.datetime.now())
             listings.append(listing)
 
+if not os.path.exists("../fixtures"):
+    os.mkdir("../fixtures")
 basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), "", "../fixtures", "{0}"))
 with open(basepath.format("rarities.json"), 'w') as f:
     json.dump(rarities, f)
@@ -573,4 +574,5 @@ manage.py loaddata types.json
 manage.py loaddata sellers.json 
 manage.py loaddata cards.json 
 manage.py loaddata listings.json 
+python manage.py dbbackup  # take a backup of the new database
 """
