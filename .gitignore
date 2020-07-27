@@ -5,5 +5,4 @@ django_bazaar_of_wonders.egg-info/
 /dist/
 config.py
 .env
-*/fixtures/*
 ##END: python build artifacts

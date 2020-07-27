@@ -14,6 +14,17 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "bazaar_of_wonders.settings"
 setup()
 from django.db import connection
 
+# Delete the old data dump files
+if os.path.exists("TCG_data.json"):
+    os.chmod("TCG_data.json", 777)
+    os.remove("TCG_data.json")
+if os.path.exists("scryfall_data.json"):
+    os.chmod("scryfall_data.json", 777)
+    os.remove("scryfall_data.json")
+if os.path.exists("MTG_data.json"):
+    os.chmod("MTG_data.json", 777)
+    os.remove("MTG_data.json")
+
 # While this is done via fixtures, need to delete the old files
 if os.path.exists("../fixtures/rarities.json"):
     os.chmod("../fixtures/rarities.json", 777)
@@ -46,6 +57,7 @@ if os.path.exists('tcg_bearer_token.json'):
                     datetime.datetime.strptime(token_info['.expires'],
                                                "%a, %d %b %Y %H:%M:%S %Z").astimezone(pytz.utc):
                 token = token_info['access_token']
+        json_file.close()
     except Exception:
         pass  # just get a new token if the above doesn't work for some reason
 
@@ -145,6 +157,17 @@ for product in tcg_data:
         product['listings'] = product_listings
 
 print("TCG Data grab ended: {0}".format(datetime.datetime.now()))
+# data dump in case parsing breaks somewhere (won't have to pull again)
+with open('TCG_data.json', 'w') as f:
+    json.dump(tcg_data, f)
+f.close()
+
+"""
+To use if parsing data from saved files
+with open('TCG_data.json') as json_file:
+    tcg_data = json.load(json_file)
+json_file.close()
+"""
 
 """
 SCRYFALL DATA DOWNLOAD
@@ -165,6 +188,17 @@ for object in json.loads(response.text)['data']:
     else:
         continue
 print("Scryfall data grab ended: {0}".format(datetime.datetime.now()))
+# data dump in case parsing breaks somewhere (won't have to pull again)
+with open('scryfall_data.json', 'w') as f:
+    json.dump(scryfall_data, f)
+f.close()
+
+"""
+To use if parsing data from saved files
+with open('scryfall_data.json') as json_file:
+    scryfall_data = json.load(json_file)
+json_file.close()
+"""
 
 """
 MTGJSON DATA DOWNLOAD
@@ -175,6 +209,17 @@ MTGJSON DATA DOWNLOAD
 # get the all cards data from MTGJSON
 mtg_json_data = json.loads(requests.request(method="GET", url="https://www.mtgjson.com/files/AllCards.json").text)
 print("Data download end time: {0}".format(datetime.datetime.now()))
+# data dump in case parsing breaks somewhere (won't have to pull again)
+with open('MTG_data.json', 'w') as f:
+    json.dump(mtg_json_data, f)
+f.close()
+
+"""
+To use if parsing data from saved files
+with open('MTG_data.json') as json_file:
+    mtg_json_data = json.load(json_file)
+json_file.close()
+"""
 
 """
 Parse through each data set and construct dictionaries for each record that align with our models
@@ -290,18 +335,20 @@ for item in tcg_data:
             transfer_to_db[id]['tcg_player_purchase_url'] = item['url']
         if 'extendedData' in item.keys():
             for extended_item in item['extendedData']:
-                if extended_item['name'] == 'Rarity':
-                    transfer_to_db[id]['rarity'] = tcg_rarities[extended_item['value']]
-                elif extended_item['name'] == 'Subtype':
-                    transfer_to_db[id]['type'] = extended_item['value']
-                elif extended_item['name'] == 'P':
-                    transfer_to_db[id]['power'] = extended_item['value']
-                elif extended_item['name'] == 'T':
-                    transfer_to_db[id]['toughness'] = extended_item['value']
-                elif extended_item['name'] == 'OracleText':
-                    transfer_to_db[id]['card_text'] = extended_item['value']
+                if 'name' in extended_item.keys():
+                    if extended_item['name'] == 'Rarity':
+                        transfer_to_db[id]['rarity'] = tcg_rarities[extended_item['value']]
+                    elif extended_item['name'] == 'Subtype':
+                        transfer_to_db[id]['type'] = extended_item['value']
+                    elif extended_item['name'] == 'P':
+                        transfer_to_db[id]['power'] = extended_item['value']
+                    elif extended_item['name'] == 'T':
+                        transfer_to_db[id]['toughness'] = extended_item['value']
+                    elif extended_item['name'] == 'OracleText':
+                        transfer_to_db[id]['card_text'] = extended_item['value']
         if 'listings' in item.keys():
-            transfer_to_db[id]['set_name'] = item['listings'][0]['set_name']  # assume only one set per card
+            if 'set_name' in item['listings'][0].keys():
+                transfer_to_db[id]['set_name'] = item['listings'][0]['set_name']  # assume only one set per card
             transfer_to_db[id]['listings'] = item['listings']
     else:
         continue
@@ -368,7 +415,7 @@ for item in scryfall_data:
 
 for key in mtg_json_data.keys():
     item = mtg_json_data[key]
-    if item['scryfallOracleId']:
+    if 'scryfallOracleId' in item.keys():
         # if we have a match in the scryfall data
         if item['scryfallOracleId'] in match_tcg_to_scryfall.keys():
             dict_entry = transfer_to_db[match_tcg_to_scryfall[item['scryfallOracleId']]]
@@ -574,5 +621,4 @@ manage.py loaddata types.json
 manage.py loaddata sellers.json 
 manage.py loaddata cards.json 
 manage.py loaddata listings.json 
-python manage.py dbbackup  # take a backup of the new database
 """
