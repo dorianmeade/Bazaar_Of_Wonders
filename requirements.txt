@@ -1,4 +1,6 @@
+django-tinymce4-lite
 django-materializecss-form
 PyYAML
 django
-django-background-tasks
+bs4
+django-environ
