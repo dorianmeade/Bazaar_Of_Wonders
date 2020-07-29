@@ -137,6 +137,10 @@ def home(request):
                 sponsored = unquote_plus(sponsored_raw)
 
 
+    #If the collection_number is set to -7777777, reset it to None
+    if collection_number == -7777777:
+        collection_number = None
+
     if request.method == "GET":              
         #Place form variables from GET request into form
         form = SearchForm({
@@ -260,7 +264,7 @@ def home(request):
 
 
             #Filter by Collection Number 
-            if collection_number != -7777777:
+            if collection_number != None:
                 listings = listings.filter(product_id__collection_number__iexact = collection_number)
 
             #Filter by seller name 

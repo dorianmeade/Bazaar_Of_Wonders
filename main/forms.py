@@ -102,7 +102,7 @@ class SearchForm(forms.Form):
                                                                                             'font-family: Trebuchet MS;'}),
                                   initial='NO_VALUE')
 
-    collection_number = forms.IntegerField(required=False, initial=-7777777)
+    collection_number = forms.IntegerField(required=False)
     sort_by_choice = forms.CharField(label='Sort Criteria:', widget=forms.Select(choices=SORT_BY,
                                                                                  attrs={'class': 'dropdown-trigger btn',
                                                                                         'style': 'background-color: '
