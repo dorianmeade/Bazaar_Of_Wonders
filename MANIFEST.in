@@ -12,3 +12,5 @@ global-include *.css
 global-include *.js
 global-include *.png
 global-exclude *.pyc
+global-exclude main/scripts/*.json
+global-exclude main/fixtures/*.json

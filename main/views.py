@@ -111,7 +111,7 @@ def home(request):
                 min_converted_mana_cost = int(parameter_val)
             elif parameter_name == "max_converted_mana_cost":
                 max_converted_mana_cost = int(parameter_val)                
-            elif parameter_name == "collection_number":
+            elif parameter_name == "collection_number" and parameter_val != '':
                 collection_number = int(parameter_val)
             elif parameter_name == "card_flavor_text":
                 card_flavor_text_raw = parameter_val
