@@ -3,13 +3,14 @@
 
 {% block content %}
 
-    <div class="row" style="display: flex">
+    <div class="row" style="display: flex; margin-right: 25px; margin-left: 25px ">
         <div class="column1" style="float: left; min-width: max-content;">
             <!-- display search/sort form -->
             {% include 'main/includes/collection_search.html' %}
         </div>
-        <div class="column2" style="float: left;">
+        <div class="column2" style="float: left; background-color: rgba(64, 126, 155, 0.9); border: rgb(4, 56, 68) 5px solid; text-align: center; margin-left: 25px">
             <!-- display cards -->
+            <h5 style="margin-top: 10px; margin-bottom: 5px; text-align: center; font-family: CustomBazaarFont; color:rgb(228, 193, 152); font-size: 12vh; text-shadow: 3px 3px rgb(40, 17, 19);">Your Wonders</h5>
             {% include 'main/includes/collected_cards.html' %}
         </div>
     </div>
@@ -27,9 +28,9 @@
         {% for p in data.paginator.page_range %}
             {% if p <= data.number|add:4 and p >= data.number|add:-4 %}
                 {% if data.number == p %}
-                    <li><a style="background:black; color: orange;" href="?page={{p}}">{{p}}</a></li>
+                    <li><a style="color: rgb(228, 193, 152); background-color: rgb(40, 17, 19);" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% else %}
-                    <li><a style="background:black; color: white;" href="?page={{p}}">{{p}}</a></li>
+                    <li><a style="color: rgb(228, 193, 152); background-color: rgb(40, 17, 19);" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% endif %}
         {% endif %}
         {% endfor %}

@@ -257,12 +257,12 @@ def home(request):
             # Exclude non-colored cards if any filtering based on color has been done
             if color_filter:
                 cards = cards.exclude(card_color='No color available')
-                listings = listings.exclude(product_id__card_color = 'No color available')
+                cards = cards.exclude(card_color = 'No color available')
 
 
             #Filter by Collection Number 
             if collection_number != None:
-                listings = listings.filter(product_id__collection_number__iexact = collection_number)
+                cards = cards.filter(collection_number__iexact = collection_number)
 
             # Filter by Collection Number
             if collection_number:
@@ -524,7 +524,6 @@ def promotionsBySet(request):
 
             if parameter_name == "page": 
                 page = int(parameter_val)
-            
     
     form = PromotionSetForm({
         'promo_set': promo_set,
@@ -550,8 +549,7 @@ order by min_price asc''',[promo_set])
         page_obj = paginator.page(page)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        page_obj = paginator.page(paginator.num_pages) 
-
+        page_obj = paginator.page(paginator.num_pages)
 
     dynamic_form_qs = ''
 
@@ -617,115 +615,483 @@ def login_request(request):
 
 # user collection and notification management
 def collection(request):
-    # if a user is logged in see if they have a collection
-    if request.user.is_authenticated:
-        users_collection = None
-        cards_in_collection = []
-        try:
-            users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
-        except Collection.DoesNotExist:
-            pass
-        # if the user has a collection, get it
-        if users_collection:
-            collection_content, product_ids, return_dicts = [], [], []
+    raw_string = request.META['QUERY_STRING']
+    query_parameters = raw_string.split("&")
+
+    card_name = ''
+    card_name_raw = ''
+    card_text = ''
+    card_text_raw = ''
+    card_flavor_text = ''
+    card_flavor_text_raw = ''
+    card_keywords = ''
+    card_keywords_raw = ''
+    card_artist = ''
+    card_artist_raw = ''
+    set_name = ''
+    set_name_raw = ''
+    seller_name = ''
+    seller_name_raw = ''
+    color_black = ''
+    color_red = ''
+    color_white = ''
+    color_blue = ''
+    color_green = ''
+    min_power = 0
+    max_power = 0
+    min_toughness = 0
+    max_toughness = 0
+    min_converted_mana_cost = 0
+    max_converted_mana_cost = 0
+    collection_number = None
+    minprice = 0.00
+    maxprice = 0.00
+    card_type = 'NO_VALUE'
+    card_rarity = 'NO_VALUE'
+    sort_by_choice = 'card_name'
+    sorting_order = 'ascending'
+    own = 'yes'
+    dont_own = 'yes'
+
+    page = 1
+    if raw_string != '':
+        for parameter in query_parameters:
+            parameter_tokens = parameter.split("=")
+            parameter_name = parameter_tokens[0]
+            if len(parameter_tokens) <= 0:
+                parameter_val = None
+            else:
+                parameter_val = parameter_tokens[1]
+            if parameter_name == "card_name":
+                card_name_raw = parameter_val
+                card_name = unquote_plus(card_name_raw)
+            elif parameter_name == "card_type":
+                card_type = parameter_val
+            elif parameter_name == "card_rarity":
+                card_rarity = parameter_val
+            elif parameter_name == "sort_by_choice":
+                sort_by_choice = parameter_val
+            elif parameter_name == "sorting_order":
+                sorting_order = parameter_val
+            elif parameter_name == "page":
+                page = parameter_val
+            elif parameter_name == "card_text":
+                card_text_raw = parameter_val
+                card_text = unquote_plus(card_text_raw)
+            elif parameter_name == "color_black" and parameter_val == "on":
+                color_black = "on"
+            elif parameter_name == "color_red" and parameter_val == "on":
+                color_red = "on"
+            elif parameter_name == "color_white" and parameter_val == "on":
+                color_white = "on"
+            elif parameter_name == "color_blue" and parameter_val == "on":
+                color_blue = "on"
+            elif parameter_name == "color_green" and parameter_val == "on":
+                color_green = "on"
+            elif parameter_name == "card_keywords":
+                card_keywords_raw = parameter_val
+                card_keywords = unquote_plus(card_keywords_raw)
+            elif parameter_name == "min_power":
+                min_power = int(parameter_val)
+            elif parameter_name == "max_power":
+                max_power = int(parameter_val)
+            elif parameter_name == "min_toughness":
+                min_toughness = int(parameter_val)
+            elif parameter_name == "max_toughness":
+                max_toughness = int(parameter_val)
+            elif parameter_name == "min_converted_mana_cost":
+                min_converted_mana_cost = int(parameter_val)
+            elif parameter_name == "max_converted_mana_cost":
+                max_converted_mana_cost = int(parameter_val)
+            elif parameter_name == "collection_number":
+                try:
+                    collection_number = int(parameter_val)
+                except Exception:
+                    collection_number = None
+            elif parameter_name == "card_flavor_text":
+                card_flavor_text_raw = parameter_val
+                card_flavor_text = unquote_plus(card_flavor_text_raw)
+            elif parameter_name == "card_artist":
+                card_artist_raw = parameter_val
+                card_artist = unquote_plus(card_artist_raw)
+            elif parameter_name == "set_name":
+                set_name_raw = parameter_val
+                set_name = unquote_plus(set_name_raw)
+            elif parameter_name == "minprice":
+                minprice = float(parameter_val)
+            elif parameter_name == "maxprice":
+                maxprice = float(parameter_val)
+            elif parameter_name == "seller_name":
+                seller_name_raw = parameter_val
+                seller_name = unquote_plus(seller_name_raw)
+            elif parameter_name == "own":
+                own_raw = parameter_val
+                own = unquote_plus(own_raw)
+            elif parameter_name == "dont_own":
+                dont_own_raw = parameter_val
+                dont_own = unquote_plus(dont_own_raw)
+
+    # If the collection_number is set to -7777777, reset it to None
+    if collection_number == -7777777:
+        collection_number = None
+
+    if request.method == "GET":
+        # Place form variables from GET request into form
+        form = CollectionSearchForm({
+            'card_name': card_name,
+            'card_text': card_text,
+            'card_flavor_text': card_flavor_text,
+            'card_artist': card_artist,
+            'set_name': set_name,
+            'seller_name': seller_name,
+            'minprice': minprice,
+            'maxprice': maxprice,
+            'min_converted_mana_cost': min_converted_mana_cost,
+            'max_converted_mana_cost': max_converted_mana_cost,
+            'min_power': min_power,
+            'max_power': max_power,
+            'min_toughness': min_toughness,
+            'max_toughness': max_toughness,
+            'card_keywords': card_keywords,
+            'card_type': card_type,
+            'color_black': color_black,
+            'color_red': color_red,
+            'color_white': color_white,
+            'color_blue': color_blue,
+            'color_green': color_green,
+            'card_rarity': card_rarity,
+            'collection_number': collection_number,
+            'sort_by_choice': sort_by_choice,
+            'sorting_order': sorting_order,
+            'own': own,
+            'dont_own': dont_own
+        })
+
+        # if a user is logged in see if they have a collection
+        if request.user.is_authenticated:
+            users_collection = None
             try:
-                collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
-                if request.method == "POST":
-                    form = CollectionSearchForm(request.POST)
+                users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
+            except Collection.DoesNotExist:
+                pass
+            # if the user has a collection, get it
+            if users_collection:
+                collection_content, product_ids, return_dicts = [], [], []
+                try:
+                    collection_content = Collection_Content.objects.filter(collection_id=users_collection.id)
                     if form.is_valid():
                         # Filter by Ownership
-                        if form.cleaned_data['own'] == 'yes' and form.cleaned_data['dont_own'] == 'yes':
+                        if own == 'yes' and dont_own == 'yes':
                             pass
-                        elif form.cleaned_data['own'] == 'no' and form.cleaned_data['dont_own'] == 'yes':
+                        elif own == 'no' and dont_own == 'yes':
                             collection_content = collection_content.filter(obtained=False)
-                        elif form.cleaned_data['own'] == 'yes' and form.cleaned_data['dont_own'] == 'no':
+                        elif own == 'yes' and dont_own == 'no':
                             collection_content = collection_content.filter(obtained=True)
                         else:
-                            collection_content = None
+                            collection_content = []
 
-                        # now filter on Card attributes
-                        if collection_content is not None:
-                            for item in collection_content:
-                                product_ids.append(item.card_id_id)
-                            cards_in_collection = Card.objects.filter(product_id__in=product_ids)
+                        if minprice != float(0) or maxprice != float(0) or seller_name != "":
+                            listings = Listing.objects.all().filter(product_id__in=collection_content.values_list('card_id', flat=True))
+                            # Filter by Price
+                            if minprice != float(0):
+                                listings = listings.filter(price__gte=minprice)
+                            if maxprice != float(0):
+                                listings = listings.filter(price__lte=maxprice)
+                            # Filter by Seller
+                            if seller_name != "":
+                                listings = listings.filter(seller_key__seller_name__icontains=seller_name)
+                            cards = Card.objects.all().filter(product_id__in=listings.values_list('product_id', flat=True))
+                        else:
+                            if collection_content:
+                                cards = Card.objects.all().filter(product_id__in=collection_content.values_list('card_id', flat=True))
+                            else:
+                                # get an empty queryset
+                                cards = Card.objects.all().filter(product_id__in=[-1])
 
-                            # Filtering by name (if name not specified, this will return all cards)
-                            cards_in_collection = cards_in_collection.filter(name__contains=form.cleaned_data['card_name'])
-                            # Filter by Card Type
-                            if form.cleaned_data['card_type'] != 'NO_VALUE':
-                                cards_in_collection = cards_in_collection.filter(
-                                    type_id__card_type__contains=form.cleaned_data['card_type'])
+                        # TODO: Look into issue with filtering on boolean
+                        # Related link: https://stackoverflow.com/questions/6933196/django-boolean-queryset-filter-not-working
 
-                            # Filter by Card Rarity
-                            if form.cleaned_data['card_rarity'] != 'NO_VALUE':
-                                cards_in_collection = cards_in_collection.filter(
-                                    rarity_id__card_rarity__iexact=form.cleaned_data['card_rarity'])
+                        # Filtering by name (if name not specified, this will return all cards)
+                        if card_name != '':
+                            cards = cards.exclude(name__exact="Card has no name")
+                            card_name_items = card_name.split(' ')
+                            for word in card_name_items:
+                                cards = cards.filter(name__icontains=word)
 
-                            # Implement sorts
-                            if form.cleaned_data['sort_by_choice'] == 'card_name':
-                                sort_param = "name"
-                            elif form.cleaned_data['sort_by_choice'] == 'card_rarity':
-                                sort_param = "card_rarity"
-                            elif form.cleaned_data['sort_by_choice'] == 'card_type':
-                                sort_param = "type_id__card_type"
-                            if form.cleaned_data['sorting_order'] == "descending":
-                                sort_param = "-" + sort_param
+                        # Filtering by card_text (if card_text not specified, this will return all cards)
+                        if card_text != '':
+                            cards = cards.exclude(card_text__exact="No text available")
+                            cards = cards.filter(card_text__icontains=card_text)
 
-                            # Sort the QuerySet per the parameter
-                            cards_in_collection = cards_in_collection.order_by(sort_param)
-                            for card in cards_in_collection:
-                                own = collection_content.get(card_id_id=card.product_id).obtained
-                                return_dicts.append({'card': card, 'own': own})
+                        # Filtering by card_artist (if card_artist not specified, this will return all cards)
+                        if card_artist != '':
+                            cards = cards.exclude(artist__exact="No artist information available")
+                            cards = cards.filter(artist__icontains=card_artist)
+
+                        # Filtering by card_flavor_text (if card_flavor_text not specified, this will return all cards)
+                        if card_flavor_text != '':
+                            cards = cards.exclude(flavor_text__exact="No flavor text available")
+                            cards = cards.filter(flavor_text__icontains=card_flavor_text)
+
+                        # Filter by Card Keywords
+                        if card_keywords != '':
+                            cards = cards.exclude(card_keywords__exact="No keywords available")
+                            cards = cards.filter(card_keywords__icontains=card_keywords)
+
+                        # Filter by Card Keywords
+                        if set_name != '':
+                            cards = cards.exclude(card_keywords__exact="No set name available")
+                            cards = cards.filter(set_name__icontains=set_name)
+
+                        # Filter by Card Type
+                        if card_type != 'NO_VALUE':
+                            cards = cards.filter(type_id__card_type__contains=card_type)
+
+                        # Filter by Card Rarity
+                        if card_rarity != 'NO_VALUE':
+                            cards = cards.filter(rarity_id__card_rarity__iexact=card_rarity)
+
+                        # Filter by Toughness
+                        if min_toughness != 0:
+                            cards = cards.filter(toughness__gte=min_toughness)
+                        if max_toughness != 0:
+                            cards = cards.filter(toughness__lte=max_toughness)
+
+                        # Filter by Power
+                        if min_power != 0:
+                            cards = cards.filter(power__gte=min_power)
+                        if min_power != 0 and max_power != 0:
+                            cards = cards.filter(power__lte=max_power)
+
+                        # Filter by Converted Mana Cost
+                        if min_converted_mana_cost != 0:
+                            cards = cards.filter(converted_mana_cost__gte=min_converted_mana_cost)
+                        if min_converted_mana_cost != 0 and max_converted_mana_cost != 0:
+                            cards = cards.filter(converted_mana_cost__lte=max_converted_mana_cost)
+
+                        # Filter by Card Colors
+                        color_filter = False
+                        if color_black == "on":
+                            cards = cards.filter(card_color__icontains='B')
+                            color_filter = True
+                        if color_red == "on":
+                            cards = cards.filter(card_color__contains='R')
+                            color_filter = True
+                        if color_white == "on":
+                            cards = cards.filter(card_color__icontains='W')
+                            color_filter = True
+                        if color_blue == "on":
+                            cards = cards.filter(card_color__icontains='U')
+                            color_filter = True
+                        if color_green == "on":
+                            cards = cards.filter(card_color__icontains='G')
+                            color_filter = True
+
+                        # Exclude non-colored cards if any filtering based on color has been done
+                        if color_filter:
+                            cards = cards.exclude(card_color='No color available')
+                            cards = cards.exclude(card_color='No color available')
+
+                        # Filter by Collection Number
+                        if collection_number != None:
+                            cards = cards.filter(collection_number__iexact=collection_number)
+
+                        # Filter by Collection Number
+                        if collection_number:
+                            cards = cards.filter(collection_number__iexact=collection_number)
+
+                        card_data = []
+                        for card in cards:
+                            c_data = {}
+                            c_data['card'] = card
+                            c_data['own'] = Collection_Content.objects.get(card_id=card.product_id).obtained
+                            card_data.append(c_data)
+
+                        # Implement sorts
+                        sort_param = "card_rarity"
+                        if sort_by_choice == 'card_name':
+                            sort_param = "name"
+                        elif sort_by_choice == 'card_rarity':
+                            sort_param = "rarity_id__card_rarity"
+                        elif sort_by_choice == 'card_type':
+                            sort_param = "type_id__card_type"
+                        if sorting_order == "descending":
+                            sort_param = "-" + sort_param
+
+                        ### BEGIN query string
+                        if card_name != '':
+                            dynamic_form_qs = r"card_name=" + quote_plus(card_name) + r"&"
+                        else:
+                            dynamic_form_qs = r"card_name=" + card_name + r"&"
+
+                        dynamic_form_qs = dynamic_form_qs + r"min_converted_mana_cost=" + str(min_converted_mana_cost) + r"&"
+                        dynamic_form_qs = dynamic_form_qs + r"max_converted_mana_cost=" + str(max_converted_mana_cost) + r"&"
+
+                        dynamic_form_qs = dynamic_form_qs + r"min_power=" + str(min_power) + r"&"
+                        dynamic_form_qs = dynamic_form_qs + r"max_power=" + str(max_power) + r"&"
+
+                        dynamic_form_qs = dynamic_form_qs + r"min_toughness=" + str(min_toughness) + r"&"
+                        dynamic_form_qs = dynamic_form_qs + r"max_toughness=" + str(max_toughness) + r"&"
+
+                        if card_keywords != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + quote_plus(card_keywords) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + card_keywords + r"&"
+
+                        # Add the colors to the query string
+                        if color_black != '':
+                            dynamic_form_qs = dynamic_form_qs + r"color_black=" + quote_plus(color_black) + r"&"
+
+                        if color_red != '':
+                            dynamic_form_qs = dynamic_form_qs + r"color_red=" + quote_plus(color_red) + r"&"
+
+                        if color_white != '':
+                            dynamic_form_qs = dynamic_form_qs + r"color_white=" + quote_plus(color_white) + r"&"
+
+                        if color_blue != '':
+                            dynamic_form_qs = dynamic_form_qs + r"color_blue=" + quote_plus(color_blue) + r"&"
+
+                        if color_green != '':
+                            dynamic_form_qs = dynamic_form_qs + r"color_green=" + quote_plus(color_green) + r"&"
+
+                        if card_text != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_text=" + quote_plus(card_text) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_text=" + card_text + r"&"
+
+                        if card_flavor_text != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_flavor_text=" + quote_plus(card_flavor_text) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_flavor_text=" + card_flavor_text + r"&"
+
+                        if card_type != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_type=" + quote_plus(card_type) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_type=" + card_type + r"&"
+
+                        if card_rarity != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_rarity=" + quote_plus(card_rarity) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_rarity=" + card_rarity + r"&"
+
+                        dynamic_form_qs = dynamic_form_qs + r"collection_number=" + str(collection_number) + r"&"
+
+                        if sort_by_choice != '':
+                            dynamic_form_qs = dynamic_form_qs + r"sort_by_choice=" + quote_plus(sort_by_choice) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"sort_by_choice=" + sort_by_choice + r"&"
+
+                        if card_artist != '':
+                            dynamic_form_qs = dynamic_form_qs + r"card_artist=" + quote_plus(card_artist) + r"&"
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"card_artist=" + card_artist + r"&"
+
+                        if sorting_order != '':
+                            dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + quote_plus(sorting_order)
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"sorting_order=" + sorting_order
+
+                        if set_name != '':
+                            dynamic_form_qs = dynamic_form_qs + r"set_name=" + quote_plus(set_name)
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"set_name=" + set_name
+
+                        dynamic_form_qs = dynamic_form_qs + r"minprice=" + str(minprice) + r"&"
+                        dynamic_form_qs = dynamic_form_qs + r"maxprice=" + str(maxprice) + r"&"
+
+                        if seller_name != '':
+                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name)
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name
+                        if own != '':
+                            dynamic_form_qs = dynamic_form_qs + r"own=" + quote_plus(own)
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"own=" + own
+                        if dont_own != '':
+                            dynamic_form_qs = dynamic_form_qs + r"dont_own=" + quote_plus(dont_own)
+                        else:
+                            dynamic_form_qs = dynamic_form_qs + r"own=" + dont_own
+
+                        # TODO: Debug pring statement for form query string
+                        # print("DYNAMIC_STRING:")
+                        # print(dynamic_form_qs)
+                        ### END query string
+
+                        # Sort the QuerySet per the parameter
+                        cards = cards.order_by(sort_param)
                         # display only 25 cards per page
-                        paginator = Paginator(return_dicts, 24)
-                        page = request.GET.get('page')
+                        paginator = Paginator(cards, 24)
+
                         try:
                             page_obj = paginator.page(page)
                         except PageNotAnInteger:
                             # If page is not an integer, deliver first page.
-                            page_obj = paginator.page(1)
+                            page = 1
+                            page_obj = paginator.page(page)
                         except EmptyPage:
                             # If page is out of range (e.g. 9999), deliver last page of results.
                             page_obj = paginator.page(paginator.num_pages)
                         return render(request=request,
                                       template_name='main/collection_and_notification_portal.html',
-                                      context={'data': page_obj, 'form': form})  # load necessary schemas
+                                      context={'data': page_obj, 'form': form,
+                                               'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
                     else:
-                        for item in collection_content:
-                            card = Card.objects.get(product_id=item.card_id_id)
-                            own = item.obtained
-                            cards_in_collection.append({'card': card, 'own': own})
-                        # display only 25 cards per page
-                        paginator = Paginator(cards_in_collection, 24)
-                        page = request.GET.get('page')
+                        cards = Card.objects.all(product_id__in=collection_content.values_list('product_id', flat=True))
+                        card_data = []
+                        for card in cards:
+                            c_data = {}
+                            c_data['card'] = card
+                            c_data['own'] = Collection_Content.objects.get(card_id=card.product_id).obtained
+                            card_data.append(c_data)
+                        paginator = Paginator(cards, 24)
+
+                        try:
+                            page_obj = paginator.page(page)
+                        except PageNotAnInteger:
+                            # If page is not an integer, deliver first page.
+                            page = 1
+                            page_obj = paginator.page(page)
+                        except EmptyPage:
+                            # If page is out of range (e.g. 9999), deliver last page of results.
+                            page_obj = paginator.page(paginator.num_pages)
+
+                        # Place form variables from GET request into form
+                        form = CollectionSearchForm({
+                            'card_name': card_name,
+                            'card_text': card_text,
+                            'card_flavor_text': card_flavor_text,
+                            'card_artist': card_artist,
+                            'set_name': set_name,
+                            'seller_name': seller_name,
+                            'minprice': minprice,
+                            'maxprice': maxprice,
+                            'min_converted_mana_cost': min_converted_mana_cost,
+                            'max_converted_mana_cost': max_converted_mana_cost,
+                            'min_power': min_power,
+                            'max_power': max_power,
+                            'min_toughness': min_toughness,
+                            'max_toughness': max_toughness,
+                            'card_keywords': card_keywords,
+                            'card_type': card_type,
+                            'color_black': color_black,
+                            'color_red': color_red,
+                            'color_white': color_white,
+                            'color_blue': color_blue,
+                            'color_green': color_green,
+                            'card_rarity': card_rarity,
+                            'collection_number': collection_number,
+                            'sort_by_choice': sort_by_choice,
+                            'sorting_order': sorting_order,
+                            'own': own,
+                            'dont_own': dont_own
+                        })
+
                         return render(request=request,
                                       template_name='main/collection_and_notification_portal.html',
-                                      context={'data': page_obj, 'form': form})  # load necessary schemas
-                else:
-                    for item in collection_content:
-                        card = Card.objects.get(product_id=item.card_id_id)
-                        own = item.obtained
-                        cards_in_collection.append({'card': card, 'own': own})
-                    # display only 25 cards per page
-                    paginator = Paginator(cards_in_collection, 24)
-                    page = request.GET.get('page')
-                    try:
-                        page_obj = paginator.page(page)
-                    except PageNotAnInteger:
-                        # If page is not an integer, deliver first page.
-                        page_obj = paginator.page(1)
-                    except EmptyPage:
-                        # If page is out of range (e.g. 9999), deliver last page of results.
-                        page_obj = paginator.page(paginator.num_pages)
-
-                    form = CollectionSearchForm
-                    return render(request=request,
-                                  template_name='main/collection_and_notification_portal.html',
-                                  context={'data': page_obj, 'form': form})  # load necessary schemas
-
-            except Collection_Content.DoesNotExist:
-                pass
-
+                                      context={'data': page_obj, 'form': form,
+                                               'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
+                except Collection_Content.DoesNotExist:
+                    pass
 
 # log user out of system
 def logout_request(request):

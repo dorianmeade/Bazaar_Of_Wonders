@@ -45,14 +45,14 @@
                 <li><a style="color: rgb(228, 193, 152)" href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right" style="color: rgb(228, 193, 152)">logout</i></a></li>
             {% elif user.auth_user_id != None %}
                 {% if user.auth_user_id.first_name%}
-                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_id.first_name|title}}!</a></li>
+                <li><a style="pointer-events:none; color: rgb(228, 193, 152); cursor: default;" href="">Welcome, {{user.auth_user_id.first_name|title}}!</a></li>
                 {% else %}
-                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_id.username|title}}!</a></li>
+                <li><a style="pointer-events:none; color: rgb(228, 193, 152); cursor: default;" href="">Welcome, {{user.auth_user_id.username|title}}!</a></li>
                 {% endif %}
                 <li><a href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
             {% else %}
-                <li><a style="{% if request.path == '/login' %} color: orange; {% endif %}" href="{% url 'main:login_req' %}" data-target="dropdown1">Login<i class="material-icons right">person</i></a></li>   
-                <li><a style="{% if request.path == '/register' %} color: orange; {% endif %}" href="{% url 'main:register' %}" data-target="dropdown1">Register<i class="material-icons right">person_add</i></a></li>    
+                <li><a style="color: rgb(228, 193, 152);" href="{% url 'main:login_req' %}" data-target="dropdown1">Login<i class="material-icons right" style="color: rgb(228, 193, 152);">person</i></a></li>
+                <li><a style="color: rgb(228, 193, 152);" href="{% url 'main:register' %}" data-target="dropdown1">Register<i class="material-icons right" style="color: rgb(228, 193, 152);">person_add</i></a></li>
             {% endif %}
             </ul>
     </div>

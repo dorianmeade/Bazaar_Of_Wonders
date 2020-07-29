@@ -207,7 +207,11 @@
                             <div style="text-align: left;">
                                 <p style="color: rgb(40, 17, 19); margin: 1px"><b>Condition: </b>{{ item.condition }}</p>
                             </div>
-                            <p><a href="{% url 'main:notifications' item.id %}"><button style="font-size: 3vh; font-weight: bold; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); height: min-content; width: 88%; border-radius: 5px;">Notify Me at Price Drop</button></a></p>
+                             {% if user.is_authenticated %}
+                                <p><a href="{% url 'main:notifications' item.id %}"><button style="font-size: 3vh; font-weight: bold; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); height: min-content; width: 88%; border-radius: 5px;">Notify Me at Price Drop</button></a></p>
+                             {% else %}
+                                 <p><a style="color: rgb(70, 93, 49)" href="{% url 'main:login_req' %}"><b>Login</b></a> or <a style="color: rgb(70, 93, 49)" href="{% url 'main:register' %}"><b>Register</b></a> to recieve price drop notifications.</p>
+                             {% endif %}
                         </a>
                     </div>
                 </div>

@@ -87,9 +87,9 @@ class SearchForm(forms.Form):
                                                                                         'rgba(90, 47, 49); '
                                                                                          'color: rgba(228, 193, 152); '
                                                                                         'font-weight: bold; '
-                                                                                        'font-family: Trebuchet MS;'
-                                                                                        
-                                                                                        }))
+                                                                                        'font-family: Trebuchet MS;'}),
+
+                                initial='NO_VALUE')
     card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES,
                                                                             attrs={'class': 'dropdown-trigger btn',
                                                                                    'style': 'background-color: '
@@ -98,7 +98,6 @@ class SearchForm(forms.Form):
                                                                                             'font-weight: bold; '
                                                                                             'font-family: Trebuchet MS;'}),
                                   initial='NO_VALUE')
-
     collection_number = forms.IntegerField(required=False, initial=None)
     sort_by_choice = forms.CharField(label='Sort By:', widget=forms.Select(choices=SORT_BY,
                                                                            attrs={'class': 'dropdown-trigger btn',
@@ -120,117 +119,116 @@ class SearchForm(forms.Form):
 
 # listing display filter form for collection view
 class CollectionSearchForm(forms.Form):
-    class SearchForm(forms.Form):
-        CARD_TYPES = [
-            ('NO_VALUE', 'Any Card Type'),
-            ('artifact', 'Artifact'),
-            ('creature', 'Creature'),
-            ('enchantment', 'Enchantment'),
-            ('instant', 'Instant'),
-            ('land', 'Land'),
-            ('planeswalker', 'Planeswalker'),
-            ('tribal', 'Tribal'),
-            ('sorcery', 'Sorcery'),
-        ]
+    CARD_TYPES = [
+        ('NO_VALUE', 'Any Card Type'),
+        ('artifact', 'Artifact'),
+        ('creature', 'Creature'),
+        ('enchantment', 'Enchantment'),
+        ('instant', 'Instant'),
+        ('land', 'Land'),
+        ('planeswalker', 'Planeswalker'),
+        ('tribal', 'Tribal'),
+        ('sorcery', 'Sorcery'),
+    ]
 
-        CARD_RARITIES = [
-            ('NO_VALUE', 'Any Card Rarity'),
-            ('rare', 'Rare'),
-            ('common', 'Common'),
-            ('uncommon', 'Uncommon'),
-            ('mythic', 'Mythic'),
-        ]
+    CARD_RARITIES = [
+        ('NO_VALUE', 'Any Card Rarity'),
+        ('rare', 'Rare'),
+        ('common', 'Common'),
+        ('uncommon', 'Uncommon'),
+        ('mythic', 'Mythic'),
+    ]
 
-        SORT_ORDERS = {
-            ('ascending', 'Ascending'),
-            ('descending', 'Descending')
-        }
+    SORT_ORDERS = {
+        ('ascending', 'Ascending'),
+        ('descending', 'Descending')
+    }
 
-        SORT_BY = {
-            ('card_name', 'Card Name'),
-            ('card_rarity', 'Card Rarity'),
-            ('card_type', 'Card Type'),
-        }
+    SORT_BY = {
+        ('card_name', 'Card Name'),
+        ('card_rarity', 'Card Rarity'),
+        ('card_type', 'Card Type'),
+    }
 
-        YES_NO = {
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        }
+    YES_NO = {
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    }
 
-        card_name = forms.CharField(max_length=200, required=False)
-        card_text = forms.CharField(max_length=4000, required=False)
-        card_flavor_text = forms.CharField(max_length=4000, required=False)
-        card_keywords = forms.CharField(max_length=200, required=False)
-        card_artist = forms.CharField(max_length=200, required=False)
-        set_name = forms.CharField(max_length=200, required=False)
-        seller_name = forms.CharField(max_length=200, required=False)
+    card_name = forms.CharField(max_length=200, required=False)
+    card_text = forms.CharField(max_length=4000, required=False)
+    card_flavor_text = forms.CharField(max_length=4000, required=False)
+    card_keywords = forms.CharField(max_length=200, required=False)
+    card_artist = forms.CharField(max_length=200, required=False)
+    set_name = forms.CharField(max_length=200, required=False)
+    seller_name = forms.CharField(max_length=200, required=False)
 
-        minprice = forms.DecimalField(required=False, initial=0, decimal_places=2)
-        maxprice = forms.DecimalField(required=False, initial=0, decimal_places=2)
+    minprice = forms.DecimalField(required=False, initial=0, decimal_places=2)
+    maxprice = forms.DecimalField(required=False, initial=0, decimal_places=2)
 
-        min_converted_mana_cost = forms.IntegerField(required=False, initial=0)
-        max_converted_mana_cost = forms.IntegerField(required=False, initial=0)
+    min_converted_mana_cost = forms.IntegerField(required=False, initial=0)
+    max_converted_mana_cost = forms.IntegerField(required=False, initial=0)
 
-        min_power = forms.IntegerField(required=False, initial=0)
-        max_power = forms.IntegerField(required=False, initial=0)
+    min_power = forms.IntegerField(required=False, initial=0)
+    max_power = forms.IntegerField(required=False, initial=0)
 
-        min_toughness = forms.IntegerField(required=False, initial=0)
-        max_toughness = forms.IntegerField(required=False, initial=0)
+    min_toughness = forms.IntegerField(required=False, initial=0)
+    max_toughness = forms.IntegerField(required=False, initial=0)
 
-        color_black = forms.CharField(max_length=200, required=False)
-        color_red = forms.CharField(max_length=200, required=False)
-        color_white = forms.CharField(max_length=200, required=False)
-        color_blue = forms.CharField(max_length=200, required=False)
-        color_green = forms.CharField(max_length=200, required=False)
+    color_black = forms.CharField(max_length=200, required=False)
+    color_red = forms.CharField(max_length=200, required=False)
+    color_white = forms.CharField(max_length=200, required=False)
+    color_blue = forms.CharField(max_length=200, required=False)
+    color_green = forms.CharField(max_length=200, required=False)
 
-        card_type = forms.CharField(label='Card Type:', widget=forms.Select(choices=CARD_TYPES,
+    card_type = forms.CharField(label='Card Type:', widget=forms.Select(choices=CARD_TYPES,
+                                                                        attrs={'class': 'dropdown-trigger btn',
+                                                                               'style': 'background-color: '
+                                                                                        'rgba(90, 47, 49); '
+                                                                                        'color: rgba(228, 193, 152); '
+                                                                                        'font-weight: bold; '
+                                                                                        'font-family: Trebuchet MS;'}),
+                                initial='NO_VALUE')
+    card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES,
                                                                             attrs={'class': 'dropdown-trigger btn',
                                                                                    'style': 'background-color: '
                                                                                             'rgba(90, 47, 49); '
                                                                                             'color: rgba(228, 193, 152); '
                                                                                             'font-weight: bold; '
-                                                                                            'font-family: Trebuchet MS;'
+                                                                                            'font-family: Trebuchet MS;'}),
+                                  initial='NO_VALUE')
 
-                                                                                   }))
-        card_rarity = forms.CharField(label='Card Rarity:', widget=forms.Select(choices=CARD_RARITIES,
-                                                                                attrs={'class': 'dropdown-trigger btn',
-                                                                                       'style': 'background-color: '
-                                                                                                'rgba(90, 47, 49); '
-                                                                                                'color: rgba(228, 193, 152); '
-                                                                                                'font-weight: bold; '
-                                                                                                'font-family: Trebuchet MS;'}),
-                                      initial='NO_VALUE')
-
-        collection_number = forms.IntegerField(required=False, initial=None)
-        sort_by_choice = forms.CharField(label='Sort By:', widget=forms.Select(choices=SORT_BY,
-                                                                               attrs={'class': 'dropdown-trigger btn',
-                                                                                      'style': 'background-color: '
-                                                                                               'rgba(90, 47, 49); '
-                                                                                               'color: rgba(228, 193, 152); '
-                                                                                               'font-weight: bold;'
-                                                                                               'font-family: Trebuchet MS;'}),
-                                         initial='card_name')
-        sorting_order = forms.CharField(label='Sort Order:', widget=forms.Select(choices=SORT_ORDERS,
-                                                                                 attrs={'class': 'dropdown-trigger btn',
-                                                                                        'style': 'background-color: '
-                                                                                                 'rgba(90, 47, 49); '
-                                                                                                 'color: rgba(228, 193, 152); '
-                                                                                                 'font-weight: bold;'
-                                                                                                 'font-family: Trebuchet MS;'}),
-                                        initial='ascending')
-        own = forms.CharField(label='Show cards I own:', widget=forms.Select(choices=YES_NO,
+    collection_number = forms.IntegerField(required=False, initial=None)
+    sort_by_choice = forms.CharField(label='Sort By:', widget=forms.Select(choices=SORT_BY,
+                                                                           attrs={'class': 'dropdown-trigger btn',
+                                                                                  'style': 'background-color: '
+                                                                                           'rgba(90, 47, 49); '
+                                                                                           'color: rgba(228, 193, 152); '
+                                                                                           'font-weight: bold;'
+                                                                                           'font-family: Trebuchet MS;'}),
+                                     initial='card_name')
+    sorting_order = forms.CharField(label='Sort Order:', widget=forms.Select(choices=SORT_ORDERS,
                                                                              attrs={'class': 'dropdown-trigger btn',
                                                                                     'style': 'background-color: '
-                                                                                             'darkolivegreen; '
-                                                                                             'color: black; '
-                                                                                             'font-weight: bold'}),
-                              initial='yes')
-        dont_own = forms.CharField(label='Show cards I don\'t own:',
-                                   widget=forms.Select(choices=YES_NO, attrs={'class': 'dropdown-trigger btn',
-                                                                              'style': 'background-color: '
-                                                                                       'darkolivegreen; color: black; '
-                                                                                       'font-weight: bold'}),
-                                   initial='yes')
+                                                                                             'rgba(90, 47, 49); '
+                                                                                             'color: rgb(228, 193, 152); '
+                                                                                             'font-weight: bold;'
+                                                                                             'font-family: Trebuchet MS;'}),
+                                    initial='ascending')
+    own = forms.CharField(label='Show cards I own:', widget=forms.Select(choices=YES_NO,
+                                                                         attrs={'class': 'dropdown-trigger btn',
+                                                                                'style': 'background-color: '
+                                                                                         'rgba(90, 47, 49); '
+                                                                                         'color: rgb(228, 193, 152);'
+                                                                                         'font-weight: bold'}),
+                          initial='yes')
+    dont_own = forms.CharField(label='Show cards I don\'t own:',
+                               widget=forms.Select(choices=YES_NO, attrs={'class': 'dropdown-trigger btn',
+                                                                          'style': 'background-color: '
+                                                                                   'rgba(90, 47, 49); '
+                                                                                   'color: rgb(228, 193, 152);'
+                                                                                   'font-weight: bold'}),
+                               initial='yes')
 
 
 # user portal - edit account info form

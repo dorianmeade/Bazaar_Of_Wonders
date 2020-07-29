@@ -30,6 +30,24 @@
             </td>
           </tr>
           <tr style="border: 0px">
+            <th style="padding: 1px;">{{ form.own.label_tag }}</th>
+          </tr>
+          <tr style="border: 0px">
+              <td style="padding: 8px;">
+              {{ form.own.errors }}
+              {{ form.own }}
+            </td>
+          </tr>
+          <tr style="border: 0px">
+            <th style="padding: 1px;">{{ form.dont_own.label_tag }}</th>
+          </tr>
+          <tr style="border: 0px">
+              <td style="padding: 8px;">
+              {{ form.dont_own.errors }}
+              {{ form.dont_own }}
+            </td>
+          </tr>
+          <tr style="border: 0px">
             <th style="padding: 1px;">{{ form.sort_by_choice.label_tag }}</th>
           </tr>
           <tr style="border: 0px">
@@ -352,7 +370,7 @@
           <tr style="border: 0px">
               <td style="padding: 2px;">
               <span>&#124;</span>
-              <label style="border-stye: dotted;">
+              <label >
                 {% if form.color_black.value == 'on' %}
                   <input type="checkbox" name="color_black" checked="checked" />
                 {% else %}
