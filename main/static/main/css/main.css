@@ -1,0 +1,6 @@
+/*font from https://www.dafont.com/sketsa-ramadhan.font*/
+@font-face {
+  font-family: 'CustomBazaarFont';
+  src: local('CustomBazaarFont'),
+       url('../fonts/Sketsa Ramadhan.otf') format("opentype");
+}

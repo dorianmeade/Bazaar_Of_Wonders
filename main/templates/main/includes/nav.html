@@ -1,21 +1,27 @@
 <nav>
-    <div class="nav-wrapper black" style="font-family: Trebuchet MS;">
+    <div class="nav-wrapper" style="background-color: rgb(40, 63, 19); font-family: Trebuchet MS;">
         <ul id="homeBtn">
-            <li><a href="{% url 'main:home' %}"><i class="material-icons right">home</i></a></li>
+            <li><a href="{% url 'main:home' %}"><i class="material-icons right" style="color: rgb(228, 193, 152);">home</i></a></li>
         </ul>
-        <ul id="menuBtn">
+        <ul id="menuBtn" style="background-color: rgb(40, 63, 19);">
             <!-- Dropdown Trigger -->
-            <li><a href="#"><i class="material-icons right">menu</i></a>
-                <ul>
+            <li style="background-color: rgb(40, 63, 19);"><a href="#"><i class="material-icons right" style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">menu</i></a>
+                <ul  style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'main:collection' %}">My Collection</a></li>
-                    <li><a href="{% url 'main:profile' %}">My Account</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:collection' %}">My Collection</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:profile' %}">My Account</a></li>
                     {% elif user.auth_user_id != None %}
-                    <li><a href="{% url 'main:collection' %}">My Collection</a></li>
-                    <li><a href="{% url 'main:profile' %}">My Account</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:collection' %}">My Collection</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:profile' %}">My Account</a></li>
                     {% endif %}
-                    <li><a href="https://magic.wizards.com/en">MTG Community</a></li>
-                    <li><a href="mailto:thebazaartraders@gmail.com">Contact Us</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="https://magic.wizards.com/en">MTG Community</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="mailto:thebazaartraders@gmail.com">Contact Us</a></li>
                 </ul>
             </li>      
         </ul>
@@ -27,11 +33,11 @@
             {% if user.is_authenticated %}
                 <!-- display first name or username -->
                 {% if user.first_name%}
-                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.first_name|title}}!</a></li>
+                <li><a style="pointer-events:none; font-family: CustomBazaarFont; font-size: 5vh; color: rgb(228, 193, 152); cursor: default;" href="">Welcome {{user.first_name|title}}!</a></li>
                 {% else %}
-                <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.username|title}}!</a></li>
+                <li><a style="pointer-events:none; font-family: CustomBazaarFont; font-size: 5vh; color: rgb(228, 193, 152); cursor: default;" href="">Welcome, {{user.username|title}}!</a></li>
                 {% endif %}
-                <li><a href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right">logout</i></a></li>   
+                <li><a style="color: rgb(228, 193, 152)" href="{% url 'main:logout_req' %}" data-target="dropdown1">Logout<i class="material-icons right" style="color: rgb(228, 193, 152)">logout</i></a></li>
             {% elif user.auth_user_id != None %}
                 {% if user.auth_user_id.first_name%}
                 <li><a style="pointer-events:none; cursor: default;" href="">Welcome, {{user.auth_user_id.first_name|title}}!</a></li>

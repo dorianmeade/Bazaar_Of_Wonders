@@ -6,6 +6,7 @@ import datetime
 import pytz
 import html
 import time
+import re
 from bs4 import BeautifulSoup, SoupStrainer
 from django.conf import settings
 from django import setup
@@ -451,6 +452,7 @@ for key in mtg_json_data.keys():
         continue
 
 rarities, types, sellers, cards, listings, rarity_strings, type_strings, seller_strings = [], [], [], [], [], [], [], []
+no_html = re.compile('<.*?>')
 
 for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values()):
     rarity_id, type_id, seller_id = 0, 0, 0
@@ -498,7 +500,7 @@ for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values(
     except ValueError:
         card["fields"]["converted_mana_cost"] = -1
     card["fields"]["type_id"] = type_id
-    card["fields"]["card_text"] = card_data['card_text'] if 'card_text' in card_data.keys() \
+    card["fields"]["card_text"] = re.sub(no_html, '', card_data['card_text']) if 'card_text' in card_data.keys() \
         else "No text available"
     color = ""
     if 'card_color' in card_data.keys():
@@ -536,7 +538,7 @@ for tcgplayer_id, card_data in zip(transfer_to_db.keys(), transfer_to_db.values(
     except ValueError:
         card["fields"]["collection_number"] = -1
     card["fields"]["rarity_id"] = rarity_id
-    card["fields"]["flavor_text"] = card_data['flavor_text'] if 'flavor_text' in card_data.keys() \
+    card["fields"]["flavor_text"] = re.sub(no_html, '', card_data['flavor_text']) if 'flavor_text' in card_data.keys() \
         else "No flavor text available"
     card["fields"]["artist"] = card_data['artist'] \
         if 'artist' in card_data.keys() else "No artist information available"

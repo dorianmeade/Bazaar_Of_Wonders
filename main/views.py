@@ -31,10 +31,6 @@ def home(request):
     set_name_raw = ''
     seller_name = ''
     seller_name_raw = ''
-    auction_house_search = ''
-    auction_house_search_raw = ''
-    sponsored = ''
-    sponsored_raw = ''
     color_black = ''
     color_red = ''
     color_white = ''
@@ -46,20 +42,15 @@ def home(request):
     max_toughness = 0
     min_converted_mana_cost = 0
     max_converted_mana_cost = 0
-    #Arbitrarily picked -7777777 as a default sentinel value
-    collection_number = -7777777
+    collection_number = None
     minprice = 0.00
     maxprice = 0.00
 
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
 
-
-
-
     sort_by_choice = 'card_name'
     sorting_order = 'ascending'
-
 
     page = 1
     if raw_string != '':
@@ -111,8 +102,11 @@ def home(request):
                 min_converted_mana_cost = int(parameter_val)
             elif parameter_name == "max_converted_mana_cost":
                 max_converted_mana_cost = int(parameter_val)                
-            elif parameter_name == "collection_number" and parameter_val != '':
-                collection_number = int(parameter_val)
+            elif parameter_name == "collection_number":
+                try:
+                    collection_number = int(parameter_val)
+                except Exception:
+                    collection_number = None
             elif parameter_name == "card_flavor_text":
                 card_flavor_text_raw = parameter_val
                 card_flavor_text = unquote_plus(card_flavor_text_raw)
@@ -129,23 +123,14 @@ def home(request):
             elif parameter_name == "seller_name":
                 seller_name_raw = parameter_val
                 seller_name = unquote_plus(seller_name_raw)
-            elif parameter_name == "auction_house_search":
-                auction_house_search_raw = parameter_val
-                auction_house_search = unquote_plus(auction_house_search_raw)
-            elif parameter_name == "sponsored":
-                sponsored_raw = parameter_val
-                sponsored = unquote_plus(sponsored_raw)
-
 
     #If the collection_number is set to -7777777, reset it to None
     if collection_number == -7777777:
         collection_number = None
 
     if request.method == "GET":              
-        #Place form variables from GET request into form
+        # Place form variables from GET request into form
         form = SearchForm({
-            'auction_house_search': auction_house_search,
-            'sponsored': sponsored,
             'card_name': card_name,
             'card_text': card_text,
             'card_flavor_text': card_flavor_text,
@@ -174,92 +159,104 @@ def home(request):
         })
     
         if form.is_valid():
-            listing_manager = Listing.objects
+            listings = Listing.objects.all()
+            # Filter by Price
+            if minprice != float(0):
+                listings = listings.filter(price__gte=minprice)
+            if maxprice != float(0):
+                listings = listings.filter(price__lte=maxprice)
+            # Filter by Seller
+            if seller_name != "":
+                listings = listings.filter(seller_key__seller_name__icontains=seller_name)
 
-
-            #TODO: Look into issue with filtering on boolean
-            #Related link: https://stackoverflow.com/questions/6933196/django-boolean-queryset-filter-not-working
-            if auction_house_search == 'no':
-                listings = listing_manager.filter(user_listing = False)
+            # filtering by listing slows it down a lot, so only do if you have to
+            if minprice != float(0) or maxprice != float(0) or seller_name != "":
+                cards = Card.objects.all().filter(product_id__in=listings.values_list('product_id', flat=True))
             else:
-                listings = listing_manager.filter(user_listing = True)
+                cards = Card.objects.all()
 
-            if sponsored == 'no':
-                listings = listing_manager.filter(sponsored = False)
-            else:
-                listings = listing_manager.filter(sponsored = True)
+            # TODO: Look into issue with filtering on boolean
+            # Related link: https://stackoverflow.com/questions/6933196/django-boolean-queryset-filter-not-working
 
             # Filtering by name (if name not specified, this will return all cards)
-            listings = listing_manager.filter(product_id__name__icontains = card_name)
+            if card_name != '':
+                cards = cards.exclude(name__exact="Card has no name")
+                card_name_items = card_name.split(' ')
+                for word in card_name_items:
+                    cards = cards.filter(name__icontains=word)
 
             # Filtering by card_text (if card_text not specified, this will return all cards)
             if card_text != '':
-                listings = listing_manager.filter(product_id__card_text__icontains = card_text)
+                cards = cards.exclude(card_text__exact="No text available")
+                cards = cards.filter(card_text__icontains=card_text)
 
             # Filtering by card_artist (if card_artist not specified, this will return all cards)
             if card_artist != '':
-                listings = listing_manager.filter(product_id__artist__icontains = card_artist)
+                cards = cards.exclude(artist__exact="No artist information available")
+                cards = cards.filter(artist__icontains=card_artist)
 
             # Filtering by card_flavor_text (if card_flavor_text not specified, this will return all cards)
             if card_flavor_text != '':
-                listings = listing_manager.filter(product_id__flavor_text__icontains = card_flavor_text)
+                cards = cards.exclude(flavor_text__exact="No flavor text available")
+                cards = cards.filter(flavor_text__icontains=card_flavor_text)
 
-            #Filter by Card Keywords
+            # Filter by Card Keywords
             if card_keywords != '':
-                listings = listing_manager.filter(product_id__card_keywords__icontains = card_keywords)
+                cards = cards.exclude(card_keywords__exact="No keywords available")
+                cards = cards.filter(card_keywords__icontains=card_keywords)
 
-            #Filter by Card Keywords
+            # Filter by Card Keywords
             if set_name != '':
-                listings = listing_manager.filter(product_id__set_name__icontains = set_name)
+                cards = cards.exclude(card_keywords__exact="No set name available")
+                cards = cards.filter(set_name__icontains=set_name)
 
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
-                listings = listings.filter(product_id__type_id__card_type__contains = card_type)
+                cards = cards.filter(type_id__card_type__contains=card_type)
 
             # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
-                listings = listings.filter(product_id__rarity_id__card_rarity__iexact = card_rarity)
+                cards = cards.filter(rarity_id__card_rarity__iexact=card_rarity)
 
-            #Filter by Toughness
-            if min_toughness != 0 and max_toughness != 0:
-                listings = listings.filter(product_id__toughness__lte = max_toughness)
-                listings = listings.filter(product_id__toughness__gte = min_toughness)
-            
-            #Filter by Power
+            # Filter by Toughness
+            if min_toughness != 0:
+                cards = cards.filter(toughness__gte=min_toughness)
+            if max_toughness != 0:
+                cards = cards.filter(toughness__lte=max_toughness)
+
+            # Filter by Power
+            if min_power != 0:
+                cards = cards.filter(power__gte=min_power)
             if min_power != 0 and max_power != 0:
-                listings = listings.filter(product_id__power__lte = max_power)
-                listings = listings.filter(product_id__power__gte = min_power)
+                cards = cards.filter(power__lte=max_power)
 
-            #Filter by Converted Mana Cost
+            # Filter by Converted Mana Cost
+            if min_converted_mana_cost != 0:
+                cards = cards.filter(converted_mana_cost__gte=min_converted_mana_cost)
             if min_converted_mana_cost != 0 and max_converted_mana_cost != 0:
-                listings = listings.filter(product_id__converted_mana_cost__lte = max_converted_mana_cost)
-                listings = listings.filter(product_id__converted_mana_cost__gte = min_converted_mana_cost)
-      
-            #Filter by Price
-            if minprice != float(0) and maxprice != float(0):
-                listings = listings.filter(price__lte = maxprice)
-                listings = listings.filter(price__gte = minprice)
+                cards = cards.filter(converted_mana_cost__lte=max_converted_mana_cost)
 
-            #Filter by Card Colors
+            # Filter by Card Colors
             color_filter = False
             if color_black == "on":
-                listings = listings.filter(product_id__card_color__icontains = 'B')
+                cards = cards.filter(card_color__icontains='B')
                 color_filter = True
             if color_red == "on":
-                listings = listings.filter(product_id__card_color__contains = 'R')
+                cards = cards.filter(card_color__contains='R')
                 color_filter = True
             if color_white == "on":
-                listings = listings.filter(product_id__card_color__icontains = 'W')
+                cards = cards.filter(card_color__icontains='W')
                 color_filter = True
             if color_blue == "on":
-                listings = listings.filter(product_id__card_color__icontains = 'U')
+                cards = cards.filter(card_color__icontains='U')
                 color_filter = True
             if color_green == "on":
-                listings = listings.filter(product_id__card_color__icontains = 'G')
+                cards = cards.filter(card_color__icontains='G')
                 color_filter = True
             
-            #Exclude non-colored cards if any filtering based on color has been done
+            # Exclude non-colored cards if any filtering based on color has been done
             if color_filter:
+                cards = cards.exclude(card_color='No color available')
                 listings = listings.exclude(product_id__card_color = 'No color available')
 
 
@@ -267,25 +264,22 @@ def home(request):
             if collection_number != None:
                 listings = listings.filter(product_id__collection_number__iexact = collection_number)
 
-            #Filter by seller name 
-            #TODO: Implement Auction house search, may require model change and need to search by different column
-            if auction_house_search == 'no':
-                if seller_name != '':
-                    listings = listing_manager.filter(seller_key_id__seller_name__icontains = seller_name)
-
+            # Filter by Collection Number
+            if collection_number:
+                cards = cards.filter(collection_number__iexact=collection_number)
   
             # Implement sorts
+            sort_param = "card_rarity"
             if sort_by_choice == 'card_name':
-                sort_param = "product_id__name"
+                sort_param = "name"
             elif sort_by_choice == 'card_rarity':
-                sort_param = "product_id__rarity_id__card_rarity"
+                sort_param = "rarity_id__card_rarity"
             elif sort_by_choice == 'card_type':
-                sort_param = "product_id__type_id__card_type"
-
+                sort_param = "type_id__card_type"
             if sorting_order == "descending":
                 sort_param = "-" + sort_param
-### BEGIN query string 
 
+### BEGIN query string
             if card_name != '': 
                 dynamic_form_qs = r"card_name=" + quote_plus(card_name) + r"&"
             else:
@@ -294,10 +288,8 @@ def home(request):
             dynamic_form_qs = dynamic_form_qs + r"min_converted_mana_cost=" + str(min_converted_mana_cost) + r"&"
             dynamic_form_qs = dynamic_form_qs + r"max_converted_mana_cost=" + str(max_converted_mana_cost) + r"&"
 
-
             dynamic_form_qs = dynamic_form_qs + r"min_power=" + str(min_power) + r"&"
             dynamic_form_qs = dynamic_form_qs + r"max_power=" + str(max_power) + r"&"
-
 
             dynamic_form_qs = dynamic_form_qs + r"min_toughness=" + str(min_toughness) + r"&"
             dynamic_form_qs = dynamic_form_qs + r"max_toughness=" + str(max_toughness) + r"&"
@@ -307,7 +299,7 @@ def home(request):
             else:
                 dynamic_form_qs = dynamic_form_qs + r"card_keywords=" + card_keywords + r"&"
             
-            #Add the colors to the query string
+            # Add the colors to the query string
             if color_black != '':
                 dynamic_form_qs = dynamic_form_qs + r"color_black=" + quote_plus(color_black) + r"&"
 
@@ -373,25 +365,15 @@ def home(request):
             else:
                 dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name 
 
-            if auction_house_search != '': 
-                dynamic_form_qs = dynamic_form_qs + r"auction_house_search=" + quote_plus(auction_house_search)
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"auction_house_search=" + auction_house_search 
-
-            if sponsored != '': 
-                dynamic_form_qs = dynamic_form_qs + r"sponsored=" + quote_plus(sponsored)
-            else:
-                dynamic_form_qs = dynamic_form_qs + r"sponsored=" + sponsored 
-                
-            #TODO: Debug pring statement for form query string
-            #print("DYNAMIC_STRING:")
-            #print(dynamic_form_qs)
+            # TODO: Debug pring statement for form query string
+            # print("DYNAMIC_STRING:")
+            # print(dynamic_form_qs)
 ### END query string 
 
             # Sort the QuerySet per the parameter
-            listings = listings.order_by(sort_param)
+            cards = cards.order_by(sort_param)
             # display only 25 cards per page
-            paginator = Paginator(listings, 24)
+            paginator = Paginator(cards, 24)
 
             try:
                 page_obj = paginator.page(page)
@@ -404,11 +386,11 @@ def home(request):
                 page_obj = paginator.page(paginator.num_pages)    
             return render(request=request,
                           template_name='main/home.html',
-                          context={'data': page_obj, 'form': form,'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
+                          context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
         else:
-            listings = Listing.objects.all()
+            cards = Card.objects.all()
             # display only 25 cards per page
-            paginator = Paginator(listings, 24)
+            paginator = Paginator(cards, 24)
 
             try:
                 page_obj = paginator.page(page)
@@ -420,10 +402,8 @@ def home(request):
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 page_obj = paginator.page(paginator.num_pages)
 
-            #Place form variables from GET request into form
+            # Place form variables from GET request into form
             form = SearchForm({
-                'auction_house_search': auction_house_search,
-                'sponsored': sponsored,
                 'card_name': card_name,
                 'card_text': card_text,
                 'card_flavor_text': card_flavor_text,
@@ -451,12 +431,9 @@ def home(request):
                 'sorting_order': sorting_order
             })
 
-
-            
             return render(request=request,
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
-
 
 
 # registration page form
