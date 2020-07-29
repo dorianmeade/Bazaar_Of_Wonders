@@ -1,23 +1,13 @@
-<div style="font-size: 65px; text-align: center; color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); background-color: rgb(90, 47, 49); height: min-content; font-family: CustomBazaarFont; padding: 5%; margin-bottom: 0px">Promotional Searches</div>
+<div style="font-size: 65px; text-align: center; color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); background-color: rgb(90, 47, 49); height: min-content; font-family: CustomBazaarFont; padding: 5%; margin-bottom: 0px">Lowest Priced Per Set</div>
   <form class="col" method="GET" style="text-align: center; display: inline-block;">
       {{ form.non_field_errors }}
       {{ form.source.errors }}
       {{ form.source }}
 
-<div class="row center-align" style="background-color: rgba(245, 225, 215, .8); text-align: center; margin-left: 0px; margin-top: 0px; padding-top: 5%">
-  <div class="col"> 
-    <ul class="tabs" >
-      <li class="tab"><a href="#by_set">By Card Set</a></li>
-      <li class="tab"><a href="#by_count">By Listing Count</a></li>
-    </ul>
-  </div>
-  
-</div> <!--End of row -->
-
 <div class="row" style="background-color: rgba(245, 225, 215, .8); text-align: center; margin-left: 0px; margin-top: 0px; padding-top: 5%">
 
   <div id="by_set" class="col">
-  <p style="color: rgb(40, 17, 19)" >Search for lowest selling cards by Set Name.</p> 
+  <p style="color: rgb(40, 17, 19)" >Search by Set Name</p> 
   <select name="promo_set" class="dropdown-trigger btn" style="background-color: rgba(90, 47, 49); color: rgba(228, 193, 152); font-weight: bold; font-family: Trebuchet MS;" id="id_promo_set">
     <option value="NO_VALUE">Any Card Set</option>
     {% for set in set_names %}
@@ -29,20 +19,6 @@
     {% endfor %}
   </select>
   </div>
-  <div id="by_count" class="col">
-  <p style="color: rgb(40, 17, 19)" >Search for cards with the most listings </p> 
-              <span>&#124;</span>
-              <label >
-                {% if form.most_listings.value == 'on' %}
-                  <input type="checkbox" name="most_listings" checked="checked" />
-                {% else %}
-                  <input type="checkbox" name="most_listings" />
-                {% endif %}
-                <span>Show most listed cards</span>
-              </label>
-  </div>
-
-
 <input style="margin-top:10px; font-size: 5vh; background-color: rgb(4, 56, 68); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 7vw; border-radius: 5px; font-family: CustomBazaarFont;" type="submit" value="Go">
 </div>
 

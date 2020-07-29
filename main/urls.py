@@ -28,5 +28,6 @@ urlpatterns = [
     path("account/sell", views.sell, name="sell"),
     path("account/sell/edit", views.editsell, name="editsell"),
     path("account/edit/password", views.changepass, name="changepass"),
-    path("promotions", views.promotions, name="promotions"),
+    path("promotionsBySet", views.promotionsBySet, name="promotionsBySet"),
+    path("hottestCard", views.hottestCard, name="hottestCard"),
 ]

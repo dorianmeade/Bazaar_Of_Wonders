@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
-from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm, PromotionForm
+from .forms import NewUserForm, SearchForm, CollectionSearchForm, EditUserForm, UpdateUserForm, UpdateSellerForm, UpdatePreferencesForm, PromotionSetForm
 from .models import Card, Listing, Collection, Collection_Content, Card_Type, Card_Rarity, Bazaar_User, Seller, User_Preferences, Notification
 from urllib.parse import unquote_plus, quote_plus
 from django.db.models import Avg, Max, Min, F, Count
@@ -435,7 +435,64 @@ def home(request):
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
 
-def promotions(request):
+
+def hottestCard(request):
+
+
+
+    page = 1
+    raw_string = request.META['QUERY_STRING']
+    if raw_string.find('&') != -1:
+        query_parameters = raw_string.split("&")
+    else:
+        query_parameters = [raw_string]
+
+
+
+    if raw_string != '':
+        for parameter in query_parameters: 
+            parameter_tokens = parameter.split("=")
+            parameter_name = parameter_tokens[0]
+            if len(parameter_tokens) <= 0:
+                parameter_val = None
+            else:
+                parameter_val = parameter_tokens[1]
+            if parameter_name == "page": 
+                page = int(parameter_val)
+            
+    
+
+    listings = Card.objects.raw('''
+select c.name as_name,c.set_name as set_name, c.card_image_loc as card_image_loc, 
+count(l.id) AS listing_count, min(l.price) as min_price, max(l.price) as max_price, avg(l.price) as avg_price, 
+l.product_id_id as product_id 
+from main_listing l,
+main_card c
+where l.product_id_id = c.product_id
+group by product_id 
+order by listing_count desc''')
+
+    paginator = Paginator(listings, 24)
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = 1
+        page_obj = paginator.page(page)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages) 
+
+
+    dynamic_form_qs = ''
+
+    return render(request=request,
+                  template_name="main/hottestCard.html", context={'data': page_obj,'dynamic_form_qs': dynamic_form_qs})
+
+
+
+###
+def promotionsBySet(request):
 
     #Get a list of all sets (used in dropdown)
     set_names = Card.objects.all().values('set_name').distinct().order_by('set_name')
@@ -450,8 +507,8 @@ def promotions(request):
     else:
         query_parameters = [raw_string]
 
-    promo_set = 'NO_VALUE'
-    most_listings = ''
+    promo_set = 'Apocalypse'
+
 
     if raw_string != '':
         for parameter in query_parameters: 
@@ -468,24 +525,22 @@ def promotions(request):
             if parameter_name == "page": 
                 page = int(parameter_val)
             
-            if parameter_name == "most_listings" and parameter_val == "on":
-                most_listings = 'on'
-
-            
-
-
-
-    form = PromotionForm({
+    
+    form = PromotionSetForm({
         'promo_set': promo_set,
-        'most_listings': most_listings
     })
 
     if promo_set != 'NO_VALUE':
-        listings = listings.filter(set_name__iexact = promo_set).values('product_id','set_name','price','card_image_loc',card_image_loc=F('product_id__card_image_loc'),name=F('product_name')).order_by('price').distinct()
-
-    elif most_listings != '':
-        listings = listings.values('product_id','set_name','price','card_image_loc',card_image_loc=F('product_id__card_image_loc'),name=F('product_name')).annotate(count=Count('id')).order_by('-count')
-    
+        listings = Card.objects.raw('''select c.name as_name,c.set_name as set_name, c.card_image_loc as card_image_loc, 
+count(l.id) AS listing_count, min(l.price) as min_price, max(l.price) as max_price, avg(l.price) as avg_price, 
+l.product_id_id as product_id 
+from main_listing l,
+main_card c
+where l.product_id_id = c.product_id
+and l.set_name = %s
+group by product_id 
+order by min_price asc''',[promo_set])
+ 
     paginator = Paginator(listings, 24)
     try:
         page_obj = paginator.page(page)
@@ -503,11 +558,10 @@ def promotions(request):
     if promo_set != 'NO_VALUE':
         dynamic_form_qs = dynamic_form_qs + 'promo_set=' + quote_plus(promo_set)
  
-    if most_listings != '':
-        dynamic_form_qs = dynamic_form_qs + 'most_listings=' + quote_plus(promo_set)
-
     return render(request=request,
-                  template_name="main/promotions.html", context={'set_names': set_names,'data': page_obj,'dynamic_form_qs': dynamic_form_qs, 'form': form})
+                  template_name="main/promotionsBySet.html", context={'set_names': set_names,'data': page_obj,'dynamic_form_qs': dynamic_form_qs, 'form': form})
+
+
 
                   
 # registration page form

@@ -309,6 +309,5 @@ class UpdatePreferencesForm(forms.Form):
                                                                         attrs={'class': 'dropdown-trigger btn',
                                                                                 'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
 
-class PromotionForm(forms.Form): 
+class PromotionSetForm(forms.Form): 
     promo_set = forms.CharField(max_length=200, required=False)
-    most_listings = forms.CharField(max_length=200, required=False)
