@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+{% load materializecss %}
+
+{% block content %}
+
+    <div class="row" style="display: flex">
+        <div class="column1" style="float: left; min-width: max-content; margin-left: 1vw">
+            <!-- display search/sort form -->
+            {% include 'main/includes/promo_search.html' %}
+        </div>
+        <div class="column2" style="float: left;">
+            <!-- display cards -->
+            {% include 'main/includes/cards.html' %}
+        </div>
+    </div>
+
+ <!-- limit 24 cards per page, page indices here -->
+<footer class="page footer" style="text-align: center">
+    <ul class="pagination" >
+        {% if data.has_previous %}
+        <li>
+        <a style="color: white;" href="?page={{data.previous_page_number}}&{{dynamic_form_qs}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+        </li>
+        {% endif %}
+        {% for p in data.paginator.page_range %}
+            {% if p <= data.number|add:4 and p >= data.number|add:-4 %}
+                {% if data.number == p %}
+                    <li><a style="background:black; color: orange;" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
+                {% else %}
+                    <li><a style="background:black; color: white;" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
+                {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% if data.has_next %}
+        <li>
+        <a style="color: white;" href="?page={{data.next_page_number}}&{{dynamic_form_qs}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+        {% endif %}
+    </ul>
+</footer>>
+{% endblock %}
