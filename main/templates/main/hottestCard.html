@@ -23,9 +23,9 @@
         {% for p in data.paginator.page_range %}
             {% if p <= data.number|add:4 and p >= data.number|add:-4 %}
                 {% if data.number == p %}
-                    <li><a style="background:black; color: orange;" href="?page={{p}}">{{p}}</a></li>
+                    <li><a style="color: rgb(228, 193, 152); background-color: rgb(40, 17, 19);" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% else %}
-                    <li><a style="background:black; color: white;" href="?page={{p}}">{{p}}</a></li>
+                    <li><a style="color: rgb(228, 193, 152); background-color: rgb(40, 17, 19);" href="?page={{p}}&{{dynamic_form_qs}}">{{p}}</a></li>
                 {% endif %}
         {% endif %}
         {% endfor %}

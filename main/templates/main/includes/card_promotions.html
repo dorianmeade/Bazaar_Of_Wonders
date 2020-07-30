@@ -7,16 +7,13 @@
             <div class="card" style="border-radius: 5px; width: min-content; background-color: rgb(40, 63, 19);">
                 <a title="card-testing" class="btn-link" style="width:min-content" href="{% url 'main:details' %}?selected={{c.product_id}}">
                     {% load static %}
-                    <div class="card-name white-text" style="text-align: center; padding: 2px">
-                        <p><b style="color: rgb(228, 193, 152);">Details and Buying Options</b></p>
-                    </div>
                     <div class="card-image">
                         <img class="media responsive-img" src="{{c.card_image_loc}}" alt="{{c.name}}" style="min-width:20vw; max-width: 20vw; min-height:25vw; max-height: 25vw" \>
                     </div>
                     <div class="card-name white-text" style="text-align: center;">
                         <p><b style="color: rgb(228, 193, 152); ">{{c.name}}</b></p>
-                        <p><b>Listing Count: {{c.listing_count}}</b><p>
-                        <p><b>Min(${{c.min_price |floatformat:2}}  ), Avg($ {{c.avg_price |floatformat:2}}  ), Max(${{c.avg_price |floatformat:2}})</b><p>
+                        <p><b style="color: rgb(228, 193, 152); ">Listing Count: {{c.listing_count}}</b><p>
+                        <p><b style="color: rgb(228, 193, 152); ">Min(${{c.min_price |floatformat:2}}  ), Avg($ {{c.avg_price |floatformat:2}}  ), Max(${{c.avg_price |floatformat:2}})</b><p>
                     </div>
                 </a>
             </div>

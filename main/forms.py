@@ -53,6 +53,8 @@ class SearchForm(forms.Form):
         ('card_name', 'Card Name'),
         ('card_rarity', 'Card Rarity'),
         ('card_type', 'Card Type'),
+        ('card_power', 'Card Power'),
+        ('card_toughness', 'Card Toughness'),
     }
 
     card_name = forms.CharField(max_length=200, required=False)
@@ -148,6 +150,8 @@ class CollectionSearchForm(forms.Form):
         ('card_name', 'Card Name'),
         ('card_rarity', 'Card Rarity'),
         ('card_type', 'Card Type'),
+        ('card_power', 'Card Power'),
+        ('card_toughness', 'Card Toughness'),
     }
 
     YES_NO = {

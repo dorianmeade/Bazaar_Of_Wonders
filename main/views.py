@@ -49,7 +49,7 @@ def home(request):
     card_type = 'NO_VALUE' 
     card_rarity = 'NO_VALUE'
 
-    sort_by_choice = 'card_name'
+    sort_by_choice = 'card_power'
     sorting_order = 'ascending'
 
     page = 1
@@ -276,6 +276,10 @@ def home(request):
                 sort_param = "rarity_id__card_rarity"
             elif sort_by_choice == 'card_type':
                 sort_param = "type_id__card_type"
+            elif sort_by_choice == 'card_power':
+                sort_param = "power"
+            elif sort_by_choice == 'card_toughness':
+                sort_param = "toughness"
             if sorting_order == "descending":
                 sort_param = "-" + sort_param
 
@@ -645,7 +649,7 @@ def collection(request):
     maxprice = 0.00
     card_type = 'NO_VALUE'
     card_rarity = 'NO_VALUE'
-    sort_by_choice = 'card_name'
+    sort_by_choice = 'card_power'
     sorting_order = 'ascending'
     own = 'yes'
     dont_own = 'yes'
@@ -912,6 +916,10 @@ def collection(request):
                             sort_param = "rarity_id__card_rarity"
                         elif sort_by_choice == 'card_type':
                             sort_param = "type_id__card_type"
+                        elif sort_by_choice == 'card_power':
+                            sort_param = "power"
+                        elif sort_by_choice == 'card_toughness':
+                            sort_param = "toughness"
                         if sorting_order == "descending":
                             sort_param = "-" + sort_param
 
