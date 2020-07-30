@@ -53,7 +53,7 @@ EMAIL_HOST          = 'smtp.sendgrid.net'
 EMAIL_USE_TLS       = True
 EMAIL_PORT          = 587
 EMAIL_HOST_USER     = 'apikey'
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
 DEFAULT_FROM_EMAIL  = 'thebazaartraders@gmail.com'
 
 MIDDLEWARE = [

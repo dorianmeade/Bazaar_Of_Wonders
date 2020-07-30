@@ -4,3 +4,4 @@ PyYAML
 django
 bs4
 django-environ
+django-anymail
