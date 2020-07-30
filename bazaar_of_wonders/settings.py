@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tinymce',
     'materializecssform',
+    'background_task',  # I'll leave this in for now, but we might not need it
+    'apscheduler'
 ]
 
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
