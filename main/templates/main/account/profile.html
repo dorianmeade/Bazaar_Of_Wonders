@@ -2,61 +2,59 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS;">
+<div class= "container" style="padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS; background-color: rgba(245, 225, 215, .8); border: solid 5px rgb(40, 17, 19);">    
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
-            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black; background: orange;">Profile</a></li>
-            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black; ">Preferences</a></li>
-            <li class="tab col s4"><a href="{% url 'main:sell' %}" style="color: black;">Become a trader</a></li>
+            <li class="tab col s8"><a href="{% url 'main:profile' %}" style="color: white; background: rgb(40, 17, 19);">Profile</a></li>
+            <li class="tab col s8"><a href="{% url 'main:preferences' %}" style="color: black; background: transparent;">Preferences</a></li>
         </ul>
-    </div>      
+    </div>
     
     <div class="row container">
-        <table>
+        <table style="width: 95%; margin: 0 auto; border-spacing: 50px; " >
             <tr>
                 <td style="border: none;"><b>Username</b></td>
-                <td>{{user.auth_user_id.username}}</td>
+                <td style="padding-left: 20%;">{{user.auth_user_id.username}}</td>
             </tr>
             <tr>
-                    <td style="border: none;"><b>Password</b></td>
-                    <td>*********</td>
-                </tr>
+                <td style="border: none;"><b>Password</b></td>
+                <td style="padding-left: 20%;">*********</td>
+            </tr>
             <tr>
                 <td style="border: none;"><b>Email address</b></td>
-                <td>{{user.auth_user_id.email}}</td>
+                <td style="padding-left: 20%;">{{user.auth_user_id.email}}</td>
             </tr>
             <tr>
                 <td style="border: none;"><b>First name</b></td>
-                <td>{{user.auth_user_id.first_name|title}}</td>
+                <td style="padding-left: 20%;">{{user.auth_user_id.first_name|title}}</td>
             </tr>
             <tr>
                 <td style="border: none;"><b>Last name</b></td>
-                <td>{{user.auth_user_id.last_name|title}}</td>
+                <td style="padding-left: 20%;">{{user.auth_user_id.last_name|title}}</td>
             </tr>
             <tr>
                 <td style="border: none;"><b>Location</b></td>
                 {% if user.location %}
-                <td>{{user.location|title}}</td>
+                <td style="padding-left: 20%;">{{user.location|title}}</td>
                 {% else %}
-                <td>Unknown</td>
+                <td style="padding-left: 20%;">Unknown</td>
                 {% endif %}
             </tr>
             <tr>
                 <td style="border: none;"><b>Completed sales</b></td>
                 {% ifequal user.completed_sales None %}
-                <td>0</td>
+                <td style="padding-left: 20%;">0</td>
                 {% else %}
-                <td>{{user.completed_sales}}</td>
+                <td style="padding-left: 20%;">{{user.completed_sales}}</td>
                 {% endifequal %}
             </tr>
             <tr>
                 <td style="border: none;"><b>Member since</b></td>
-                <td>{{user.auth_user_id.date_joined.date}}</td>
+                <td style="padding-left: 20%;">{{user.auth_user_id.date_joined.date}}</td>
             </tr>
         </table>
         <br>
-        <a href="{% url 'main:edit' %}" style="text-align: center; color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;">Edit</a>
+    <a href="{% url 'main:edit' %}" style="text-align: center; color: white; font-size: 18px; padding: 5px 20px; background: rgb(40, 17, 19);">Edit</a> 
     </div>
-
 </div>        
 {% endblock %}

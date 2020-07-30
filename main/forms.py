@@ -296,16 +296,16 @@ class UpdatePreferencesForm(forms.Form):
     }
     email_notif = forms.CharField(label='Allow Bazaar of Wonders to send you email notifications', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
+                                                                                'style': 'color: white; background-color: rgb(40, 17, 19); font-family: Trebuchet MS'}))   
 
 
     subscribe_email = forms.CharField(label='Recieve email newsletter', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
+                                                                                'style': 'color: white; background-color: rgb(40, 17, 19); font-family: Trebuchet MS'}))   
 
     view_email = forms.CharField(label='Allow other Bazaar Traders to view your profile', widget=forms.Select(choices=TRUE_FALSE_CHOICES,
                                                                         attrs={'class': 'dropdown-trigger btn',
-                                                                                'style': 'color: black; background-color: orange; font-family: Trebuchet MS'}))   
+                                                                                'style': 'color: white; background-color: rgb(40, 17, 19); font-family: Trebuchet MS'}))   
 
 class PromotionSetForm(forms.Form): 
     promo_set = forms.CharField(max_length=200, required=False)

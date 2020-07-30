@@ -14,7 +14,7 @@
                     {% elif user.is_authenticated and not card_saved %}
                         <p style="color: rgb(40, 17, 19)"><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:black"><b>Add card to your collection</b></b>.</a></p>
                     {% else %}
-                        <p style="color:white;"><a href="/login" target="_self" style="color:black">Login</a> or <a href="/register" target="_self" style="color:black;">create an account</a> to save this card to your collection.</a></p>
+                        <p style="color:white;"><a href="{% url 'main:login_req' %}" target="_self" style="color:black">Login</a> or <a href="{% url 'main:register' %}" target="_self" style="color:black;">register</a> to save this card to your collection.</a></p>
                     {% endif %}
                 </div>
                 <div class="column2" style="float: left; margin-left: 50px">

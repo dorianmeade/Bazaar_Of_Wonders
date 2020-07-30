@@ -2,13 +2,11 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-
-<div class= "container white  black-text" style="opacity:.8; padding: 10px; border-radius: 5px; text-align: center;">
+<div class= "container" style="padding: 10px; border-radius: 5px; text-align: center; font-family: Trebuchet MS; background-color: rgba(245, 225, 215, .8); border: solid 5px rgb(40, 17, 19);">    <div class="row">
     <div class="row">
         <ul class="tabs" style="text-align: center; display: flex;">
-            <li class="tab col s4"><a href="{% url 'main:profile' %}" style="color: black;">Profile</a></li>
-            <li class="tab col s4"><a href="{% url 'main:preferences' %}" style="color: black;  background: orange;">Preferences</a></li>
-            <li class="tab col s4"><a href="{% url 'main:sell' %}" style="color: black;">Become a trader</a></li>
+            <li class="tab col s8"><a href="{% url 'main:profile' %}" style="color: black;">Profile</a></li>
+            <li class="tab col s8"><a href="{% url 'main:preferences' %}" style="color: white;  background: rgb(40, 17, 19);">Preferences</a></li>
         </ul>
     </div>      
     
@@ -19,8 +17,8 @@
                 {{form}}
         </table>
         <br>
-        <a href="{% url 'main:preferences' %}" style="color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;">back</a>
-        <input style="color: black; font-size: 18px; border: 1px solid gray; border-radius: 5px; padding: 5px; background: orange;" type="submit" name="update" value="update">
+        <a href="{% url 'main:preferences' %}" style="text-align: center; color: white; font-size: 18px; padding: 5px 20px; background: rgb(40, 17, 19);">Back</a>
+        <input style="text-align: center; border: 1px solid rgb(40, 17, 19); border-bottom: none; color: white; font-size: 18px; padding: 5px 20px; background: rgb(40, 17, 19);" type="submit" name="update" value="Update">
         </form>
     </div>
    </div>   
