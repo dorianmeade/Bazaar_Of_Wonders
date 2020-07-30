@@ -1,8 +1,7 @@
 {% extends 'main/base.html' %}
-
 {% block content %}
-<div class="container white black-text" style="width: 40%; margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS; text-align: center;">
-    <h5>We will notify you via email</h5> <hr>
-    <p>An email will be sent to {{user.email }} when {{ item.card_id.name }}'s price drops below ${{ item.price_threshold }}. Stay tuned!</p>
-</div>
+    <div class="container" style="text-align: left; border: 5px solid rgb(40, 17, 19); font-family: CustomBazaarFont; width: 50vw; color: rgb(228, 193, 152); background-color: rgb(110, 67, 69); margin-top: 0px; padding: 20px">
+        <h5 style="font-family: CustomBazaarFont; font-size: 75px; text-align: center; text-shadow: 5px 5px rgb(40, 17, 19)">We will notify you via email</h5>
+        <p style="font-family: Trebuchet MS; font-size: 3vh">An email will be sent to {{user.email }} when {{ item.listing_id.product_name }}'s price drops below ${{ item.price_threshold }}. Stay tuned!</p>
+    </div>
 {% endblock %}

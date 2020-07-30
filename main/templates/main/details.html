@@ -158,7 +158,7 @@
         <!-- card not in database - error msg -->
         {% else %}
         <div style="background-color: rgba(228, 193, 152, 0.7); text-align: center">
-            <div style="font-size: 10vw; font-family: CustomBazaarFont; color: rgb(40, 63, 19); ">Sorry, the card information was not found in our master deck</div>
+            <div style="font-size: 10vw; font-family: CustomBazaarFont; color: rgb(40, 63, 19); ">Sorry the card information was not found in our master deck</div>
         </div>
         {% endif %}
     </div>
@@ -184,6 +184,14 @@
                             <a href="{{ c.mtg_stocks_purchase_url }}" target=_blank"><button style="margin-top:10px; font-size: 7vh; background-color: rgb(4, 56, 68); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 75%; border-radius: 5px; font-family: CustomBazaarFont; padding: 25px">Buy Now at MTG Stocks</button></a>
                         {% endif %}
                     </td>
+                    <td>
+                        {% if user.is_authenticated %}
+                            <p><a href="{% url 'main:notifications' c.product_id %}"><button style="margin-top:10px; font-size: 7vh; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 75%; border-radius: 5px; font-family: CustomBazaarFont; padding: 25px">Notify Me at Price Drop</button></a></p>
+                        {% else %}
+                            <p><button style="margin-top:10px; font-size: 7vh; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 75%; border-radius: 5px; font-family: CustomBazaarFont; padding: 25px">
+                                <a style="color: rgb(70, 93, 49)" href="{% url 'main:login_req' %}">Login</a> or <a style="color: rgb(70, 93, 49)" href="{% url 'main:register' %}">Register</a> to recieve price drop notifications</button></p>
+                        {% endif %}
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -207,11 +215,6 @@
                             <div style="text-align: left;">
                                 <p style="color: rgb(40, 17, 19); margin: 1px"><b>Condition: </b>{{ item.condition }}</p>
                             </div>
-                             {% if user.is_authenticated %}
-                                <p><a href="{% url 'main:notifications' item.id %}"><button style="font-size: 3vh; font-weight: bold; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); height: min-content; width: 88%; border-radius: 5px;">Notify Me at Price Drop</button></a></p>
-                             {% else %}
-                                 <p><a style="color: rgb(70, 93, 49)" href="{% url 'main:login_req' %}"><b>Login</b></a> or <a style="color: rgb(70, 93, 49)" href="{% url 'main:register' %}"><b>Register</b></a> to recieve price drop notifications.</p>
-                             {% endif %}
                         </a>
                     </div>
                 </div>

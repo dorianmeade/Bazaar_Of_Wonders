@@ -28,6 +28,8 @@ urlpatterns = [
     path("account/sell", views.sell, name="sell"),
     path("account/sell/edit", views.editsell, name="editsell"),
     path("account/edit/password", views.changepass, name="changepass"),
+    path("manage_notifications", views.managenotifications, name="managenotifications"),
+    path("remove_from_notifications", views.remove_from_notifications, name="remove_from_notifications"),
     path("promotionsBySet", views.promotionsBySet, name="promotionsBySet"),
     path("hottestCard", views.hottestCard, name="hottestCard"),
 ]

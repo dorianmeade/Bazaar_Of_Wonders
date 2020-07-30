@@ -37,3 +37,7 @@ def update_data():
     print("Sellers updated")
     management.call_command('loaddata', 'types.json', verbosity=0)
     print("Types updated")
+    print("Sending emails...")
+    import main.scripts.notifications
+    print("Emails sent.")
+

@@ -89,14 +89,6 @@ class Listing(models.Model):
     # def __str__(self):
     # return self.product_name
 
-    def save(self, *args, **kwargs):
-        card, _ = Card.objects.get_or_create(product_id = self.product_id) # pylint: disable=maybe-no-member
-        self.card = card
-        #seller, _ = Seller.objects.get_or_create(seller_key = self.seller_key) # pylint: disable=maybe-no-member
-        #self.seller = seller
-        super(Listing, self).save(*args, **kwargs)
-
-
 class Notification(models.Model):
     auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)

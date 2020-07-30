@@ -1444,16 +1444,44 @@ def changepass(request):
 
 #add notif flag to db
 def add_notif(request, l=None):
-    #get listing object from url
-    listing = Listing.objects.get(pk = l)
-    #get card object from listing
-    card = Card.objects.get(product_id = listing.product_id.product_id)
-    #create and save notification object for desired user/card/price
+    # get card object from listing
+    card = Card.objects.get(product_id=l)
+
+    # find lowest price
+    listings = Listing.objects.all().filter(product_id=l)
+    price_threshold = listings[0].price
+    for listing in listings:
+        if listing.price < price_threshold:
+            price_threshold = listing.price
+    # create and save notification object for desired user/card/price
     try:
-        notif = Notification(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+        notif = Notification(auth_user_id=request.user, card_id=card, price_threshold=price_threshold)
         notif.save()
     except IntegrityError:
-        notif = Notification.objects.get(auth_user_id=request.user, card_id=card, price_threshold=listing.price)
+        notif = Notification.objects.get(auth_user_id=request.user, card_id=card, price_threshold=price_threshold)
     return render(request=request,
                   template_name='main/notifications.html',
                   context={'item': notif})
+
+
+def managenotifications(request):
+    users_notifications = None
+    if request.user.is_authenticated:
+        try:
+            users_notifications = Notification.objects.filter(auth_user_id=request.user.id)
+        except Notification.DoesNotExist:
+            pass
+    return render(request=request,
+                  template_name='main/managenotifications.html', context={'data': users_notifications})
+
+def remove_from_notifications(request, selected=None):
+    try:
+        # get card object from pk
+        notification = Notification.objects.get(pk=request.GET.get('selected', ''))
+        if notification:
+            notification.delete()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Notification.DoesNotExist:
+        return redirect(to=managenotifications(request))
+    except ValueError:
+        return redirect(to=managenotifications(request))

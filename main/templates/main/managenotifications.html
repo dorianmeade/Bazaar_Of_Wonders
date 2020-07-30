@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+{% block content %}
+    <div class="container" style="text-align: left; border: 5px solid rgb(40, 17, 19); font-family: CustomBazaarFont; width: 60vw; color: rgb(228, 193, 152); background-color: rgb(110, 67, 69); margin-top: 0px; padding: 20px">
+        <h5 style="font-family: CustomBazaarFont; font-size: 75px; text-align: center; text-shadow: 5px 5px rgb(40, 17, 19)">Your Notifications</h5>
+        {% for n in data  %}
+            <div>
+                <tr>
+                    <p style="margin-left: 2vw; font-size: 3vh; font-family: Trebuchet MS; color: rgb(228, 193, 152)"><strong>You will be notified if </strong><a style="color: rgb(64, 126, 155)" href="{% url 'main:details' %}?selected={{n.card_id.product_id}}"><b>{{ n.card_id.name }}</b></a>'s price drops below {{ n.price_threshold }}.
+                    <a style="color: rgb(228,193,152);" href="{% url 'main:remove_from_notifications' %}?selected={{n.id}}"><i class="material-icons" style="color: rgb(228, 193, 152)" >delete</i></a></p>
+                </tr>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

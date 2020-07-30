@@ -12,11 +12,15 @@
                         <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:collection' %}">My Collection</a></li>
                     <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
                         <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:profile' %}">My Account</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:managenotifications' %}">My Notifications</a></li>
                     {% elif user.auth_user_id != None %}
                     <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
                         <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:collection' %}">My Collection</a></li>
                     <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
                         <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:profile' %}">My Account</a></li>
+                    <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
+                        <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="{% url 'main:managenotifications' %}">My Notifications</a></li>
                     {% endif %}
                     <li style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)">
                         <a style="background-color: rgb(40, 63, 19); color: rgb(228, 193, 152)" href="https://magic.wizards.com/en">MTG Community</a></li>
