@@ -11,7 +11,7 @@ import os
 import datetime
 from django.core.wsgi import get_wsgi_application
 from apscheduler.schedulers.background import BackgroundScheduler
-from main.scripts.notify import update_data, send_email_notif
+from main.scripts.notify import update_data
 
 
 scheduler = BackgroundScheduler()
