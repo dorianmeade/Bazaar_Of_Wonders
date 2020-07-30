@@ -1,9 +1,10 @@
-from background_task import background
+#from background_task import background
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from main.models import Notification, Listing, Card
 from django.core import management
 
+"""
 # not yet tested background function to notify users of price drop via email
 @background(schedule=60*30)
 def send_email_notif(id):
@@ -18,7 +19,7 @@ def send_email_notif(id):
             #send email
             send_mail('Price drop!', 'test',settings.DEFAULT_FROM_EMAIL,n.auth_user_id.email,fail_silently=False)
             #then deleted notif flag
-            Notification.objects.get(id=id).delete()
+            Notification.objects.get(id=id).delete()"""
 
 
 def update_data():
