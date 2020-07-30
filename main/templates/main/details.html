@@ -9,12 +9,12 @@
                     <!-- display all known card information -->
                     <img src="{{ c.card_image_loc }}" style="width: 15vw; height: auto; margin-top: 20px; ">
                     {% if user.is_authenticated and card_saved %}
-                        <p style="color: rgb(40, 17, 19)"><a style="color:black" href="{% url 'main:collection' %}"><b>View in Collection</b></a></p>
-                        <p style="color: rgb(40, 17, 19)"><a style="color:black" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}"><b>Remove from Collection</b></b><i class="black-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p>
+                        <p style="color: rgb(40, 17, 19)"><a style="color:rgb(90, 47, 49)" href="{% url 'main:collection' %}"><b>View in Collection</b></a></p>
+                        <p style="color: rgb(40, 17, 19)"><a style="color:rgb(90, 47, 49)" href="{% url 'main:remove_from_collection' %}?selected={{c.product_id}}"><b>Remove from Collection</b></b><i class="black-text material-icons" style="vertical-align: -10%; font-size:18px;">delete</i></a></p>
                     {% elif user.is_authenticated and not card_saved %}
-                        <p style="color: rgb(40, 17, 19)"><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:black"><b>Add card to your collection</b></b>.</a></p>
+                        <p style="color: rgb(40, 17, 19)"><a href="{% url 'main:add_to_collection' %}?selected={{c.product_id}}" style="color:rgb(90, 47, 49)"><b>Add card to your collection</b></b>.</a></p>
                     {% else %}
-                        <p style="color:white;"><a href="/login" target="_self" style="color:black">Login</a> or <a href="/register" target="_self" style="color:black;">create an account</a> to save this card to your collection.</a></p>
+                        <b><p style="color:rgb(90, 47, 49)"><a href="/login" target="_self" style="color: rgb(64, 126, 155)">Login</a> or <a href="/register" target="_self" style="color: rgb(64, 126, 155)">create an account</a> to save this card to your collection.</p></b>
                     {% endif %}
                 </div>
                 <div class="column2" style="float: left; margin-left: 50px">
@@ -231,7 +231,7 @@
     {% else %}
         <br>
         <div style="background-color: rgba(228, 193, 152, 0.7); text-align: center">
-                    <div style="font-size: 10vw; font-family: CustomBazaarFont; color: rgb(40, 63, 19); ">Currently no listings available for this card</div>
+            <div style="font-size: 10vw; font-family: CustomBazaarFont; color: rgb(40, 63, 19); ">Currently no listings available for this card</div>
         </div>
         <br>
     {% endif %}
