@@ -1,15 +1,19 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    <div class="container" style="text-align: left; width: 40%;">
-        <form class="white black-text" style="margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS;" method="POST">
-            <h5 style="font-family: Trebuchet MS;">Log in</h5>
+    <div class="container" style="text-align: left; border: 5px solid rgb(40, 17, 19); font-family: CustomBazaarFont; width: 50vw; color: rgb(228, 193, 152); background-color: rgb(110, 67, 69); margin-top: 0px">
+        <form style="margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS; width: 95%; color: rgb(228, 193, 152);" method="POST">
+            <h5 style="font-family: CustomBazaarFont; font-size: 75px; text-align: center; text-shadow: 5px 5px rgb(40, 17, 19)">Log In</h5>
             {% csrf_token %}
-            {{form.as_p}}
-            <a class="btn btn-outline-info" style="background-color: black; color:white" href="/">Cancel</a>
-            <button style="background-color: black; color:white" class="btn btn-outline-info" type="submit">Login</button>
+            <div style="background-color: rgb(228, 193, 152); border: 5px solid rgb(40, 17, 19); padding: 30px">
+                {{form.as_p}}
+                <div style="text-align: center">
+                    <a href="/"><button style="margin-top:10px; font-size: 5vh; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 9vw; border-radius: 5px; font-family: CustomBazaarFont;">Cancel</button></a>
+                    <button style="margin-top:10px; font-size: 5vh; background-color: rgb(40, 63, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 9vw; border-radius: 5px; font-family: CustomBazaarFont;" type="submit">Login</button>
+                </div>
+            </div>
         </form>
-        <p class="white-text" style="font-family: Trebuchet MS;"><a href="{% url 'password_reset' %}"target="_self"><strong>Forgot your password?</strong></a></p>
-        <p class="white-text" style="font-family: Trebuchet MS;"> Don't have an account? <a href="{% url 'main:register' %}" target="_self"><strong>Register here</strong></a>!</p>
+        <p style="margin-left: 2vw; font-size: 3vh; font-family: Trebuchet MS; color: rgb(228, 193, 152)"><strong>Forgot your password?</strong><a style="color: rgb(64, 126, 155)" href="{% url 'password_reset' %}"target="_self"><b>  Click Here</b></a></p>
+        <p style="margin-left: 2vw; font-size: 3vh; font-family: Trebuchet MS;"> Don't have an account? <a style="color: rgb(64, 126, 155)" href="{% url 'main:register' %}" target="_self"><strong><b>Register here!</b></strong></a></p>
     </div>
 {% endblock %}

@@ -1,14 +1,18 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class="container" style="padding-top: 10px;">
-   <form class="white black-text" style="opacity:.8; padding: 15px; border-radius: 15px; font-family: Trebuchet MS;" method="POST">
-        <h5 style="font-family: Trebuchet MS;">Sign up</h5>
-       {% csrf_token %}
-       {{form.as_p}}
-       <a class="btn btn-outline-info" style="background-color: black; color:white" href="/">Cancel</a>
-       <button style="background-color:black; color:white" class="btn btn-outline-info" type="submit">Sign Up</button>
-   </form>
-   <p class="white-text" style="font-family: Trebuchet MS;"> Already have an account? <a href="{% url 'main:login_req' %}" target="_self"><strong>Login</strong></a> here. </p>
-</div>
+    <div class="container" style="text-align: left; border: 5px solid rgb(40, 17, 19); font-family: CustomBazaarFont; width: 50vw; color: rgb(40, 17, 19); background-color: rgb(110, 67, 69); margin-top: 0px">
+        <form style="margin: 0 auto; opacity:.8; padding: 10px; border-radius: 15px; font-family: Trebuchet MS; width: 95%; color: rgb(228, 193, 152);" method="POST">
+            <h5 style="font-family: CustomBazaarFont; font-size: 75px; text-align: center; text-shadow: 5px 5px rgb(40, 17, 19); color: rgb(228, 193, 152)">Sign Up</h5>
+            {% csrf_token %}
+            <div style="background-color: rgb(228, 193, 152); border: 5px solid rgb(40, 17, 19); padding: 30px; color: rgb(40, 17, 19);">
+                {{form.as_p}}
+                <div style="text-align: center">
+                    <a href="/"><button style="margin-top:10px; font-size: 5vh; background-color: rgb(40, 17, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 9vw; border-radius: 5px; font-family: CustomBazaarFont;" type="button">Cancel</button></a>
+                    <button style="margin-top:10px; font-size: 5vh; background-color: rgb(40, 63, 19); color: rgb(228, 193, 152); text-shadow: 5px 5px rgb(40, 17, 19); height: min-content; width: 9vw; border-radius: 5px; font-family: CustomBazaarFont;" type="submit">Sign Up</button>
+                </div>
+            </div>
+        </form>
+        <p style="margin-left: 2vw; font-size: 3vh; font-family: Trebuchet MS; color: rgb(228, 193, 152)"><strong>Already have an account?</strong><a style="color: rgb(64, 126, 155)"  href="{% url 'main:login_req' %}" target="_self"><b>  Click Here</b></a></p>
+    </div>
 {% endblock %}
