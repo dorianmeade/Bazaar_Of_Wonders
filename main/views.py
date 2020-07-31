@@ -828,7 +828,55 @@ def collection(request):
             try:
                 users_collection = Collection.objects.get(owning_auth_user_id=request.user.id)
             except Collection.DoesNotExist:
-                pass
+                cards = Card.objects.all().filter(product_id__in=[-1])  # return no cards
+                card_data = []
+                paginator = Paginator(cards, 24)
+
+                try:
+                    page_obj = paginator.page(page)
+                except PageNotAnInteger:
+                    # If page is not an integer, deliver first page.
+                    page = 1
+                    page_obj = paginator.page(page)
+                except EmptyPage:
+                    # If page is out of range (e.g. 9999), deliver last page of results.
+                    page_obj = paginator.page(paginator.num_pages)
+
+                # Place form variables from GET request into form
+                form = CollectionSearchForm({
+                    'card_name': card_name,
+                    'card_text': card_text,
+                    'card_flavor_text': card_flavor_text,
+                    'card_artist': card_artist,
+                    'set_name': set_name,
+                    'seller_name': seller_name,
+                    'minprice': minprice,
+                    'maxprice': maxprice,
+                    'min_converted_mana_cost': min_converted_mana_cost,
+                    'max_converted_mana_cost': max_converted_mana_cost,
+                    'min_power': min_power,
+                    'max_power': max_power,
+                    'min_toughness': min_toughness,
+                    'max_toughness': max_toughness,
+                    'card_keywords': card_keywords,
+                    'card_type': card_type,
+                    'color_black': color_black,
+                    'color_red': color_red,
+                    'color_white': color_white,
+                    'color_blue': color_blue,
+                    'color_green': color_green,
+                    'card_rarity': card_rarity,
+                    'collection_number': collection_number,
+                    'sort_by_choice': sort_by_choice,
+                    'sorting_order': sorting_order,
+                    'own': own,
+                    'dont_own': dont_own
+                })
+
+                return render(request=request,
+                              template_name='main/collection_and_notification_portal.html',
+                              context={'data': page_obj, 'form': form,
+                                       'card_data': card_data})  # load necessary schemas
             # if the user has a collection, get it
             if users_collection:
                 collection_content, product_ids, return_dicts = [], [], []
@@ -1106,7 +1154,7 @@ def collection(request):
                                       context={'data': page_obj, 'form': form,
                                                'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
                     else:
-                        listings = Listing.objects.all(product_id_id__in=collection_content.values_list('card_id', flat=True))
+                        listings = Listing.objects.all().filter(product_id_id__in=collection_content.values_list('card_id', flat=True))
                         #Use annotations to ensure all required columns are present
                         listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
                         
@@ -1166,7 +1214,105 @@ def collection(request):
                                       context={'data': page_obj, 'form': form,
                                                'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
                 except Collection_Content.DoesNotExist:
-                    pass
+                    cards = Card.objects.all().filter(product_id__in=[-1])  # return no cards
+                    card_data = []
+                    paginator = Paginator(cards, 24)
+
+                    try:
+                        page_obj = paginator.page(page)
+                    except PageNotAnInteger:
+                        # If page is not an integer, deliver first page.
+                        page = 1
+                        page_obj = paginator.page(page)
+                    except EmptyPage:
+                        # If page is out of range (e.g. 9999), deliver last page of results.
+                        page_obj = paginator.page(paginator.num_pages)
+
+                    # Place form variables from GET request into form
+                    form = CollectionSearchForm({
+                        'card_name': card_name,
+                        'card_text': card_text,
+                        'card_flavor_text': card_flavor_text,
+                        'card_artist': card_artist,
+                        'set_name': set_name,
+                        'seller_name': seller_name,
+                        'minprice': minprice,
+                        'maxprice': maxprice,
+                        'min_converted_mana_cost': min_converted_mana_cost,
+                        'max_converted_mana_cost': max_converted_mana_cost,
+                        'min_power': min_power,
+                        'max_power': max_power,
+                        'min_toughness': min_toughness,
+                        'max_toughness': max_toughness,
+                        'card_keywords': card_keywords,
+                        'card_type': card_type,
+                        'color_black': color_black,
+                        'color_red': color_red,
+                        'color_white': color_white,
+                        'color_blue': color_blue,
+                        'color_green': color_green,
+                        'card_rarity': card_rarity,
+                        'collection_number': collection_number,
+                        'sort_by_choice': sort_by_choice,
+                        'sorting_order': sorting_order,
+                        'own': own,
+                        'dont_own': dont_own
+                    })
+
+                    return render(request=request,
+                                  template_name='main/collection_and_notification_portal.html',
+                                  context={'data': page_obj, 'form': form,
+                                           'card_data': card_data})  # load necessary schemas
+            else:
+                cards = Card.objects.all().filter(product_id__in=[-1])  # return no cards
+                card_data = []
+                paginator = Paginator(cards, 24)
+
+                try:
+                    page_obj = paginator.page(page)
+                except PageNotAnInteger:
+                    # If page is not an integer, deliver first page.
+                    page = 1
+                    page_obj = paginator.page(page)
+                except EmptyPage:
+                    # If page is out of range (e.g. 9999), deliver last page of results.
+                    page_obj = paginator.page(paginator.num_pages)
+
+                # Place form variables from GET request into form
+                form = CollectionSearchForm({
+                    'card_name': card_name,
+                    'card_text': card_text,
+                    'card_flavor_text': card_flavor_text,
+                    'card_artist': card_artist,
+                    'set_name': set_name,
+                    'seller_name': seller_name,
+                    'minprice': minprice,
+                    'maxprice': maxprice,
+                    'min_converted_mana_cost': min_converted_mana_cost,
+                    'max_converted_mana_cost': max_converted_mana_cost,
+                    'min_power': min_power,
+                    'max_power': max_power,
+                    'min_toughness': min_toughness,
+                    'max_toughness': max_toughness,
+                    'card_keywords': card_keywords,
+                    'card_type': card_type,
+                    'color_black': color_black,
+                    'color_red': color_red,
+                    'color_white': color_white,
+                    'color_blue': color_blue,
+                    'color_green': color_green,
+                    'card_rarity': card_rarity,
+                    'collection_number': collection_number,
+                    'sort_by_choice': sort_by_choice,
+                    'sorting_order': sorting_order,
+                    'own': own,
+                    'dont_own': dont_own
+                })
+
+                return render(request=request,
+                              template_name='main/collection_and_notification_portal.html',
+                              context={'data': page_obj, 'form': form,
+                                       'card_data': card_data})  # load necessary schemas
 
 # log user out of system
 def logout_request(request):
