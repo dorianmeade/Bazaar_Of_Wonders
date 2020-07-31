@@ -153,6 +153,7 @@ class CollectionSearchForm(forms.Form):
         ('card_type', 'Card Type'),
         ('card_power', 'Card Power'),
         ('card_toughness', 'Card Toughness'),
+        ('price','Price')
     }
 
     YES_NO = {
