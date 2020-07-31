@@ -53,6 +53,18 @@ def home(request):
     sorting_order = 'ascending'
 
     page = 1
+
+    #Check for the existence of the card_name parameter
+    #If it doesnt exist, this is an initial page_load
+    initPageLoad = True
+    if raw_string != '':
+        for parameter in query_parameters: 
+            parameter_tokens = parameter.split("=")
+            parameter_name = parameter_tokens[0]
+
+            if parameter_name == "card_name":
+                initPageLoad = False
+                
     if raw_string != '':
         for parameter in query_parameters: 
             parameter_tokens = parameter.split("=")
@@ -159,7 +171,11 @@ def home(request):
         })
     
         if form.is_valid():
-            listings = Listing.objects.all()
+            #Limit the number of listings to 500 on an initial load of the app
+            if initPageLoad:
+                listings = Listing.objects.all().filter(id__lt = 500)
+            else:
+                listings = Listing.objects.all()
             # Filter by Price
             if minprice != float(0):
                 listings = listings.filter(price__gte=minprice)
@@ -368,6 +384,7 @@ def home(request):
             
             #Use distinct to only instantiate one instance per card model
             listings = listings.distinct()
+            
 
             # Sort the QuerySet per the parameter
             listings = listings.order_by(sort_param)
@@ -395,6 +412,7 @@ def home(request):
             #Use distinct to only instantiate one instance per card model
             listings = listings.distinct()
 
+            
             # display only 25 cards per page
             paginator = Paginator(cards, 24)
 
