@@ -32,4 +32,5 @@ urlpatterns = [
     path("remove_from_notifications", views.remove_from_notifications, name="remove_from_notifications"),
     path("promotionsBySet", views.promotionsBySet, name="promotionsBySet"),
     path("hottestCard", views.hottestCard, name="hottestCard"),
+    path("mostDiscounted", views.mostDiscounted, name="mostDiscounted"),
 ]

@@ -439,11 +439,63 @@ def home(request):
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
 
+def mostDiscounted(request):
+
+
+
+    page = 1
+    raw_string = request.META['QUERY_STRING']
+    if raw_string.find('&') != -1:
+        query_parameters = raw_string.split("&")
+    else:
+        query_parameters = [raw_string]
+
+
+
+    if raw_string != '':
+        for parameter in query_parameters: 
+            parameter_tokens = parameter.split("=")
+            parameter_name = parameter_tokens[0]
+            if len(parameter_tokens) <= 0:
+                parameter_val = None
+            else:
+                parameter_val = parameter_tokens[1]
+            if parameter_name == "page": 
+                page = int(parameter_val)
+            
+    
+
+    listings = Card.objects.raw('''
+select c.name as_name,c.set_name as set_name, c.card_image_loc as card_image_loc, 
+count(l.id) AS listing_count, min(l.price) as min_price, max(l.price) as max_price, avg(l.price) as avg_price, 
+l.product_id_id as product_id,
+max(l.price) - min(l.price) as price_change 
+from main_listing l,
+main_card c
+where l.product_id_id = c.product_id
+group by product_id 
+order by price_change desc''')
+
+    paginator = Paginator(listings, 24)
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = 1
+        page_obj = paginator.page(page)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page_obj = paginator.page(paginator.num_pages) 
+
+
+    dynamic_form_qs = ''
+
+    return render(request=request,
+                  template_name="main/hottestCard.html", context={'data': page_obj,'dynamic_form_qs': dynamic_form_qs})
+
+
 
 def hottestCard(request):
-
-
-
     page = 1
     raw_string = request.META['QUERY_STRING']
     if raw_string.find('&') != -1:
