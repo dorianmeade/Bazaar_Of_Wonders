@@ -169,105 +169,91 @@ def home(request):
             if seller_name != "":
                 listings = listings.filter(seller_key__seller_name__icontains=seller_name)
 
-            # filtering by listing slows it down a lot, so only do if you have to
-            if minprice != float(0) or maxprice != float(0) or seller_name != "":
-                cards = Card.objects.all().filter(product_id__in=listings.values_list('product_id', flat=True))
-            else:
-                cards = Card.objects.all()
-
-            # TODO: Look into issue with filtering on boolean
-            # Related link: https://stackoverflow.com/questions/6933196/django-boolean-queryset-filter-not-working
-
             # Filtering by name (if name not specified, this will return all cards)
             if card_name != '':
-                cards = cards.exclude(name__exact="Card has no name")
+                listings = listings.exclude(product_id__name__exact="Card has no name")
                 card_name_items = card_name.split(' ')
                 for word in card_name_items:
-                    cards = cards.filter(name__icontains=word)
+                    listings = listings.filter(product_id__name__icontains=word)
 
             # Filtering by card_text (if card_text not specified, this will return all cards)
             if card_text != '':
-                cards = cards.exclude(card_text__exact="No text available")
-                cards = cards.filter(card_text__icontains=card_text)
+                listings = listings.exclude(product_id__card_text__exact="No text available")
+                listings = listings.filter(product_id__card_text__icontains=card_text)
 
             # Filtering by card_artist (if card_artist not specified, this will return all cards)
             if card_artist != '':
-                cards = cards.exclude(artist__exact="No artist information available")
-                cards = cards.filter(artist__icontains=card_artist)
+                listings = listings.exclude(product_id__artist__exact="No artist information available")
+                listings = listings.filter(product_id__artist__icontains=card_artist)
 
             # Filtering by card_flavor_text (if card_flavor_text not specified, this will return all cards)
             if card_flavor_text != '':
-                cards = cards.exclude(flavor_text__exact="No flavor text available")
-                cards = cards.filter(flavor_text__icontains=card_flavor_text)
+                listings = listings.exclude(product_id__flavor_text__exact="No flavor text available")
+                listings = listings.filter(product_id__flavor_text__icontains=card_flavor_text)
 
             # Filter by Card Keywords
             if card_keywords != '':
-                cards = cards.exclude(card_keywords__exact="No keywords available")
-                cards = cards.filter(card_keywords__icontains=card_keywords)
+                listings = listings.exclude(product_id__card_keywords__exact="No keywords available")
+                listings = listings.filter(product_id__card_keywords__icontains=card_keywords)
 
-            # Filter by Card Keywords
+            # Filter by Set Name Keywords
             if set_name != '':
-                cards = cards.exclude(card_keywords__exact="No set name available")
-                cards = cards.filter(set_name__icontains=set_name)
+                listings = listings.exclude(product_id__set_name__exact="No set name available")
+                listings = listings.filter(product_id__set_name__icontains=set_name)
 
             # Filter by Card Type
             if form.cleaned_data['card_type'] != 'NO_VALUE':
-                cards = cards.filter(type_id__card_type__contains=card_type)
+                listings = listings.filter(product_id__type_id__card_type__contains=card_type)
 
             # Filter by Card Rarity
             if form.cleaned_data['card_rarity'] != 'NO_VALUE':
-                cards = cards.filter(rarity_id__card_rarity__iexact=card_rarity)
+                listings = listings.filter(product_id__rarity_id__card_rarity__iexact=card_rarity)
 
             # Filter by Toughness
             if min_toughness != 0:
-                cards = cards.filter(toughness__gte=min_toughness)
+                listings = listings.filter(product_id__toughness__gte=min_toughness)
             if max_toughness != 0:
-                cards = cards.filter(toughness__lte=max_toughness)
+                listings = listings.filter(product_id__toughness__lte=max_toughness)
 
             # Filter by Power
             if min_power != 0:
-                cards = cards.filter(power__gte=min_power)
+                listings = listings.filter(product_id__power__gte=min_power)
             if min_power != 0 and max_power != 0:
-                cards = cards.filter(power__lte=max_power)
+                listings = listings.filter(product_id__power__lte=max_power)
 
             # Filter by Converted Mana Cost
             if min_converted_mana_cost != 0:
-                cards = cards.filter(converted_mana_cost__gte=min_converted_mana_cost)
+                listings = listings.filter(product_id__converted_mana_cost__gte=min_converted_mana_cost)
             if min_converted_mana_cost != 0 and max_converted_mana_cost != 0:
-                cards = cards.filter(converted_mana_cost__lte=max_converted_mana_cost)
+                listings = listings.filter(product_id__converted_mana_cost__lte=max_converted_mana_cost)
 
             # Filter by Card Colors
             color_filter = False
             if color_black == "on":
-                cards = cards.filter(card_color__icontains='B')
+                listings = listings.filter(product_id__card_color__icontains='B')
                 color_filter = True
             if color_red == "on":
-                cards = cards.filter(card_color__contains='R')
+                listings = listings.filter(product_id__card_color__contains='R')
                 color_filter = True
             if color_white == "on":
-                cards = cards.filter(card_color__icontains='W')
+                listings = listings.filter(product_id__card_color__icontains='W')
                 color_filter = True
             if color_blue == "on":
-                cards = cards.filter(card_color__icontains='U')
+                listings = listings.filter(product_id__card_color__icontains='U')
                 color_filter = True
             if color_green == "on":
-                cards = cards.filter(card_color__icontains='G')
+                listings = listings.filter(product_id__card_color__icontains='G')
                 color_filter = True
             
             # Exclude non-colored cards if any filtering based on color has been done
             if color_filter:
-                cards = cards.exclude(card_color='No color available')
-                cards = cards.exclude(card_color = 'No color available')
+                listings = listings.exclude(product_id__card_color='No color available')
 
 
             #Filter by Collection Number 
             if collection_number != None:
-                cards = cards.filter(collection_number__iexact = collection_number)
+                listings = listings.filter(product_id__collection_number__iexact = collection_number)
 
-            # Filter by Collection Number
-            if collection_number:
-                cards = cards.filter(collection_number__iexact=collection_number)
-  
             # Implement sorts
             sort_param = "card_rarity"
             if sort_by_choice == 'card_name':
@@ -280,6 +266,9 @@ def home(request):
                 sort_param = "power"
             elif sort_by_choice == 'card_toughness':
                 sort_param = "toughness"
+            elif sort_by_choice == 'price':
+                sort_param = "price"
+
             if sorting_order == "descending":
                 sort_param = "-" + sort_param
 
@@ -374,10 +363,16 @@ def home(request):
             # print(dynamic_form_qs)
 ### END query string 
 
+            #Use annotations to ensure all required columns are present
+            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
+            
+            #Use distinct to only instantiate one instance per card model
+            listings = listings.distinct()
+
             # Sort the QuerySet per the parameter
-            cards = cards.order_by(sort_param)
+            listings = listings.order_by(sort_param)
             # display only 25 cards per page
-            paginator = Paginator(cards, 24)
+            paginator = Paginator(listings, 24)
 
             try:
                 page_obj = paginator.page(page)
@@ -392,7 +387,14 @@ def home(request):
                           template_name='main/home.html',
                           context={'data': page_obj, 'form': form, 'dynamic_form_qs': dynamic_form_qs})  # load necessary schemas
         else:
-            cards = Card.objects.all()
+            listings = listings.objects.all()
+
+            #Use annotations to ensure all required columns are present
+            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
+            
+            #Use distinct to only instantiate one instance per card model
+            listings = listings.distinct()
+            
             # display only 25 cards per page
             paginator = Paginator(cards, 24)
 

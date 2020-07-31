@@ -55,6 +55,7 @@ class SearchForm(forms.Form):
         ('card_type', 'Card Type'),
         ('card_power', 'Card Power'),
         ('card_toughness', 'Card Toughness'),
+        ('price','Price')
     }
 
     card_name = forms.CharField(max_length=200, required=False)
