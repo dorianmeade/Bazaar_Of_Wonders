@@ -20,7 +20,7 @@
     <ul class="pagination" >
         {% if data.has_previous %}
         <li>
-        <a style="color: white;"href="?page={{data.previous_page_number}}" aria-label="Previous">
+        <a style="color: white;"href="?page={{data.previous_page_number}}&{{dynamic_form_qs}}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
         </a>
         </li>
@@ -36,7 +36,7 @@
         {% endfor %}
         {% if data.has_next %}
         <li>
-        <a style="color: white;" href="?page={{data.next_page_number}}" aria-label="Next">
+        <a style="color: white;" href="?page={{data.next_page_number}}&{{dynamic_form_qs}}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
         </a>
         </li>

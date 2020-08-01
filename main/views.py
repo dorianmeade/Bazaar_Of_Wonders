@@ -1015,13 +1015,6 @@ def collection(request):
                         if collection_number != None:
                             listings = listings.filter(product_id__collection_number__iexact=collection_number)
 
-                        card_data = []
-                        for listing in listings:
-                            c_data = {}
-                            c_data['card'] = listing.product_id
-                            c_data['own'] = Collection_Content.objects.get(card_id=listing.product_id.product_id).obtained
-                            card_data.append(c_data)
-
                         # Implement sorts
                         sort_param = "card_rarity"
                         if sort_by_choice == 'card_name':
@@ -1122,15 +1115,16 @@ def collection(request):
                         dynamic_form_qs = dynamic_form_qs + r"maxprice=" + str(maxprice) + r"&"
 
                         if seller_name != '':
-                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name)
+                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + quote_plus(seller_name) + r"&"
                         else:
-                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name
+                            dynamic_form_qs = dynamic_form_qs + r"seller_name=" + seller_name + r"&"
+
                         if own != '':
-                            dynamic_form_qs = dynamic_form_qs + r"own=" + quote_plus(own)
+                            dynamic_form_qs = dynamic_form_qs + r"own=" + quote_plus(own) + r"&"
                         else:
-                            dynamic_form_qs = dynamic_form_qs + r"own=" + own
+                            dynamic_form_qs = dynamic_form_qs + r"own=" + own + r"&"
                         if dont_own != '':
-                            dynamic_form_qs = dynamic_form_qs + r"dont_own=" + quote_plus(dont_own)
+                            dynamic_form_qs = dynamic_form_qs + r"dont_own=" + quote_plus(dont_own) 
                         else:
                             dynamic_form_qs = dynamic_form_qs + r"own=" + dont_own
 
@@ -1148,12 +1142,7 @@ def collection(request):
                         # Sort the QuerySet per the parameter
                         listings = listings.order_by(sort_param)
 
-                        card_data = []
-                        for listing in listings:
-                            c_data = {}
-                            c_data['card'] = Card.objects.get(product_id=listing['product_id'])
-                            c_data['own'] = Collection_Content.objects.get(card_id=listing['product_id']).obtained
-                            card_data.append(c_data)
+
 
                         # display only 25 cards per page
                         paginator = Paginator(listings, 24)
@@ -1167,23 +1156,27 @@ def collection(request):
                         except EmptyPage:
                             # If page is out of range (e.g. 9999), deliver last page of results.
                             page_obj = paginator.page(paginator.num_pages)
+
+                        card_data = []
+                        for listing in page_obj:
+                            c_data = {}
+                            c_data['card'] = Card.objects.get(product_id=listing['product_id'])
+                            c_data['own'] = Collection_Content.objects.get(collection_id = users_collection.id, card_id=listing['product_id']).obtained
+                            card_data.append(c_data)
+
                         return render(request=request,
                                       template_name='main/collection_and_notification_portal.html',
                                       context={'data': page_obj, 'form': form,
                                                'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
                     else:
+                        print('invalid_form')
                         listings = Listing.objects.all().filter(product_id_id__in=collection_content.values_list('card_id', flat=True))
                         #Use annotations to ensure all required columns are present
                         listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
                         
                         #Use distinct to only instantiate one instance per card model
                         listings = listings.distinct()
-                        card_data = []
-                        for listing in listings:
-                            c_data = {}
-                            c_data['card'] = Card.objects.get(product_id=listing['product_id'])
-                            c_data['own'] = Collection_Content.objects.get(card_id=listing['product_id']).obtained
-                            card_data.append(c_data)
+
                         paginator = Paginator(listings, 24)
 
                         try:
@@ -1227,6 +1220,13 @@ def collection(request):
                             'dont_own': dont_own
                         })
 
+                        card_data = []
+                        for listing in page_obj:
+                            c_data = {}
+                            c_data['card'] = Card.objects.get(product_id=listing['product_id'])
+                            c_data['own'] = Collection_Content.objects.get(collection_id = users_collection.id, card_id=listing['product_id']).obtained
+                            card_data.append(c_data)
+                            
                         return render(request=request,
                                       template_name='main/collection_and_notification_portal.html',
                                       context={'data': page_obj, 'form': form,
