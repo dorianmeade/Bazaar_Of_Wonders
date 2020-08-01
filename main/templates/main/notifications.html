@@ -2,6 +2,6 @@
 {% block content %}
     <div class="container" style="text-align: left; border: 5px solid rgb(40, 17, 19); font-family: CustomBazaarFont; width: 50vw; color: rgb(228, 193, 152); background-color: rgb(110, 67, 69); margin-top: 0px; padding: 20px">
         <h5 style="font-family: CustomBazaarFont; font-size: 75px; text-align: center; text-shadow: 5px 5px rgb(40, 17, 19)">We will notify you via email</h5>
-        <p style="font-family: Trebuchet MS; font-size: 3vh">An email will be sent to {{user.email }} when {{ item.listing_id.product_name }}'s price drops below ${{ item.price_threshold }}. Stay tuned!</p>
+        <p style="font-family: Trebuchet MS; font-size: 3vh">An email will be sent to {{user.email }} when the card's price drops below ${{ item.price_threshold }}. Stay tuned!</p>
     </div>
 {% endblock %}

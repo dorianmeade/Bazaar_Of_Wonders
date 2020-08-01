@@ -244,23 +244,26 @@ def home(request):
                 listings = listings.filter(product_id__converted_mana_cost__lte=max_converted_mana_cost)
 
             # Filter by Card Colors
+            colors = []
             color_filter = False
             if color_black == "on":
-                listings = listings.filter(product_id__card_color__icontains='B')
+                colors.append('B')
                 color_filter = True
             if color_red == "on":
-                listings = listings.filter(product_id__card_color__contains='R')
+                colors.append('R')
                 color_filter = True
             if color_white == "on":
-                listings = listings.filter(product_id__card_color__icontains='W')
+                colors.append('W')
                 color_filter = True
             if color_blue == "on":
-                listings = listings.filter(product_id__card_color__icontains='U')
+                colors.append('U')
                 color_filter = True
             if color_green == "on":
-                listings = listings.filter(product_id__card_color__icontains='G')
+                colors.append('G')
                 color_filter = True
-            
+            # For multiple colored cards
+            for col in colors:
+                listings = listings.filter(product_id__card_color__icontains=col)
             # Exclude non-colored cards if any filtering based on color has been done
             if color_filter:
                 listings = listings.exclude(product_id__card_color='No color available')

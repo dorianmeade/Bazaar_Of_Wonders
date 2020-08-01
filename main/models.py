@@ -78,7 +78,7 @@ class Listing(models.Model):
     product_name = models.CharField(max_length=200)
     product_line = models.CharField(max_length=50)
     set_name = models.CharField(max_length=200)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=9, decimal_places=2)
     quantity = models.IntegerField()
     condition = models.CharField(max_length=200)
     seller_key = models.ForeignKey('Seller', on_delete=models.CASCADE)
@@ -92,7 +92,7 @@ class Listing(models.Model):
 class Notification(models.Model):
     auth_user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     card_id = models.ForeignKey('Card', on_delete=models.CASCADE)
-    price_threshold = models.FloatField()
+    price_threshold = models.DecimalField(max_digits=9, decimal_places=2)
     less_than_flag = models.BooleanField(default=True)
     greater_than_flag = models.BooleanField(default=False)
     equal_flag = models.BooleanField(default=False)
