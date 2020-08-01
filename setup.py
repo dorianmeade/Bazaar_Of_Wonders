@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name='django-bazaar-of-wonders',
     author='https://github.com/Bazaar-Trader',
-    version='0.1.37',
+    version='0.1.38',
     
     description='Bazaar of Wonders is a Django-based web application that aggregates card details and pricing statistics for trading card games, namely, Magic: The Gathering.',
     long_description=long_description,
