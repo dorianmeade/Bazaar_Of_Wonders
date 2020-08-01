@@ -1137,13 +1137,16 @@ def collection(request):
                         ### END query string
 
                         #Use annotations to ensure all required columns are present
-                        listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
+                        if sorting_order == "descending":
+                            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'),price=Max('price'))
+                        else:
+                            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'),price=Min('price'))
                         
-                        #Use distinct to only instantiate one instance per card model
-                        listings = listings.distinct()
-            
+
                         # Sort the QuerySet per the parameter
                         listings = listings.order_by(sort_param)
+                        #Use distinct to only instantiate one instance per card model
+                        listings = listings.distinct()
 
 
 
@@ -1172,10 +1175,17 @@ def collection(request):
                                       context={'data': page_obj, 'form': form,
                                                'dynamic_form_qs': dynamic_form_qs, 'card_data': card_data})  # load necessary schemas
                     else:
-                        print('invalid_form')
                         listings = Listing.objects.all().filter(product_id_id__in=collection_content.values_list('card_id', flat=True))
                         #Use annotations to ensure all required columns are present
                         listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'))
+
+                        #Use annotations to ensure all required columns are present
+                        if sorting_order == "descending":
+                            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'),price=Max('price'))
+                        else:
+                            listings = listings.values('product_id_id','product_name','product_id__card_image_loc','product_id__power').annotate(name=F('product_name'),card_image_loc=F('product_id__card_image_loc'),power=F('product_id__power'),product_id=F('product_id_id'),price=Min('price'))
+                        
+
                         
                         #Use distinct to only instantiate one instance per card model
                         listings = listings.distinct()
