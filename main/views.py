@@ -173,7 +173,7 @@ def home(request):
         if form.is_valid():
             #Limit the number of listings to 500 on an initial load of the app
             if initPageLoad:
-                listings = Listing.objects.all().filter(id__lt = 500)
+                listings = Listing.objects.all().filter(id__lt = 3000)
             else:
                 listings = Listing.objects.all()
             # Filter by Price
