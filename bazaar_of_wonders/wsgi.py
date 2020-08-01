@@ -20,8 +20,8 @@ scheduler.start()
 
 os.chdir( WSGI_FILE_DIR +  "/../main/scripts")
 
-# Set to update the data every day at midnight
-scheduler.add_job(update_data, 'cron', day='*', id='update_data', replace_existing=True)
+# Set to update the data every day at 1 AM EST
+scheduler.add_job(update_data, 'cron', day='*', hour=5, id='update_data', replace_existing=True)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazaar_of_wonders.settings')
 

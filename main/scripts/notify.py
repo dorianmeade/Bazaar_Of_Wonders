@@ -26,7 +26,6 @@ def update_data():
     print("Retrieving new data...")
     import main.scripts.mass_data_update
 
-    print("test")
     management.call_command('loaddata', 'cards.json', verbosity=0)
     print("Cards updated")
     management.call_command('loaddata', 'listings.json', verbosity=0)
