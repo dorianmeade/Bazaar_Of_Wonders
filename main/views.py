@@ -928,7 +928,7 @@ def collection(request):
                                 listings = listings.filter(product_id_id__in=collection_content.values_list('card_id', flat=True))
                             else:
                                 # get an empty queryset
-                                listings = Listing.objects.all().filter(product_id_id_in=[-1])
+                                listings = Listing.objects.all().filter(product_id_id__in=[-1])
 
 
                         # Filtering by name (if name not specified, this will return all cards)
